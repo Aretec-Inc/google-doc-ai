@@ -1,15 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Home } from '../Screens'
+import { Home, Dashboard } from '../Screens'
 import allPaths from './paths'
 import React, { useState, useEffect } from 'react'
-// import ApexCharts from 'apexcharts'
-// import { useSelector, useDispatch } from 'react-redux'
-// import { Form, Input, Button } from 'antd'
-// import { requiredMessage, inputPlace } from '../../utils/helpers'
-import { useNavigate } from 'react-router-dom'
-// import { Result, Button } from 'antd'
-import ScrollToTop from './scrollToTop'
+
 const Page404 = (props) => {
     const { history } = props
     return (
@@ -55,7 +49,8 @@ const AllRoutes = () => {
             {/* <ScrollToTop /> */}
             <Routes>
                 {/* <Route path='/:page404' exact component={Page404} /> */}
-                <Route path="/" element={<Home />} />
+                <Route path='/' element={<Home />} />
+                <Route path='/dashboard' element={<Dashboard />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/flows" element={<Flow />} />
