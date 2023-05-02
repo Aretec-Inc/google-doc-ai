@@ -4,7 +4,13 @@ import { Tabs } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { BsBell } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
+import LOGO  from '../../assets/logo.svg'
+import HOME  from '../../assets/home.svg'
+import FORWARD  from '../../assets/forward.svg'
+import MENU  from '../../assets/menu.svg'
+// import UPLOAD  from '../../assets/upload.svg'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -43,30 +49,68 @@ export default function Home(props) {
         console.log("HELLO")
     }, [])
 
-  
+
 
     return (
         <div className='main_container'>
-            <p className='sub_cont_forms'></p>
-            <Box sx={{ width: '100%' }}>
+            <section className='mainheader'>
+                <div className='Top-header'>
+                    <div className='header_left'>
+                        <img src={LOGO} alt="" className='logomain'/>
+                    </div>
+                    <div className='right_side'>
+                        <div className='name_space'>
+                            <BsBell className='user_icon' />
+                        </div>
+                        <div className='loginuser'>
+                            <div className='loginuser-img'></div>
+                            <div className='loginname'>
+                                <h6>john Dae</h6>
+                                <span>john@gmail.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div className='sidenav_sidenav'>
+                   <div className='sidebar-sub'>
+                   <div className='navlink-menu'>
+                        <a href="/"><img src={HOME} alt="" /></a>
+                        <span>Dashboard</span>
+                    </div>
+                    <div className='navlink-menu'>
+                        <a href="/"><img src={FORWARD} alt="" /></a>
+                        <span>Submissions</span>
+                    </div>
+                    <div className='navlink-menu'>
+                        <a href="/"><img src={FORWARD} alt="" /></a>
+                        <span>Upload</span>
+                    </div>
+                    <div className='navlink-menu'>
+                        <a href="/"><img src={MENU} alt="" /></a>
+                        <span>Configuration</span>
+                    </div>
+                   </div>
+                </div>
+            </section>
+            {/* <Box sx={{ width: '100%' }}>
                 <Tabs className='virgin-tab' defaultActiveKey='1'>
                     <Tabs.TabPane tab="DEMOGRAPHIC DASHBOARD" key="1">
                         <div className='applicant-div'>
-                          <h1>mkldnio </h1>
-                          </div>
+                            <h1>mkldnio </h1>
+                        </div>
                     </Tabs.TabPane >
                     <Tabs.TabPane tab="CASES DASHBOARD" key="2">
                         <div className='submission-div'>
-                            {/* <iframe className='dashboard_iframe' src="https://datastudio.google.com/embed/u/0/reporting/5377631e-6a93-4bc6-a211-7179055f6785/page/YVd7C" frameBorder={0} allowFullScreen /> */}
                         </div>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="SENTIMENT ANALYSIS" key="3">
                         <div className='submission-div'>
-                            {/* <iframe className='dashboard_iframe' src="https://datastudio.google.com/embed/reporting/adf93041-428b-478e-b578-6872d9725b1b/page/xtS5C" frameborder={0} allowfullscreen /> */}
                         </div>
                     </Tabs.TabPane>
                 </Tabs >
-            </Box >
+            </Box > */}
         </div >
     )
 }

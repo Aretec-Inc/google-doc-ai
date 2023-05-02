@@ -1,0 +1,89 @@
+.main_container {
+    height: 100vh!important;
+    overflow: hidden;
+}
+.mainheader{
+ background: #FEFEFE;
+ box-shadow: 0px 1px 7px #0000000f;
+ z-index: 11;
+ position: relative;
+}
+.Top-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 30px 2px 10px;
+}
+.header_left{
+    display: flex;
+    align-items: center;
+}
+.logomain{
+    width: 145px;
+}
+
+.right_side{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.name_space{
+    font-size: 25px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 28px;
+}
+.loginuser{
+    display: flex;
+}
+.loginuser-img{
+    background-image: url(../src/assets/user.svg);
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.loginname{
+
+}
+.loginname h6{
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: 600;
+}
+.loginname span{
+    color: #7C8DB5;
+    font-size: 13px;
+}
+
+.sidenav_sidenav{
+    background: #fff;
+    box-shadow: 0px 1px 7px #0000000f;
+    height: 100vh;
+    transition: width .3s ease-in-out;
+    width: 150px;
+    position: relative;
+}
+.sidebar-sub{
+    padding: 40px 0px;
+    position: relative;
+}
+.navlink-menu{
+    display: flex;
+    margin-bottom: 25px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.navlink-menu a{
+
+}
+.navlink-menu span{
+    font-size: 15px;
+    font-weight: 500;
+    padding-top: 6px;
+}
