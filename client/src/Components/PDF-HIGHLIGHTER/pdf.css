@@ -1,0 +1,106 @@
+* {
+    scroll-margin: 100px;
+}
+
+.SignatureBoxRND {
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    filter: drop-shadow(0px 0px 10px black);
+    border-width: 1;
+    border-style: dashed;
+    z-index: 999;
+}
+
+.pdfLoadingContainer {
+    position: absolute;
+    z-index: 999;
+    filter: drop-shadow(0px 5px 50px gray);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.pdfLoadingText {
+    background: ghostwhite;
+    padding: 15px;
+    border-radius: 50px;
+    font-weight: bold;
+}
+
+/* .Select__control {
+    border: unset !important;
+    -webkit-box-shadow: unset !important;
+    box-shadow: unset !important;
+} */
+
+/* .custom-select:hover, select.form-control:hover, [type="text"]:hover, [type="password"]:hover, [type="email"]:hover, [type="number"]:hover {
+    border: unset !important;
+    box-shadow: unset !important;
+} */
+
+/* .custom-select:focus, select.form-control:focus, [type="text"]:focus, [type="password"]:focus, [type="email"]:focus, [type="number"]:focus {
+    border: unset !important;
+    box-shadow: unset !important;
+} */
+
+.ParentFunctionsDiv {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: block;
+    height: 60px;
+    border-bottom: 1px solid gray;
+    position: relative;
+    z-index: 99;
+    width: 100%;
+}
+
+.page {
+    filter: drop-shadow(0px 0px 10px gray);
+}
+
+.react-pdf__Document {
+    /* overflow: auto !important; */
+}
+
+.OCR_RECT {
+    stroke: transparent;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 0.2;
+    fill: gold;
+    mix-blend-mode: darken;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.OCR_RECT:hover {
+    /* stroke: red; */
+    fill-opacity: 0.3;
+    fill: lightcoral;
+}
+
+button {
+    outline-width: 0 !important;
+}
+
+.KEYOFVALUEPAIR {
+    clear: both;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    /* width: 50%; */
+    width:110px;
+
+    color: gray
+}
+
+.VALUEOFVALUEPAIR {
+    margin-left: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 150px
+}

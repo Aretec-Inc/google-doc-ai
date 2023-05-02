@@ -1,0 +1,4 @@
+.rowSpaceBetween {
+    display: flex;
+    justify-content: space-between
+}

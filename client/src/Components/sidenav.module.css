@@ -1,0 +1,78 @@
+.sidenav {
+    width: 120px;
+    transition: width 0.3s ease-in-out;
+    height: 100vh;
+    background: #FFFFFF;
+    box-shadow: 8px 4px 24px rgba(0, 0, 0, 0.03);
+}
+
+.sidenavClosed {
+    transition: width 0.3s ease-in-out;
+    width: 60px
+}
+
+.sideitem {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 14px 10px;
+    cursor: pointer;
+    color: #000000;
+    text-decoration: none;
+    overflow: hidden;
+    transition: 500ms;
+}
+
+.sideitemActive {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #000000;
+    text-decoration: none;
+    overflow: hidden;
+    border-bottom: 5px solid #3D3F6D;
+}
+
+.active {
+    border-bottom: 2px solid red;
+}
+
+.linkText {
+    margin-top: 6px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center;
+}
+
+.linkText:hover {
+    /* border-bottom: 4px solid #3D3F6D; */
+    color: #229753;
+}
+
+.active {
+    margin-top: 10px;
+    border-bottom: 5px solid #3D3F6D;
+}
+
+/* .linkText:hover {
+    border-bottom: 5px solid #3D3F6D;
+} */
+
+.sideitem:hover {
+    /* background-color: #244f7d1c; */
+}
+
+.menuBtn {
+    align-self: center;
+    align-self: flex-start;
+    justify-self: flex-end;
+    color: #000000;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding-left: 20px;
+}
+

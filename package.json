@@ -1,0 +1,38 @@
+{
+  "name": "node-react",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/aiplatform": "^2.3.0",
+    "@google-cloud/automl": "^3.1.2",
+    "@google-cloud/dlp": "^4.2.0",
+    "@google-cloud/language": "^5.1.0",
+    "@google-cloud/storage": "^6.5.2",
+    "add": "^2.0.6",
+    "axios": "^0.21.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^16.0.2",
+    "express": "^4.17.1",
+    "fuse.js": "^6.6.2",
+    "http": "^0.0.1-security",
+    "jwt-simple": "^0.5.6",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.12.1",
+    "objects-to-csv": "^1.3.6",
+    "path": "^0.12.7",
+    "socket.io": "^4.5.1",
+    "uuid": "^9.0.0",
+    "virgin-helpers": "https://github.com/Entrolics-LLC/Virgin-Island-Helpers.git#master",
+    "yarn": "^1.22.19"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "node index.js",
+    "virgin-helpers": "yarn add https://github.com/Entrolics-LLC/Virgin-Island-Helpers.git#master",
+    "dev-cloud": "NODE_ENV=cloudDB nodemon",
+    "client": "npm start --prefix ./client && npm start --prefix client",
+    "heroku-postbuild": "npm install --legacy-peer-deps --prefix client && npm run build --prefix client"
+  }
+}
