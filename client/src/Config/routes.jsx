@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Home, Dashboard } from '../Screens'
+import { Home, Submission } from '../Screens'
 import allPaths from './paths'
 import React, { useState, useEffect } from 'react'
 
@@ -49,8 +49,8 @@ const AllRoutes = () => {
             {/* <ScrollToTop /> */}
             <Routes>
                 {/* <Route path='/:page404' exact component={Page404} /> */}
-                <Route path='/' element={<Home />} />
-                <Route path='/dashboard' element={<Dashboard />} />
+                {/* <Route path="/" element={<Home />} /> */}
+                <Route path="/" element={<Submission />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/flows" element={<Flow />} />

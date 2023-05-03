@@ -55,7 +55,7 @@ TabPanel.propTypes = {
 const Option = [];
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD'
-export default function Home(props) {
+export default function Submission(props) {
 
     useEffect(() => {
         console.log("HELLO")
@@ -159,70 +159,67 @@ export default function Home(props) {
 
                                 </div>
                                 <div className='col-lg-2 pr-0'>
-                                    <Button style={{ background: '#4285F4', color: '#fff'  ,width:'100%'}} onClick={showModal}
+                                    <Button style={{ background: '#4285F4', color: '#fff' ,width:'100%'}} onClick={showModal}
                                         type='text' className='date width-sub height_57px'
-                                        >Create Submission</Button>
-                                        {/* ---------------------reate Submission modal Start--------------- */}
-                                    <Modal
+                                        >Upload</Button>
+                                           <Modal
                                         title=""
                                         open={open}
                                         onOk={handleOk}
                                         onCancel={handleCancel}
                                         footer={null}
                                         type='navigation'
-                                        // size='small'
                                         width={1000}
                                     >
 
                                         <div className='select-process'>
                                             <div className='modalname'>
-                                                <h5>Select Processor</h5>
+                                                <h5>Sources</h5>
                                             </div>
-                                            <div className='modal-content-sec'>
-                                                <div className='modal-content-data'>
-                                                    <h6>General</h6>
-                                                    <p>Ready to use out-of-the-box processors for general document goals.</p>
-                                                </div>
-                                                <div className='modal-tiles'>
+                                            <div className='process-tiles'>
                                                     <div className='row'>
-                                                        <div className='col-lg-3'>
-                                                            <div className='modal-tiles-main'>
-                                                                <h5>Form Parser</h5>
-                                                                <p>Extract form elements such as text and checkboxes</p>
-                                                                <div className='create-sub'>
-                                                                    Create Submission
-                                                                </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={LOCALDRIVE} alt="" />
+                                                                <span>Local Drive</span>
                                                             </div>
                                                         </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={AMAZON} alt="" />
+                                                                <span>Amazon</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={DRIVE} alt="" />
+                                                                <span>Drive</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={LOCALDRIVE} alt="" />
+                                                                <span>Local Drive</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={AMAZON} alt="" />
+                                                                <span>Amazon</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='process-tiles-main'>
+                                                                <img src={DRIVE} alt="" />
+                                                                <span>Drive</span>
+                                                            </div>
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div className='modal-content-data'>
-                                                    <h6>Specialized </h6>
-                                                    <p>Schematized processors for domain-specific documents.</p>
-                                                    <div className='specialize-dropdown'>
-                                                        <Select
-                                                            className='width subdropdes'
-                                                            showSearch
-                                                            // onChange={onChangeTrans}
-                                                            // onSearch={onSearch}
-                                                            placeholder='Filter'
-                                                            optionFilterProp='children'
-                                                            filterOption={(input, option) => option.children.includes(input)}
-                                                            filterSort={(optionA, optionB) =>
-                                                                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-                                                            }
-                                                        >
-                                                            <Option value='Not Identified'>Not Identified</Option>
-                                                            <Option value='Closed'>Closed</Option>
-                                                            <Option value='Communicated'>Communicated</Option>
-                                                        </Select>
-                                                    </div>
-                                                    <button className='process-btn'>Proceed</button>
-                                                </div>
-                                            </div>
                                         </div>
                                     </Modal>
-                                 
+                                    {/* =========== Now another button upload button Code with modal code End==================== */}
                                 </div>
                             </div>
 
@@ -231,7 +228,7 @@ export default function Home(props) {
                                     <div className='submission-card-div'>
                                         <div className='submission-main-list'>
                                             <div className='submission-heading'>
-                                                <p className='submission-title mg_lf_15px'>30 Templates</p>
+                                                <p className='submission-title mg_lf_15px'>30 Submissions</p>
                                                 <CiMenuKebab className='menuicon' />
                                                 {/* <button className='submission-btn' onClick={() => setShowCreateSubmission(true)}>Create Submission</button> */}
                                             </div>

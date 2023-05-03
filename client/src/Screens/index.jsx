@@ -1,7 +1,7 @@
 import Home from './Home/Home'
-import Dashboard from './Dashboard/Dashboard'
+import Submission from './Submission/Submission'
 
 export {
     Home,
-    Dashboard
+    Submission
 }
