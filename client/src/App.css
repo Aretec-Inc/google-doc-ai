@@ -515,12 +515,19 @@
     margin-bottom: 10px;
     align-items: center;
 }
-
+.margingless{
+    margin-bottom: 5px !important;
+}
 .submission-heading p {
     margin-bottom: 5px;
     font-size: 19px;
     font-weight: 500;
 
+}
+.submission-title{
+    margin-bottom: 5px;
+    font-size: 19px;
+    font-weight: 500;
 }
 
 .submission-main-list {
@@ -639,4 +646,150 @@
     font-weight: 500;
     margin-top: 10px;
     display: block;
+}
+.progress-modal{
+    padding:20px 30px 20px 0px;
+}
+.progress-modal-head{
+    margin-bottom: 16px;
+}
+.progress-modal-head h5{
+    font-size: 17px;
+    margin-bottom: 0px;
+    font-weight: 600;
+}
+.progress-bar-section{
+    max-height: 300px;
+    min-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.single-bar-div{
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+}
+.single-bar-div p{
+    margin-bottom: 0px;
+    width: 135px;
+    padding: 0px 10px 0px 0px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.progress-bar-line{
+    flex: 1;
+}
+.progress-thickness .ant-progress-inner .ant-progress-bg{
+    height: 12px !important;
+}
+.btn-can-proces{
+    text-align: center;
+}
+.dashboard-section{
+
+}
+.dash-top-card{
+    background: #FEFEFF;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    height: 125px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.dash-top-card-main{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0px 10px;
+}
+.dash-top-card-main h1{
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+
+}
+.dash-top-card-main p{
+    color: #158B47;
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 0px;
+}
+
+
+.dashboard-heading {
+    margin-top: 25px;
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #ECECEC;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.dashboard-heading p {
+    margin-bottom: 0px;
+    font-size: 19px;
+    font-weight: 500;
+
+}
+.p-0{
+    padding: 0px;
+}
+.tepm-id{
+margin-bottom: 10px;
+}
+.tepm-id h5{
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 0px;
+}
+.submission-div{
+    margin-top: 15px;
+}
+.processor-data{
+    display: flex;
+    align-items: center;
+}
+.processor-data p{
+    font-size: 16px;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+.exp-csv-btn{
+    text-align: end;
+    margin-bottom: 5px;
+}
+.firstcell_table{
+    background: #E3E3E3 !important;
+}
+.confgi-screen{
+    
+}
+.confgi-screen h3{
+    font-size: 25px;
+    font-weight: 600;
+}
+.config-fields{
+
+}
+.config-fields-main{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.config-fields-main span{
+    display: block;
+    padding-right: 14px;
+    width: 140px;
+    font-size: 15px;
+    font-weight: 500;
+}
+.input-confgi{
+    margin-right: 15px;
+    width: 200px !important;
+}
+.config-save{
+
 }

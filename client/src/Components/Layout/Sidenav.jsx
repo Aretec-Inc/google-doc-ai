@@ -23,7 +23,7 @@ const Sidenav = (props) => {
                     <span>Upload</span>
                 </div>
                 <div className='navlink-menu'>
-                    <Link to={allPaths?.DASHBOARD}><img src={MENU} alt='' /></Link>
+                    <Link to={allPaths?.CONFIGURATION}><img src={MENU} alt='' /></Link>
                     <span>Configuration</span>
                 </div>
             </div>

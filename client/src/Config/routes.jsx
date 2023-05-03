@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Submission, Dashboard } from '../Screens'
+import { Submission, Dashboard , Configuration } from '../Screens'
 import { Header, Sidenav } from '../Components'
 import allPaths from './paths'
 import React from 'react'
@@ -58,6 +58,7 @@ const AllRoutes = () => {
                 {/* <Route path="/" element={<Home />} /> */}
                 <Route path={allPaths?.DASHBOARD} element={<WrapComponent Component={Dashboard} />} />
                 <Route path={allPaths?.SUBMISSION} element={<WrapComponent Component={Submission} />} />
+                <Route path={allPaths?.CONFIGURATION} element={<WrapComponent Component={Configuration} />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/flows" element={<Flow />} />
