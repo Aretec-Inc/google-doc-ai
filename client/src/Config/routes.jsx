@@ -1,17 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { Home, Submission } from '../Screens'
+import { Submission, Dashboard } from '../Screens'
+import { Header, Sidenav } from '../Components'
 import allPaths from './paths'
-import React, { useState, useEffect } from 'react'
-// import ApexCharts from 'apexcharts'
-// import { useSelector, useDispatch } from 'react-redux'
-// import { Form, Input, Button } from 'antd'
-// import { requiredMessage, inputPlace } from '../../utils/helpers'
-import { useNavigate } from 'react-router-dom'
-// import { Result, Button } from 'antd'
-import ScrollToTop from './scrollToTop'
+import React from 'react'
+
 const Page404 = (props) => {
-    const { history } = props
     return (
         // <Result
         //     status='404'
@@ -30,11 +23,18 @@ const Page404 = (props) => {
 }
 
 const WrapComponent = ({ Component, ...props }) => {
-    const user = useSelector((state) => state)
-    console.log('******************************************************', user)
+    // const user = useSelector((state) => state)
     return (
-        <div style={{ height: '90vh', width: '100%', overflow: 'auto' }}>
-            <Component {...props} />
+        <div className='main_container'>
+            <Header />
+            <section className='main-screen'>
+                <Sidenav />
+                <div className='main-section'>
+                    <div className='main-container'>
+                        <Component {...props} />
+                    </div>
+                </div>
+            </section>
         </div>
     )
 }
@@ -56,7 +56,8 @@ const AllRoutes = () => {
             <Routes>
                 {/* <Route path='/:page404' exact component={Page404} /> */}
                 {/* <Route path="/" element={<Home />} /> */}
-                <Route path="/" element={<Submission />} />
+                <Route path={allPaths?.DASHBOARD} element={<WrapComponent Component={Dashboard} />} />
+                <Route path={allPaths?.SUBMISSION} element={<WrapComponent Component={Submission} />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
                 <Route path="/files" element={<Files />} />
                 <Route path="/flows" element={<Flow />} />

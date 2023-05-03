@@ -35,28 +35,28 @@ var multerSuppDocsOneFile = Multer({
     }
 }).single('file', 1);
 
-router.post('/upload', multer, upload)
-router.post('/uploadIncome', multer, uploadIncome)
+// router.post('/upload', multer, upload)
+// router.post('/uploadIncome', multer, uploadIncome)
 
-router.post('/uploadApplication', multerSuppDocsOneFile, uploadApplication)
-router.post('/upload-supp-doc', multerSuppDocs, uploadSupportingDocs)
+// router.post('/uploadApplication', multerSuppDocsOneFile, uploadApplication)
+// router.post('/upload-supp-doc', multerSuppDocs, uploadSupportingDocs)
 
-// router.post('/login', login)
-// router.post('/register', register)
-router.post('/updateCasePriority', updateCasePriority)
-router.post('/submitApplication', submitApplication)
-router.post('/updateIsOpen', updateIsOpen)
-router.post('/getCaseDetails', getCaseDetails)
+// // router.post('/login', login)
+// // router.post('/register', register)
+// router.post('/updateCasePriority', updateCasePriority)
+// router.post('/submitApplication', submitApplication)
+// router.post('/updateIsOpen', updateIsOpen)
+// router.post('/getCaseDetails', getCaseDetails)
 
-router.post('/getDocumentByAdjudication', getDocumentByAdjudication)
+// router.post('/getDocumentByAdjudication', getDocumentByAdjudication)
 
-router.post('/getCasesByCaseStatus', getCasesByCaseStatus)
+// router.post('/getCasesByCaseStatus', getCasesByCaseStatus)
 
-router.post('/getCasesByCategory', getCasesByCategory)
+// router.post('/getCasesByCategory', getCasesByCategory)
 
-router.post('/updateCaseNotes', updateCaseNotes)
-router.post('/uploadIdentity', multer, uploadIdentity)
-router.post('/feedback', feedback)
-router.post('/addNotes', addNotes)
+// router.post('/updateCaseNotes', updateCaseNotes)
+// router.post('/uploadIdentity', multer, uploadIdentity)
+// router.post('/feedback', feedback)
+// router.post('/addNotes', addNotes)
 
 module.exports = router
