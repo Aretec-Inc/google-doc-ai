@@ -1,0 +1,5 @@
+const ALL_PROCESSORS = 'ALL_PROCESSORS'
+
+export {
+    ALL_PROCESSORS
+}

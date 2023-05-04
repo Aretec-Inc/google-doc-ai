@@ -1,30 +1,6 @@
 const router = require('express').Router()
-const { getDocumentsBySubmissionId, getAllSubmissions, getAllDocuments, getBySubmissionId, getRecentDate, getAllApplicants, getFormsByApplicantName, getApplicantInformation, getAdjudicateStatus, getDashboardCaseCount, getCasesDetailByDocId, getSupportingDocsIncome, getSupportingDocsExpense, searchApplicant, getIncomeArtifact, getIncomeArtifactKeyPairs, getCaseStatusPriority, extractingEntities, getNotes,searchWithinApplicant ,getAllCompletedApplicants,getAllActiveApplicants,updateKeyPairsConfidence} = require('../controllers/get')
+const { getAllProcessors } = require('../controllers/get')
 
-// router.get('/getDocumentsBySubmissionId', getDocumentsBySubmissionId)
-
-// router.post('/getAllSubmissions', getAllSubmissions)
-// router.post('/getAllDocuments', getAllDocuments)
-// router.get('/getBySubmissionId', getBySubmissionId)
-// router.get('/getRecentDate', getRecentDate)
-// router.get('/getAllApplicants', getAllApplicants)
-// router.get('/getAllCompletedApplicants', getAllCompletedApplicants)
-// router.get('/getAllActiveApplicants', getAllActiveApplicants)
-// router.get('/getFormsByApplicantName', getFormsByApplicantName)
-// router.get('/getApplicantInformation', getApplicantInformation)
-// router.get('/getAdjudicateStatus', getAdjudicateStatus)
-// router.get('/getDashboardCaseCount', getDashboardCaseCount)
-// router.get('/getCasesDetailByDocId', getCasesDetailByDocId)
-// router.get('/getSupportingDocsIncome', getSupportingDocsIncome)
-// router.get('/getSupportingDocsExpense', getSupportingDocsExpense)
-// router.post('/searchApplicant', searchApplicant)
-// router.post('/searchWithinApplicant', searchWithinApplicant)
-// router.get('/getIncomeArtifact', getIncomeArtifact)
-// router.get('/getIncomeArtifactKeyPairs', getIncomeArtifactKeyPairs)
-// router.get('/getCaseStatusPriority', getCaseStatusPriority)
-// router.get('/extractingEntities', extractingEntities)
-// router.post('/updateKeyPairsConfidence', updateKeyPairsConfidence)
-
-// router.get('/getNotes', getNotes)
+router.get('/get-all-processors', getAllProcessors)
 
 module.exports = router

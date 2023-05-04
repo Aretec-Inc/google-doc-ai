@@ -1,10 +1,12 @@
-import { Select, Modal, Progress, Space, Button } from 'antd'
 import React from 'react'
+import { Select, Modal, Progress, Space, Button } from 'antd'
+import { useSelector } from 'react-redux'
 
 const { Option } = Select
 
 const CreateSubmission = (props) => {
     const { closeModal } = props
+    const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
 
     const handleCancel = (e) => {
         closeModal(false)
@@ -56,12 +58,10 @@ const CreateSubmission = (props) => {
                                         optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
                                     }
                                 >
-                                    <Option value='Not Identified'>Not Identified</Option>
-                                    <Option value='Closed'>Closed</Option>
-                                    <Option value='Communicated'>Communicated</Option>
+                                    {allProcessors?.map((v, i) => <Option key={i} value={v?.id}>{v?.displayName}</Option>)}
                                 </Select>
                             </div>
-                            <button className='process-btn'>Proceed</button>
+                            <Button className='process-btn' type='primary'>Proceed</Button>
                         </div>
                     </div>
                 </div>

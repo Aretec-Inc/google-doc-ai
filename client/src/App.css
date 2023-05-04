@@ -611,6 +611,7 @@
     padding: 5px;
     color: #4486F6;
     padding: 5px 14px;
+    cursor: pointer;
 }
 
 .specialize-dropdown {
@@ -619,13 +620,10 @@
 }
 
 .process-btn {
-    background: #4486F6;
-    color: #fff;
     border: none;
     border-radius: 5px;
     padding: 5px 15px;
     margin-top: 25px;
-
 }
 
 .process-tiles {

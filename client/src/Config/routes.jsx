@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Button from 'antd/lib/button'
 import Result from 'antd/lib/result'
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { Submission, Dashboard, Configuration } from '../Screens'
 import { Header, Sidenav } from '../Components'
+import { getAllProcessors } from '../Redux/actions/docActions'
 import SelectedArtifact from '../Components/SelectedArtifact/SelectedArtifact'
 import allPaths from './paths'
 
@@ -49,7 +51,12 @@ const Page404 = (props) => {
 }
 
 const WrapComponent = ({ Component, ...props }) => {
-    // const user = useSelector((state) => state)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getAllProcessors())
+    }, [])
+
     return (
         <div className='main_container'>
             <Header />

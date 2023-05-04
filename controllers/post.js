@@ -121,39 +121,7 @@ const register = (req, res) => {
     }
 }
 
-const updateCasePriority = async (req, res) => {
-    try {
-        const { key_name, key_vale, file_id } = req?.body
-        let sqlQuery = `update virgin_island.documents set ${key_name}='${key_vale}' where file_id='${file_id}'`
-        await runQuery(contextOltp, sqlQuery)
-        let obj = {
-            success: true
-        }
-        return apiResponse(res, 201, obj)
-    }
-    catch (error) {
-        console.log(error, '<== error')
-        return successFalse(res, error?.message)
-    }
-}
-
 module.exports = {
-    upload,
     login,
-    register,
-    updateCasePriority,
-    updateIsOpen,
-    updateLoginTime,
-    getCaseDetails,
-    getDocumentByAdjudication,
-    getCasesByCaseStatus,
-    getCasesByCategory,
-    uploadSupportingDocs,
-    uploadIncome,
-    updateCaseNotes,
-    uploadIdentity,
-    uploadApplication,
-    submitApplication,
-    feedback,
-    addNotes
+    register
 }

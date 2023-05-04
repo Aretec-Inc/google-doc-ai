@@ -5,6 +5,7 @@ const config = require('./config')
 const schema = `google_doc_ai`
 
 const init = (cloudConfig = config) => {
+    console.log('cloudConfig', process.env.NODE_ENV)
     try {
         let db = new Sequelize({ ...cloudConfig, ssl: true, pool: { maxConnections: 50, maxIdleTime: 30 }, language: 'en' })
 
@@ -12,7 +13,7 @@ const init = (cloudConfig = config) => {
         db.authenticate()
         db.sync({ alter: true })
 
-        console.log('Connection has been established successfully.')
+        console.log('Connection has been established successfully...')
 
         db.createSchema(schema)
             .then(() => console.log('****'))
