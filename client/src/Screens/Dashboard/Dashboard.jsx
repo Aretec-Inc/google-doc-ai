@@ -18,7 +18,7 @@ const Dashboard = (props) => {
         <div className='main_container'>
             <div className='dashboard-section'>
                 <div className='row'>
-                    <div className='col-lg-4'>
+                    <div className='col-lg-4 col-md-4 col-sm-12 pading-media'>
                         <div className='dash-top-card'>
                             <div className='dash-top-card-main'>
                                 <h1>Total Documents</h1>
@@ -26,7 +26,7 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-lg-4'>
+                    <div className='col-lg-4 col-md-4 col-sm-12 pading-media'>
                         <div className='dash-top-card'>
                             <div className='dash-top-card-main'>
                                 <h1>Total Documents</h1>
@@ -34,7 +34,7 @@ const Dashboard = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-lg-4'>
+                    <div className='col-lg-4 col-md-4 col-sm-12 pading-media'>
                         <div className='dash-top-card'>
                             Chart Here
                         </div>
@@ -50,7 +50,7 @@ const Dashboard = (props) => {
                     </div>
                 </div>
                 <div className='row'>
-                    <div className='col-lg-2'>
+                    <div className='col-lg-2 col-md-3 col-sm-3'>
                         <Select
                             className='width subdropdes'
                             showSearch
@@ -64,8 +64,8 @@ const Dashboard = (props) => {
                             <Option value='Communicated'>Communicated</Option>
                         </Select>
                     </div>
-                    <div className='col-lg-1'></div>
-                    <div className='col-lg-2'>
+                    <div className='col-lg-1 dis-none'></div>
+                    <div className='col-lg-2 col-md-3 col-sm-3'>
                         <Select
                             className='width subdropdes'
                             showSearch
@@ -79,8 +79,8 @@ const Dashboard = (props) => {
                             <Option value='Communicated'>Communicated</Option>
                         </Select>
                     </div>
-                    <div className='col-lg-1'></div>
-                    <div className='col-lg-3'>
+                    <div className='col-lg-1 dis-none'></div>
+                    <div className='col-lg-3 col-md-4 col-sm-6'>
                         <RangePicker
                             // onChange={onChangeDate}
                             className='date width'
