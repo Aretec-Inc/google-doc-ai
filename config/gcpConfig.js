@@ -1,6 +1,6 @@
 const { Storage } = require('@google-cloud/storage')
 const DLP = require('@google-cloud/dlp')
-const language = require('@google-cloud/language');
+const language = require('@google-cloud/language')
 const automl = require('@google-cloud/automl')
 const aiplatform = require('@google-cloud/aiplatform')
 const {

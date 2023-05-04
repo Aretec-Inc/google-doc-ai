@@ -5,8 +5,6 @@ const fileName = (fileName) => {
     }
 }
 
-
-
 export {
     fileName
 }
