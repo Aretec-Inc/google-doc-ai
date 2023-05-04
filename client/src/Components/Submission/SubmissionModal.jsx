@@ -1,8 +1,5 @@
-import { Select, Modal, Progress, Space,Button } from 'antd'
-import React, { useState } from 'react'
-import LOCALDRIVE from '../../assets/localdrive.svg'
-import AMAZON from '../../assets/S3.svg'
-import DRIVE from '../../assets/drive.svg'
+import { Select, Modal, Progress, Space, Button } from 'antd'
+import React from 'react'
 
 const { Option } = Select
 
@@ -23,7 +20,7 @@ const CreateSubmission = (props) => {
                 // size='small'
                 width={650}
             >
-                {/* <div className='select-process'>
+                <div className='select-process'>
                     <div className='modalname'>
                         <h5>Select Processor</h5>
                     </div>
@@ -34,7 +31,7 @@ const CreateSubmission = (props) => {
                         </div>
                         <div className='modal-tiles'>
                             <div className='row'>
-                                <div className='col-lg-3'>
+                                <div className='col-lg-4 col-md-5 col-sm-10 col-xs-12'>
                                     <div className='modal-tiles-main'>
                                         <h5>Form Parser</h5>
                                         <p>Extract form elements such as text and checkboxes</p>
@@ -67,7 +64,7 @@ const CreateSubmission = (props) => {
                             <button className='process-btn'>Proceed</button>
                         </div>
                     </div>
-                </div> */}
+                </div>
 
 
                 {/* ====================upload modal Start===================== */}
@@ -122,7 +119,7 @@ const CreateSubmission = (props) => {
 
                 {/* ====================Progress modal End===================== */}
 
-                <div className='progress-modal'>
+                {/* <div className='progress-modal'>
 
                     <div className='progress-modal-head'>
                         <h5>Uploading 7 Items </h5>
@@ -154,7 +151,7 @@ const CreateSubmission = (props) => {
                             >Process</Button>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 {/* ====================Progress modal End===================== */}
             </Modal>
         </div>

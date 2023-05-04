@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux'
 import Properties from './Properties'
 import { PDF_APIS } from '../../utils/apis'
 
-const { GET: { GET_PDF_DATA, GET_CUSTOM_FIELDS_BY_ARTIFACT } } = PDF_APIS;
+const { GET: { GET_PDF_DATA, GET_CUSTOM_FIELDS_BY_ARTIFACT } } = PDF_APIS
 
 const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
     const dispatch = useDispatch()

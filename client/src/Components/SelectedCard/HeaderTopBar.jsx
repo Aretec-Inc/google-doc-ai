@@ -33,7 +33,6 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     // console.log('artifact data =>',artifactData)
     const [isBookmarkLoading, setIsBookmarkLoading] = useState(true)
     const [updatedFile, setUpdatedFile] = useState(false)
-    const [adjudicateStatus, setAdjudicateStatus] = useState()
     const [versions, setVersions] = useState(artifactData?.file_versions)
     const [artifactNames, setArtifactNames] = useState(artifactData?.artifact_name_versions)
     const [version, setVersion] = useState(artifactData?.file_versions?.length - 1 || 0)
@@ -66,18 +65,6 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
             console.error("Mising prop ''GoBack()'' ", goBack)
         }
     }
-    // console.log('adju',adjudicateStatus)
-
-    useEffect(() => {
-        getBookMark()
-        secureApi.get(`${GET.GETADJUDICATESTATUS}?file_id=${artifactData?.id}`).then((data) => {
-            if (data) {
-                setAdjudicateStatus(data?.data?.data)
-            }
-        }).catch(error => {
-            console.log(error)
-        })
-    }, [])
 
     const getBookMark = () => { //query params: { page, limit, userId }
 
@@ -324,28 +311,6 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                     <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
 
                     {/* <CheckCircleOutline style={{ fontSize: 27, margin: '0px 6px', color: 'rgb(0, 128, 247)' }} /> */}
-                    {adj ? null : userLogin?.role == manager && <select
-                        // value={caseOption[0]}
-                        defaultValue={adjudicateStatus}
-                        value={adjudicateStatus}
-                        // onChange={(e) => handleGetFilter(e?.target?.name, e?.target?.value, row?.id, index)}
-                        name='adjudicate_status'
-                        onChange={(e) => {
-                            console.log('adjudicate status', e)
-                            setAdjudicateStatus(e)
-                            secureApi.post(POST.UPDATE, { file_id: artifactData?.id, key_name: 'adjudicate_status', key_vale: e })
-                                .then((res) => {
-                                    console.log('Successfully updated')
-                                })
-                                .catch((error) => {
-                                    console.log(error)
-                                })
-                        }}
-                        className='form-select'
-                    // size='small'
-                    >
-                        {caseOption?.map((v, i) => <option value={v} key={i}>{v}</option>)}
-                    </select>}
                     <DownloadButton selectedCard={artifactData} />
                 </div>
             </div>

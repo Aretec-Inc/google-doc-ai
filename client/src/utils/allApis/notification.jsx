@@ -1,4 +1,4 @@
-const host = `https://notification-api-2my7afm7yq-ue.a.run.app`
+const host = `https://context-api-2my7afm7yq-ue.a.run.app`
 // const host = `https://backend.neptunestech.com:8035`
 const api = `${host}/api`
 

@@ -1,4 +1,4 @@
-const host = `https://artifact-comment-api-2my7afm7yq-ue.a.run.app`
+const host = `https://context-api-2my7afm7yq-ue.a.run.app`
 // const host = `https://backend.neptunestech.com:8005`
 const api = `${host}/api`
 const artifact_comments_api = `${api}/artifact_comment`

@@ -1,4 +1,4 @@
-const host = 'https://dashboard-chart-api-2my7afm7yq-ue.a.run.app'
+const host = 'https://context-api-2my7afm7yq-ue.a.run.app'
 // const host = 'https://backend.neptunestech.com:8013'
 const api = `${host}/api`
 const dashboard_charts_api = `${api}/dashboard_chart`

@@ -1,17 +1,10 @@
-const { reject } = require("lodash");
-const path = require("path");
-const fs = require('fs');
-const { getAuthUrl } = require("virgin-helpers")
-
+const fs = require('fs')
 const axios = require('axios')
 const { predictionServiceClient, projectId, aiplatform, docAiClient } = require('../config/gcpConfig')
 
-
 const categoryClassify = async (gcs_uri) => {
     try {
-
-        const { instance, params, prediction } =
-            aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
+        const { instance, params, prediction } = aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
         let endpoint = `projects/${projectId}/locations/us-central1/endpoints/4254428302283898880}`;
         endpoint = predictionServiceClient.endpointPath(projectId, 'us-central1', '4254428302283898880')
         console.log(endpoint, '<== endpoint path')
@@ -28,22 +21,21 @@ const categoryClassify = async (gcs_uri) => {
 
         const parametersObj = new params.ImageClassificationPredictionParams({
             confidenceThreshold: 0.5,
-            maxPredictions: 1,
-        });
-        const parameters = parametersObj.toValue();
+            maxPredictions: 1
+        })
+        const parameters = parametersObj.toValue()
 
-        const instanceValue = instanceObj.toValue();
+        const instanceValue = instanceObj.toValue()
 
-        const instances = [instanceValue];
+        const instances = [instanceValue]
         const request = {
             endpoint,
             instances,
-            parameters,
-        };
+            parameters
+        }
 
         // Predict request
-        const [response] = await predictionServiceClient.predict(request);
-        // console.log(JSON.stringify(response), '<== response category')
+        const [response] = await predictionServiceClient.predict(request)
 
         let output = response?.predictions[0]?.structValue?.fields?.confidences?.listValue?.values?.map((confidence, i) => {
             let label = response?.predictions[0]?.structValue?.fields?.displayNames?.listValue?.values?.[i]?.stringValue
@@ -70,10 +62,12 @@ const categoryClassify = async (gcs_uri) => {
         else {
             return { label: 'Other', confidence: 0.8 }
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.log('error in case category ai ==>', error)
     }
 }
+
 const typeTextClassify = async (text) => {
     try {
 
@@ -120,28 +114,24 @@ const typeTextClassify = async (text) => {
         const max_confidence = Math.max(...allConfidence);
 
         const index = allConfidence.indexOf(max_confidence);
-        let label 
+        let label
         let display_label = response?.predictions[0]?.structValue?.fields?.displayNames?.listValue?.values?.[index]?.stringValue
-        if(max_confidence>0.7)
-        {
-            if(display_label=='SNAP_Application')
-            {
+        if (max_confidence > 0.7) {
+            if (display_label == 'SNAP_Application') {
                 label = 'SNAP Application'
             }
-            else if(display_label=='MAP_application')
-            {
+            else if (display_label == 'MAP_application') {
                 label = 'MAP Application'
             }
-            else{
+            else {
                 label = 'Other'
             }
-            return { confidence: max_confidence, label } 
+            return { confidence: max_confidence, label }
         }
-        else
-        {
-            return { confidence: 0.9, label:'Other' } 
+        else {
+            return { confidence: 0.9, label: 'Other' }
         }
-     
+
     } catch (error) {
         console.log('error in case category ai ==>', error)
     }
@@ -191,8 +181,8 @@ const uploadFileToStorage = (filepath, originalname, file_id, storage) => {
             let bucketName = 'elaborate-howl-285701_context_primary'
             let dest = `Forms/NotProcessed/${filename}`
             const options = {
-                destination: dest,
-            };
+                destination: dest
+            }
 
             await storage.bucket(bucketName).upload(filepath, options);
             console.log(`${filename} uploaded to ${bucketName}`);
@@ -209,7 +199,6 @@ const uploadFileToStorage = (filepath, originalname, file_id, storage) => {
 
             let fileUrl = `gs://${bucketName}/${dest}`
             resolve({ fileUrl, file_id })
-
         }
         catch (e) {
             console.error("error When Uploading Fiile ", e)
@@ -231,31 +220,22 @@ const downloadFile = (uri, storage) => {//Here file name is actually the path of
 
             await file.download().then(data => {
                 if (data) {
-                    // console.log("res", res, JSON.stringify(res))
-                    // var text = JSON.parse(data)
-
                     resolve(data)
-                } else {
+                }
+                else {
                     throw new Error(`Something went wrong when downloading file!`)
                 }
             })
-            // console.log("RESPONSE ==>",res)
-            //  const readfile = await fs.promises.readFile(destination, console.error); //file buffer
-
-
-
-
-        } catch (e) {
+        }
+        catch (e) {
             console.error("error When Downloading Fiile ", e)
             reject(e)
         }
-
     })
-
 }
 
-module.exports =
-{
+module.exports = {
+    ...require('./gcpHelpers'),
     getDate,
     downloadFile,
     uploadFileToStorage,

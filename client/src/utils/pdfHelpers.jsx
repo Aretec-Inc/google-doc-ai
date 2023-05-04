@@ -8,7 +8,7 @@ import { Popover } from 'antd'
 import { ACCOUNTS_APIS, WIDGET_APIS, PROJECTS_APIS, ARTIFACT, SEARCH_APIS, FOLDERS_APIS, PROJECT_FLOW_APIS, DOC_AI_APIS } from './apis'
 import { BOOKMARKS_APIS, AUDITS_APIS } from './apis'
 import { DASHBOARD_CHARTS } from './apis'
-import { allPaths } from '../Config/paths'
+import allPaths from '../Config/paths'
 const { GET: { FOLDERS_GET_BY_USER_PROJECT_ID } } = FOLDERS_APIS
 const { POST: { ACCOUNT_CHECK_SOCIAL_PARAMS, ACCOUNT_UPDATE_TOKEN }, GET: { ACCOUNT_GET_USER } } = ACCOUNTS_APIS
 const { GET: { PROJECTS_BY_USER_ID, PROJECTS_TEMPLATES, PROJECTS_GET_ALL_ADDITIONAL_PROPERTIES } } = PROJECTS_APIS
@@ -691,7 +691,7 @@ const validateLength = (val, len = 15) => val.length > len ? `${val.slice(0, len
 
 // const setActiveMenu = (path) => path === '/home' || path === '/recent-upload' || path === '/advance' ? 0 : path === '/template-dashboard' ? 1 : path === '/search' || path === '/filemanager' ? 2 : path === '/flowdesigner' ? 3 : path === '/workspace' ? 4 : path === '/datagraph' ? 5 : path === '/admin' || path === '/users' ? 6 : path === '/project-activities' ? 7 : path === '/project_workflow' ? 8 : path === '/flow-datablocks' ? 9 : path === '/web-archives' ? 10 : 11
 
-const setActiveMenu = (path) => path === allPaths?.home || path === allPaths?.recentUpload || path === allPaths?.ADVANCE ? allPaths?.home : path === allPaths?.project_dashboard ? allPaths?.project_dashboard : path === allPaths?.search? allPaths?.search : path === allPaths?.filemanager ? allPaths?.filemanager : path === allPaths?.flowdesignermain ? allPaths?.flowdesignermain : path === allPaths?.workspace ? allPaths?.workspace : path === allPaths?.neo4jmainscreen ? allPaths?.neo4jmainscreen : path === allPaths?.admin ? allPaths?.admin : path === allPaths?.users ? allPaths?.users : path === allPaths?.project_activities ? allPaths?.project_activities : path === allPaths?.project_workflow ? allPaths?.project_workflow : path === allPaths?.flow_data_blocks_flows ? allPaths?.flow_data_blocks_flows : path === allPaths?.webArchive ? allPaths?.webArchive : path === allPaths?.custom_models ? allPaths?.custom_models : path === allPaths?.project_settings ? allPaths?.project_settings : 11
+const setActiveMenu = (path) => path === allPaths?.home || path === allPaths?.recentUpload || path === allPaths?.ADVANCE ? allPaths?.home : path === allPaths?.project_dashboard ? allPaths?.project_dashboard : path === allPaths?.search ? allPaths?.search : path === allPaths?.filemanager ? allPaths?.filemanager : path === allPaths?.flowdesignermain ? allPaths?.flowdesignermain : path === allPaths?.workspace ? allPaths?.workspace : path === allPaths?.neo4jmainscreen ? allPaths?.neo4jmainscreen : path === allPaths?.admin ? allPaths?.admin : path === allPaths?.users ? allPaths?.users : path === allPaths?.project_activities ? allPaths?.project_activities : path === allPaths?.project_workflow ? allPaths?.project_workflow : path === allPaths?.flow_data_blocks_flows ? allPaths?.flow_data_blocks_flows : path === allPaths?.webArchive ? allPaths?.webArchive : path === allPaths?.custom_models ? allPaths?.custom_models : path === allPaths?.project_settings ? allPaths?.project_settings : 11
 
 
 

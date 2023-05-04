@@ -107,34 +107,34 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     }, [PageWrapper, pageNumber, numPages])
 
 
-    useEffect(() => {
-        const [scaleParam, pageParam, searchParam] = ['scale', 'page', 's']
-        let timeoutForParams = null;
-        clearTimeout(timeoutForParams) //clear anytimer if exist.
+    // useEffect(() => {
+    //     const [scaleParam, pageParam, searchParam] = ['scale', 'page', 's']
+    //     let timeoutForParams = null;
+    //     clearTimeout(timeoutForParams) //clear anytimer if exist.
 
 
-        timeoutForParams = setTimeout(() => { //This will help us changing url only when user has completed channging pages, scaling or searching. 
-            if (!isFirstLoad) {
-                history.replace(`?${scaleParam}=${scale}&${pageParam}=${pageNumber}&${searchParam}=${search}`)
-            }
-            else {
-                let query = history.location.search
-                let getParam = (param) => new URLSearchParams(`${query}`).get(param);
+    //     timeoutForParams = setTimeout(() => { //This will help us changing url only when user has completed channging pages, scaling or searching. 
+    //         if (!isFirstLoad) {
+    //             history.replace(`?${scaleParam}=${scale}&${pageParam}=${pageNumber}&${searchParam}=${search}`)
+    //         }
+    //         else {
+    //             let query = history.location.search
+    //             let getParam = (param) => new URLSearchParams(`${query}`).get(param);
 
-                let querySearch = getParam(searchParam)
-                let queryScale = parseFloat(getParam(scaleParam))
-                let queryPage = parseInt(getParam(pageParam))
-                if (querySearch && querySearch.length) setSearch(querySearch);
-                if (queryScale) setScale(queryScale > maxZoom ? maxZoom : queryScale);
-                if (queryPage && typeof queryPage == 'number')
-                    setPageNumber(queryPage > numPages ? numPages : queryPage < 1 ? 1 : queryPage);
-            }
-            setIsFirstLoad(false)
+    //             let querySearch = getParam(searchParam)
+    //             let queryScale = parseFloat(getParam(scaleParam))
+    //             let queryPage = parseInt(getParam(pageParam))
+    //             if (querySearch && querySearch.length) setSearch(querySearch);
+    //             if (queryScale) setScale(queryScale > maxZoom ? maxZoom : queryScale);
+    //             if (queryPage && typeof queryPage == 'number')
+    //                 setPageNumber(queryPage > numPages ? numPages : queryPage < 1 ? 1 : queryPage);
+    //         }
+    //         setIsFirstLoad(false)
 
-        }, 500)
+    //     }, 500)
 
-        return () => clearTimeout(timeoutForParams)
-    }, [scale, pageNumber, search])
+    //     return () => clearTimeout(timeoutForParams)
+    // }, [scale, pageNumber, search])
 
     useEffect(() => {
 
