@@ -82,7 +82,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
             {(Array.isArray(finalHighlights) && finalHighlights?.length && Boolean(is_completed)) ?
                 (
                     <>
-                        {isCurrentlyFormFields && (
+                        {/* {isCurrentlyFormFields && (
                             <ListItem style={{ borderBottom: '1px solid silver' }} >
                                 <ListItemText
 
@@ -99,7 +99,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
                                         </div>
                                     } />
                             </ListItem>
-                        )}
+                        )} */}
                         <List>
                             {(finalHighlights)?.map((data, i) => {
                                 let d = data[0]
@@ -167,7 +167,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
                                                         style={{ ...isCurrentlyHighlighted ? additionalFontStyle : null, display: 'flex', flex: 1, padding: 15, }}
                                                         {...props}>
                                                         {isFormFields(type) ? (
-                                                            <span style={{ display: 'flex', flexDirection: 'row', flex: 1, width: '93%' }}>
+                                                            <span style={{ display: 'flex', flexDirection: 'row', flex: 1, width: '93%' ,fontSize:'13px',fontWeight:500}}>
                                                                 <Tooltip title={fieldName?.content?.text} >
                                                                     {/* <Tooltip title={fieldName} > */}
                                                                     <span style={isCurrentlyHighlighted ? { color: '#f5f5f5' } : null} className='KEYOFVALUEPAIR'>{highlighter(fieldName?.content?.text)}</span>

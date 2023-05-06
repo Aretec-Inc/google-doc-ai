@@ -376,7 +376,7 @@ const PDFTEST = (
                                 {...props}
                                 rx={3}
                                 ry={3}
-                                style={isCurrentlyHighlighted ? { stroke: 'red', fillOpacity: 0.3, fill: 'lightcoral' } : null}
+                                style={isCurrentlyHighlighted ? { stroke: '#4285f4', fillOpacity: 0.3, fill: '#3a84ff' } : null}
                                 className='OCR_RECT'
                                 x={`${percentX}%`}
                                 y={`${percentY}%`}

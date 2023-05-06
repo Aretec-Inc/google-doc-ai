@@ -39,21 +39,21 @@ const KeyPairTable = ({ key_pairs, is_editable = true, refresh, isDLP, isSchemaG
                     {Array.isArray(key_pairs) && key_pairs.length ? <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="simple table">
                             <TableHead>
-                                <TableRow>
+                                <TableRow style={{fontSize:'15px'}}>
                                     {/* <TableCell>Field Name</TableCell>
-                            <TableCell align="right">Field Value</TableCell>
-                            <TableCell align="right">Time Added</TableCell> */}
-                                    <TableCell align="right">Field Name</TableCell>
-                                    <TableCell align="right"> Field Value</TableCell>
+                            <TableCell >Field Value</TableCell>
+                            <TableCell >Time Added</TableCell> */}
+                                    <TableCell>Field Name</TableCell>
+                                    <TableCell> Field Value</TableCell>
                                     {isDLP && (
                                         <>
-                                            <TableCell align="right">TYPE</TableCell>
-                                            <TableCell align="right">LIKELIHOOD</TableCell>
+                                            <TableCell>TYPE</TableCell>
+                                            <TableCell>LIKELIHOOD</TableCell>
                                         </>
                                     )
                                     }
-                                    <TableCell align="right">Time Updated</TableCell>
-                                    {!isDLP && <TableCell align="right">Confidence</TableCell>}
+                                    <TableCell>Time Updated</TableCell>
+                                    {!isDLP && <TableCell>Confidence</TableCell>}
 
                                 </TableRow>
                             </TableHead>
@@ -77,9 +77,9 @@ const KeyPairTable = ({ key_pairs, is_editable = true, refresh, isDLP, isSchemaG
                                     return (
                                         <TableRow key={key_pair_id}>
                                             {/* 
-                                    <TableCell align="right">{key_pair?.field_name}</TableCell>
-                                    <TableCell align="right">{key_pair?.field_value}</TableCell> */}
-                                            {/* <TableCell align="right">{key_pair?.time_stamp}</TableCell> */}
+                                    <TableCell >{key_pair?.field_name}</TableCell>
+                                    <TableCell >{key_pair?.field_value}</TableCell> */}
+                                            {/* <TableCell >{key_pair?.time_stamp}</TableCell> */}
                                             {!isDLP ? (
                                                 <>
                                                     <EditableCell key_pair={key_pair} refresh={refresh} isFieldName is_editable={is_name_editable} />
@@ -87,8 +87,8 @@ const KeyPairTable = ({ key_pairs, is_editable = true, refresh, isDLP, isSchemaG
                                                 </>
                                             ) : (
                                                 <>
-                                                    <TableCell align="right">{isNull(v_f_n) ? (f_n || "undefined") : v_f_n}</TableCell>
-                                                    <TableCell align="right">{isNull(v_f_v) ? (f_v || "undefined") : v_f_v}</TableCell>
+                                                    <TableCell >{isNull(v_f_n) ? (f_n || "undefined") : v_f_n}</TableCell>
+                                                    <TableCell >{isNull(v_f_v) ? (f_v || "undefined") : v_f_v}</TableCell>
                                                 </>
                                             )
                                             }
@@ -96,20 +96,21 @@ const KeyPairTable = ({ key_pairs, is_editable = true, refresh, isDLP, isSchemaG
 
 
                                             {isDLP && (<>
-                                                <TableCell align="right">{d_i_t || "null"}</TableCell>
-                                                <TableCell align="right">{d_m_l || "null"}</TableCell>
+                                                <TableCell >{d_i_t || "null"}</TableCell>
+                                                <TableCell >{d_m_l || "null"}</TableCell>
                                             </>
                                             )
                                             }
 
-                                            <TableCell align="right">
+                                            <TableCell >
                                                 <Tooltip title={formatedDate(key_pair?.updated_date?.value, fullFormat)} arrow>
                                                     <span>
                                                         {formatedDate(key_pair?.updated_date?.value)}
                                                     </span>
                                                 </Tooltip>
                                             </TableCell>
-                                            {!isDLP && <TableCell style={{ backgroundColor: perc2color(confidence_perc), color: confidence_perc > 20 ? 'black' : 'white', fontWeight: 'bold', textAlign: 'center' }} align="center">{confidence_perc + "%" || key_pair?.confidence}</TableCell>}
+                                            {!isDLP && <TableCell style={{ backgroundColor: '#21CF6A', color: confidence_perc > 20 ? 'black' : 'white', fontWeight: 'bold', textAlign: 'center' }} align="center">{confidence_perc + "%" || key_pair?.confidence}</TableCell>}
+                                            {/* {!isDLP && <TableCell style={{ backgroundColor: perc2color(confidence_perc), color: confidence_perc > 20 ? 'black' : 'white', fontWeight: 'bold', textAlign: 'center' }} align="center">{confidence_perc + "%" || key_pair?.confidence}</TableCell>} */}
 
 
                                         </TableRow>

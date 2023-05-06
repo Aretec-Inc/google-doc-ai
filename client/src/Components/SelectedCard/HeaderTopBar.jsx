@@ -5,7 +5,8 @@ import SparkMD5 from 'spark-md5'
 import { Tooltip, Button, Modal, Select } from 'antd'
 import Highlighter from 'react-highlight-words'
 import './SelectedCardData.css'
-import { LeftOutlined } from '@ant-design/icons'
+// import { LeftOutlined } from '@ant-design/icons'
+import { AiOutlineArrowLeft } from "react-icons/ai";
 import { BookmarkBorderOutlined, Bookmark } from '@material-ui/icons'
 import { CloudUploadOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
@@ -250,19 +251,22 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     return (
         <div className='myShadowCard'>
             <div className='artifact-top'>
-                <div style={{ display: 'flex', alignItems: 'center', paddingLeft: 5 }}>
+                <div className='artifact-sub'>
 
-                    <span style={{ cursor: 'pointer' }} onClick={goBackFunc}>
-                        <LeftOutlined style={{ fontSize: 26 }} />
+                    <span style={{ cursor: 'pointer' ,paddingTop:'9px'}} onClick={goBackFunc}>
+                        <AiOutlineArrowLeft style={{ fontSize: 21,color:'#0057E7' }} />
                     </span>
-                    <Tooltip title={originalName}>
-                        <p style={{ marginBottom: 0, marginLeft: 10 }}>{highlighter(smallLengthName)}</p>
+                    <Tooltip className='filename-topheader' title={originalName}>
+                        <p style={{ marginBottom: 0, marginLeft: 10,flex:1 }}>{highlighter(smallLengthName)}</p>
                     </Tooltip>
                 </div>
-                <div style={{ marginLeft: 140 }}>
-                    <span><b>{artifactData?.is_completed ? 'COMPLETED' : 'PROCESSING'}</b></span>
+                <div className='new-doc'>
+                    New Document
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {/* <div style={{ marginLeft: 140 }}>
+                    <span><b>{artifactData?.is_completed ? 'COMPLETED' : 'PROCESSING'}</b></span>
+                </div> */}
+                {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
                     {/* {isPDF(artifactData?.artifact_type) && (
                         <Spin spinning={updatedFile}>
                             <div className='artifact-version'>
@@ -308,11 +312,11 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                         </span>
                     </Tooltip> */}
 
-                    <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
-
                     {/* <CheckCircleOutline style={{ fontSize: 27, margin: '0px 6px', color: 'rgb(0, 128, 247)' }} /> */}
+                    {/* <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
+
                     <DownloadButton selectedCard={artifactData} />
-                </div>
+                </div> */}
             </div>
 
         </div >

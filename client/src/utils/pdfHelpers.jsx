@@ -218,6 +218,7 @@ export const cleanFieldName = (name, dontTrim) => {
 }
 
 export const perc2color = (perc) => {
+    debugger
     let r, g, b = 0
     if (perc < 50) {
         r = 255

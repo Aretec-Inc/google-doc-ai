@@ -92,12 +92,14 @@ const Submission = (props) => {
                         prefix={<BsSearch className='search-field-icon' />}
                     />
                 </div>
-                <div className='col-lg-2'>
+                {/* <div className='col-lg-2'>
 
-                </div>
-                <div className='col-lg-2 pr-0'>
-                    <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal} className='date width-sub height_57px'
-                    >Create Submission</Button>
+                </div> */}
+                <div className='col-lg-4 pr-0'>
+                    <div className='btn-specify'>
+                        <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal} className='date width-sub height_57px'
+                        >Create Submission</Button>
+                    </div>
                 </div>
             </div>
 
