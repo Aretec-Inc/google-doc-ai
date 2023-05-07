@@ -150,7 +150,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
 
     const ConditionalComponent = (
         <div style={{ filter: enableShadow ? `drop-shadow(0px 0px 10px silver)` : 'unset', ...openInModal ? {} : { maxWidth } }}>
-            <div style={{ display: 'flex', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
+            <div style={{ display: 'none', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
                 <div style={{ width: '100%' }}>
                     <Tabs redacted_file_address={redacted_file_address} showKeyPairTab={hasFormFields} showTableTab={Boolean(key_pairs?.length)} showJSONTab={Boolean(json)} onChange={(e, newvalue) => setTabIndex(newvalue)} value={tabIndex} />
                 </div>

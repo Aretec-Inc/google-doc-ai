@@ -81,9 +81,13 @@ const FormDialog = ({ closeDialog, data, onSave, is_editable, artifactData }) =>
 
             </div>
             <DialogActions>
-                <Button disabled={isLoading} onClick={close} color='primary'>
-                    {isLoading && <Spin />}   {isLoading ? 'Loading...' : 'Close'}
-                </Button>
+                <div className='modal-last-btn'>
+                    <Button  className='modal-savebtn'> Save</Button>
+
+                    <Button disabled={isLoading} onClick={close} color='primary'>
+                        {isLoading && <Spin />}   {isLoading ? 'Loading...' : 'Close'}
+                    </Button>
+                </div>
             </DialogActions>
         </Dialog>
     )

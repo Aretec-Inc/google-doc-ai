@@ -791,3 +791,27 @@ margin-bottom: 10px;
 .config-save{
 
 }
+.input-desin{
+    height: 60px;
+}
+.modal-savebtn{
+
+}
+.modal-last-btn{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0px 10px;
+    margin-bottom: 10px;
+
+}
+.modal-savebtn{
+    background-color: #4285F4 !important;
+    color: #fff !important;
+}
+.btn-specify{
+    width: 160px;
+    text-align: end;
+    margin-right: 0;
+    margin-left: auto;
+}

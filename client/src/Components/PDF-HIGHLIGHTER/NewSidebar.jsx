@@ -54,12 +54,12 @@ const Sidebar = (props) => {
     return (
         <div style={{ minWidth: 250, maxWidth: 350, width: `80%` }}>
             <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver` }}>
-                <Tooltip arrow title={original_artifact_name || "FileName.pdf"}>
+                {/* <Tooltip arrow title={original_artifact_name || "FileName.pdf"}>
                     <div style={{ fontWeight: 'bold', fontSize: 15, padding: 18, cursor: "default" }} className="ParentFunctionsDiv" >
                         {finalFileName}
                     </div>
-                </Tooltip>
-                <Input
+                </Tooltip> */}
+                <Input className='input-desin'
                     disabled={isLoading}
 
                     startAdornment={
