@@ -2,7 +2,7 @@ import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
 import { ALL_PROCESSORS } from './types'
 
-const getAllProcessors = (user) => {
+const getAllProcessors = () => {
     return (dispatch) => {
         secureApi.get(GET?.ALL_PROCESSORS)
             .then((data) => {

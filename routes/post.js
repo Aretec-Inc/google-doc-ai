@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { upload, updateCasePriority, updateIsOpen, getCaseDetails, getDocumentByAdjudication, getCasesByCaseStatus, getCasesByCategory, uploadSupportingDocs, uploadIncome, updateCaseNotes, uploadIdentity, uploadApplication,submitApplication,feedback ,addNotes} = require('../controllers/post')
+const { createSubmmission } = require('../controllers/post')
 const path = require('path')
 var Multer = require('multer')
 
@@ -34,6 +34,8 @@ var multerSuppDocsOneFile = Multer({
         checkFileType(file, cb);
     }
 }).single('file', 1);
+
+router.post('/create-submission', createSubmmission)
 
 // router.post('/upload', multer, upload)
 // router.post('/uploadIncome', multer, uploadIncome)

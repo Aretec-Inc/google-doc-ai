@@ -3,8 +3,9 @@ const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 var jwt = require('jwt-simple')
 const moment = require('moment')
-const { runQuery, apiResponse, successFalse } = require('virgin-helpers')
-const { contextOltp, service_key, languageClient, storage, dlpClient, projectId } = require('../config')
+const { runQuery, apiResponse, successFalse, validateData } = require('../helpers')
+const registerSecret = 'verify'
+const { contextOltp, service_key, languageClient, storage, dlpClient, projectId, schema } = require('../config')
 
 let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
@@ -62,8 +63,6 @@ const login = (req, res) => {
         return successFalse(res, e?.message)
     }
 }
-const registerSecret = 'verify'
-
 
 const register = (req, res) => {
     try {
@@ -121,7 +120,42 @@ const register = (req, res) => {
     }
 }
 
+const createSubmmission = async (req, res) => {
+    try {
+        const { processorId, processorName } = req.body
+
+        if (!processorId || !processorName) {
+            return successFalse(res, 'Please Provide All Fields!', 500)
+        }
+
+        const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
+
+        let sqlQuery = `INSERT INTO ${schema}.submissions(
+            processor_id, processor_name, user_id, status, created_at)
+            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW());`
+
+        // Run the query
+        runQuery(contextOltp, sqlQuery)
+            .then(async (row) => {
+                let obj = {
+                    success: true,
+                    message: 'Submission Created Successfully!'
+                }
+                return apiResponse(res, 201, obj)
+            })
+            .catch((e) => {
+                console.log('e', e)
+                return successFalse(res, e?.message)
+            })
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message)
+    }
+}
+
 module.exports = {
     login,
-    register
+    register,
+    createSubmmission
 }

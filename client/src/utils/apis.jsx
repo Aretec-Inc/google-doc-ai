@@ -12,6 +12,9 @@ const GET = {
 }
 
 const POST = {
+    GET_UPLOAD_URL: `${api}/get_upload_signed_url`,
+    UPLOADPDF: `${api}/uploader`,
+    CREATE_SUBMISSION: `${api}/create-submission`
 }
 
 

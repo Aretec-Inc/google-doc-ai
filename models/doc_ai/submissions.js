@@ -16,20 +16,17 @@ module.exports = (sequelize, DataTypes, schema) => {
     Submission.init(
         {
             template_id: {
-                type: DataTypes.STRING,
-                primaryKey: true,
-                allowNull: false
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true
             },
             processor_id: DataTypes.STRING,
             processor_name: DataTypes.STRING,
             aggregate_score: DataTypes.FLOAT,
             user_id: DataTypes.STRING,
             status: DataTypes.STRING,
-            case_status: DataTypes.STRING,
             created_at: {
-                type: DataTypes.DATE
-            },
-            completed_date: {
                 type: DataTypes.DATE
             },
             is_deleted: {

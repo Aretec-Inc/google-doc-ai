@@ -73,6 +73,8 @@ const googleLogin = async (result, history, loginUser, dispatch) => {
 
 const updateId = (id) => id?.replace(/[^0-9]/g, '')?.slice(0, 10)
 
+const validateLength = (val, len = 15) => val.length > len ? `${val.slice(0, len)}...` : val
+
 export {
     requiredMessage,
     inputPlace,
@@ -85,5 +87,6 @@ export {
     convertTitle,
     stringLimiter,
     googleLogin,
-    updateId
+    updateId,
+    validateLength
 }

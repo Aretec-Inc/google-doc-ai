@@ -1,15 +1,264 @@
-import React from 'react'
-import { Select, Modal, Progress, Space, Button } from 'antd'
+import React, { useState, useRef } from 'react'
+import { Select, Modal, Progress, Space, Button, Tooltip, Spin } from 'antd'
+import axios from 'axios'
+import Grid from '@mui/material/Grid'
+import Stepper from '@mui/material/Stepper'
+import Step from '@mui/material/Step'
+import StepButton from '@mui/material/StepButton'
+import { secureApi } from '../../Config/api'
+import { POST } from '../../utils/apis'
+import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import { useSelector } from 'react-redux'
+import LOCALDRIVE from '../../assets/localdrive.svg'
+import AMAZON from '../../assets/drive.svg'
+import DRIVE from '../../assets/S3.svg'
 
 const { Option } = Select
+
+const steps = ['Processor', 'Sources']
 
 const CreateSubmission = (props) => {
     const { closeModal } = props
     const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
+    const [processor, setProcessor] = useState(null)
+    const [activeStep, setActiveStep] = useState(0)
+    const [selectedModel, setSelectedModel] = useState(null)
+    const [showFilesModal, setShowFilesModal] = useState(false)
+    const [fileList, setFileList] = useState([])
+    const [completed, setCompleted] = useState({})
+    const draggerRef = useRef(null)
+    const [loading, setLoading] = useState(false)
+    const [buttonText, setButtonText] = useState('Proceed')
+    const defaultParser = {
+        displayName: 'Form Parser',
+        id: 'default'
+    }
 
     const handleCancel = (e) => {
-        closeModal(false)
+        draggerRef.current.value = ''
+        setShowFilesModal(false)
+        closeModal()
+    }
+
+    const totalSteps = () => {
+        return steps.length
+    }
+
+    const completedSteps = () => {
+        return Object.keys(completed).length
+    }
+
+    const isLastStep = () => {
+        return activeStep === totalSteps() - 1
+    }
+
+    const allStepsCompleted = () => {
+        return completedSteps() === totalSteps()
+    }
+
+    const handleNext = (isDefault = false) => {
+
+        if (!processor && !isDefault) {
+            return errorMessage('Please Select Model!')
+        }
+        const newActiveStep =
+            isLastStep() && !allStepsCompleted()
+                ? // It's the last step, but not all steps have been completed,
+                // find the first step that has been completed
+                steps.findIndex((step, i) => !(i in completed))
+                : activeStep + 1
+        setActiveStep(newActiveStep)
+    }
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    }
+
+    const handleStep = (step) => () => {
+        if (!processor) {
+            return errorMessage('Please Select Model!')
+        }
+
+        setActiveStep(step)
+    }
+
+    const setDefaultProcessor = async () => {
+        setProcessor(defaultParser)
+        handleNext(true)
+    }
+
+    const createSubmission = () => {
+        if (!processor) {
+            return errorMessage('Please Select Model!')
+        }
+
+        let obj = {
+            processorId: processor?.id,
+            processorName: processor?.displayName
+        }
+
+        setLoading(true)
+        secureApi.post(POST.CREATE_SUBMISSION, obj)
+            .then((data) => {
+                if (data?.success) {
+                    closeModal()
+                    return successMessage(data?.message)
+                }
+            })
+            .catch((err) => {
+                errorMessage(err?.response?.data?.message)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
+    const normFile = (e, isDelete = false) => {
+        let arr = []
+        let isValid = true
+        let types = ['application/pdf']
+        let files = e?.target?.files
+
+        for (var v of files) {
+            if (types.indexOf(v?.type) !== -1) {
+                arr.push(v)
+            }
+            else {
+                if (!isDelete)
+                    warningMessage('Please Upload Valid Files!')
+            }
+        }
+
+        setFileList(arr)
+        arr?.length && setShowFilesModal(true)
+        !isValid && warningMessage('Please Upload Valid Files!')
+    }
+
+    const onFinish = async () => {
+        setLoading(true)
+        setButtonText('Uploading...')
+        let allFilesData = []
+        const pendingPromises = []
+
+        for (let [i, v] of fileList?.entries()) {
+            pendingPromises.push(new Promise(async (resolve, reject) => {
+                let arr = [...fileList]
+
+                let fileData = v.originFileObj ? v.originFileObj : v
+                let contentType = fileData.type || 'application/octet-stream'
+                let file = {}
+                file.originalname = fileData.name
+                file.mimetype = fileData.type
+                // need to change later
+                file.path = fileData.name
+                file.size = fileData.size
+
+                try {
+                    const data = await secureApi.post(`${POST?.GET_UPLOAD_URL}?fileOriginalName=${fileData.name}&contentType=${contentType}`)
+                    // console.log('origin', origin)
+                    // console.log('data', data)
+                    if (data?.success) {
+                        // console.log("SIGNED URL", data)
+                        const { sessionUrl, fileId, fileUrl, fileType } = data
+                        file.fileId = fileId
+                        file.fileUrl = fileUrl
+                        file.fileType = fileType
+                        file.originalFileUrl = data?.originalFileUrl || fileUrl
+                        arr[i].sessionUrl = sessionUrl
+                        arr[i].fileId = fileId
+                        arr[i].fileUrl = fileUrl
+                        arr[i].fileType = fileType
+                        arr[i].originalFileUrl = data?.originalFileUrl || fileUrl
+
+                        let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': origin }
+
+                        axios.put(sessionUrl, null, {
+                            headers: headers,
+                            onUploadProgress: (progressEvent) => {
+                                const fileProgress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
+                                arr[i].progress = fileProgress
+                                arr[i].uploaded = progressEvent.loaded
+                                setFileList([...arr])
+                            }
+                        })
+                            .then((resp) => {
+                                if (resp.status === 200) {
+                                    allFilesData.push(file)
+                                    resolve(allFilesData)
+                                }
+                                else {
+                                    resolve(allFilesData)
+                                }
+                            })
+                            .catch(error => {
+                                console.log('error***************', error)
+                            })
+                    }
+                    else {
+                        console.log(data?.message || 'Something Went wrong while fetching signed url')
+                        reject(data?.message || 'Something Went wrong while fetching signed url')
+                    }
+                }
+                catch (err) {
+                    console.error("ERROR DURING UPLOAD", err)
+                }
+
+            }))
+        }
+
+        let filePromises = []
+        Promise.all(pendingPromises)
+            .then(async () => {
+                if (allFilesData?.length) {
+                    fileList?.forEach((f) => {
+                        // console.log('f', f)
+                        filePromises.push(new Promise(async (resolve, reject) => {
+                            try {
+                                let formData = new FormData()
+                                formData.append('file', f?.originFileObj)
+                                formData.append('fileUrl', f?.fileUrl)
+                                const config = {
+                                    headers: { 'content-type': 'multipart/form-data' }
+                                }
+                                secureApi.post(POST?.UPLOADPDF, formData, config)
+                                    .then((data) => {
+                                        resolve(data)
+                                        setLoading(false)
+                                        setFileList([])
+                                    })
+                                    .catch(error => {
+                                        console.log("ERROR", error)
+                                    })
+                            }
+                            catch (err) {
+                                reject(err)
+                            }
+
+                        }))
+                        setFileList([])
+                    })
+                    Promise.all(filePromises)
+                        .then(async () => {
+                            setLoading(false)
+                            setFileList([])
+                            setButtonText('Upload')
+                            successMessage('Your file(s) will be available shortly.')
+                        })
+
+                    setFileList([])
+                    // uploadToServer(filesData, oldFiles)
+                }
+                else {
+                    setLoading(false)
+                    setButtonText('Upload')
+                    setFileList([])
+                }
+            })
+            .catch(e => {
+                setLoading(false)
+                setButtonText('Upload')
+                console.log('error all promises ', e)
+            })
     }
 
     return (
@@ -20,139 +269,141 @@ const CreateSubmission = (props) => {
                 onCancel={handleCancel}
                 footer={null}
                 // size='small'
-                width={650}
+                width={800}
             >
-                <div className='select-process'>
-                    <div className='modalname'>
-                        <h5>Select Processor</h5>
+                <Spin spinning={loading}>
+                    <div className='stepper-head'>
+                        <Stepper nonLinear activeStep={activeStep} hidden={showFilesModal}>
+                            {steps.map((label, index) => (
+                                <Step key={label} completed={completed[index]}>
+                                    <StepButton color='inherit' onClick={handleStep(index)}>
+                                        {label}
+                                    </StepButton>
+                                </Step>
+                            ))}
+                        </Stepper>
                     </div>
-                    <div className='modal-content-sec'>
-                        <div className='modal-content-data'>
-                            <h6>General</h6>
-                            <p>Ready to use out-of-the-box processors for general document goals.</p>
-                        </div>
-                        <div className='modal-tiles'>
-                            <div className='row'>
-                                <div className='col-lg-4 col-md-5 col-sm-10 col-xs-12'>
-                                    <div className='modal-tiles-main'>
-                                        <h5>Form Parser</h5>
-                                        <p>Extract form elements such as text and checkboxes</p>
-                                        <div className='create-sub'>
-                                            Create Submission
+                    {activeStep === 0 ? <div className='select-process'>
+                        <div className='modal-content-sec'>
+                            <div className='modal-content-data'>
+                                <h6>General</h6>
+                                <p>Ready to use out-of-the-box processors for general document goals.</p>
+                            </div>
+                            <div className='modal-tiles'>
+                                <div className='row'>
+                                    <div className='col-lg-4 col-md-5 col-sm-10 col-xs-12'>
+                                        <div className='modal-tiles-main'>
+                                            <h5>Form Parser</h5>
+                                            <p>Extract form elements such as text and checkboxes</p>
+                                            <div className='create-sub' onClick={setDefaultProcessor}>
+                                                Select Default Processor
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className='modal-content-data'>
-                            <h6>Model</h6>
-                            <p>Schematized processors for domain-specific documents.</p>
-                            <div className='specialize-dropdown'>
-                                <Select
-                                    className='width subdropdes'
-                                    showSearch
-                                    placeholder='Filter'
-                                    optionFilterProp='children'
-                                    filterOption={(input, option) => option.children.includes(input)}
-                                    filterSort={(optionA, optionB) =>
-                                        optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-                                    }
-                                >
-                                    {allProcessors?.map((v, i) => <Option key={i} value={v?.id}>{v?.displayName}</Option>)}
-                                </Select>
-                            </div>
-                            <Button className='process-btn' type='primary'>Proceed</Button>
-                        </div>
-                    </div>
-                </div>
-
-
-                {/* ====================upload modal Start===================== */}
-                {/* <div className='select-process'>
-                    <div className='modalname'>
-                        <h5>Sources</h5>
-                    </div>
-                    <div className='process-tiles'>
-                        <div className='row'>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={LOCALDRIVE} alt="" />
-                                    <span>Local Drive</span>
+                            <div className='modal-content-data'>
+                                <h6>Model</h6>
+                                <p>Schematized processors for domain-specific documents.</p>
+                                <div className='specialize-dropdown'>
+                                    <Select
+                                        className='width subdropdes'
+                                        showSearch
+                                        placeholder='Select Model'
+                                        optionFilterProp='children'
+                                        value={selectedModel}
+                                        onSelect={(i) => (setProcessor(allProcessors[i]), setSelectedModel(i))}
+                                        filterOption={(input, option) => option.children.includes(input)}
+                                        filterSort={(optionA, optionB) =>
+                                            optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                                        }
+                                    >
+                                        {allProcessors?.map((v, i) => <Option key={i} value={i}>{v?.displayName}</Option>)}
+                                    </Select>
+                                </div>
+                                <div className='btn-end-div'>
+                                    <Button className='process-btn' type='primary' disabled={!Boolean(processor)} onClick={handleNext}>Next</Button>
                                 </div>
                             </div>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={AMAZON} alt="" />
-                                    <span>Amazon</span>
-                                </div>
-                            </div>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={DRIVE} alt="" />
-                                    <span>Drive</span>
-                                </div>
-                            </div>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={LOCALDRIVE} alt="" />
-                                    <span>Local Drive</span>
-                                </div>
-                            </div>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={AMAZON} alt="" />
-                                    <span>Amazon</span>
-                                </div>
-                            </div>
-                            <div className='col-lg-2'>
-                                <div className='process-tiles-main'>
-                                    <img src={DRIVE} alt="" />
-                                    <span>Drive</span>
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
-                </div> */}
-                {/* ====================upload modal End===================== */}
-
-
-                {/* ====================Progress modal End===================== */}
-
-                {/* <div className='progress-modal'>
-
-                    <div className='progress-modal-head'>
-                        <h5>Uploading 7 Items </h5>
-                    </div>
-                    <div className='progress-bar-section'>
-                        <div className='single-bar-div'>
-                            <p>ABC Enterprise.pdf</p>
-                            <div className='progress-bar-line'>
-                                <Space direction="vertical" style={{ width: '100%' }}>
-                                    <Progress className='progress-thickness' percent={50} size={[300, 20]} />
-                                </Space>
-                            </div>
+                    </div> : !showFilesModal && !fileList?.length ? <div className='select-process'>
+                        <div className='modalname'>
+                            <h5>Select Source to Upload Files</h5>
                         </div>
-                       
-                        <div className='single-bar-div'>
-                            <p>ABC Enterprise.pdf</p>
-                            <div className='progress-bar-line'>
-                                <Space direction="vertical" style={{ width: '100%' }}>
-                                    <Progress className='progress-thickness' percent={50} size={[300, 20]} />
-                                </Space>
-                            </div>
+                        <div className='process-tiles'>
+                            <Grid container justifyContent={'space-between'}>
+                                <Grid item>
+                                    <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
+                                        <img src={LOCALDRIVE} alt="" />
+                                        <span>Local Drive</span>
+                                    </div>
+                                </Grid>
+                                <Grid item>
+                                    <div className='process-tiles-main'>
+                                        <img src={AMAZON} alt="" />
+                                        <span>Amazon</span>
+                                    </div>
+                                </Grid>
+                                <Grid item>
+                                    <div className='process-tiles-main'>
+                                        <img src={DRIVE} alt="" />
+                                        <span>Drive</span>
+                                    </div>
+                                </Grid>
+                                <Grid item>
+                                    <div className='process-tiles-main'>
+                                        <img src={DRIVE} alt="" />
+                                        <span>Drive</span>
+                                    </div>
+                                </Grid>
+                                <Grid item>
+                                    <div className='process-tiles-main'>
+                                        <img src={DRIVE} alt="" />
+                                        <span>Drive</span>
+                                    </div>
+                                </Grid>
+                            </Grid>
                         </div>
-                    </div>
-                    <div>
-                        <div className='btn-can-proces'>
-                            <Button style={{ background: '#F5F5F5' , width: '150px',margin:'0px 10px'}} className=''
-                            >Cancel</Button>
-                            <Button style={{ background: '#4285F4', color: '#fff', width: '150px',margin:'0px 10px' }} className=''
-                            >Process</Button>
+                        <div className='btn-end-div'>
+                            <Button className='process-btn process-btn2' type='default' disabled={loading} onClick={handleBack}>Back</Button>
+                            <Button className='process-btn process-btn2' type='primary' loading={loading} onClick={createSubmission}>Skip & Create Submission</Button>
                         </div>
-                    </div>
-                </div> */}
-                {/* ====================Progress modal End===================== */}
+                    </div> : <div className='progress-modal'>
+
+                        <div className='progress-modal-head'>
+                            <h5>Uploading {fileList?.length} {`item${fileList?.length === 1 ? '' : 's'}`}</h5>
+                        </div>
+                        <div className='progress-bar-section'>
+                            {fileList?.map((v, i) => {
+                                return (
+                                    <div className='single-bar-div' key={i}>
+                                        <Tooltip placement='top' title={convertTitle(v?.name)} color={'#1890ff'}>
+                                            {validateLength(convertTitle(v?.name), 16)}
+                                        </Tooltip>
+                                        <div className='progress-bar-line'>
+                                            <Space direction='vertical' style={{ width: '100%' }}>
+                                                <Progress className='progress-thickness' percent={50} size={[300, 20]} />
+                                            </Space>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        <div className='btn-end-div'>
+                            <Button className='process-btn process-btn2' style={{ width: 140 }}>Cancel</Button>
+                            <Button className='process-btn' style={{ width: 140 }} type='primary'>{buttonText}</Button>
+                        </div>
+                    </div>}
+
+                    <input
+                        type='file'
+                        onChange={normFile}
+                        ref={draggerRef}
+                        multiple='multiple'
+                        accept={'application/pdf'}
+                        style={{ display: 'none' }}
+                    />
+                </Spin>
             </Modal>
         </div>
     )

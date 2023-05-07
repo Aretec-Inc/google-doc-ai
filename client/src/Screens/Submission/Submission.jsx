@@ -46,7 +46,7 @@ const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const Submission = (props) => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(true)
 
     const showModal = () => {
         setOpen(true)
@@ -57,7 +57,7 @@ const Submission = (props) => {
         setOpen(false)
     }
 
-    const handleCancel = (e) => {
+    const handleCancel = () => {
         setOpen(false)
     }
 

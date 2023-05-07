@@ -553,12 +553,11 @@
 }
 
 .modalname h5 {
-    margin-bottom: 12px;
-    border: 1px solid #000;
+    margin: 10px 0 24px;
     border-radius: 3px;
     display: inline-block;
     padding: 4px 15px;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 700;
 }
 
@@ -619,11 +618,23 @@
     margin-top: 12px;
 }
 
+.btn-end-div {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.stepper-head {
+    margin: 30px 0;
+}
+
 .process-btn {
-    border: none;
     border-radius: 5px;
     padding: 5px 15px;
     margin-top: 25px;
+}
+
+.process-btn2 {
+    margin-right: 10px;
 }
 
 .process-tiles {
@@ -633,6 +644,7 @@
 
 .process-tiles-main {
     text-align: center;
+    cursor: pointer;
 }
 
 .process-tiles-main img {
@@ -676,6 +688,7 @@
 }
 .progress-bar-line{
     flex: 1;
+    margin-left: 10px;
 }
 .progress-thickness .ant-progress-inner .ant-progress-bg{
     height: 12px !important;
