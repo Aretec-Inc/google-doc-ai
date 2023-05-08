@@ -137,7 +137,7 @@ const createSubmmission = async (req, res) => {
 
         let sqlQuery = `INSERT INTO ${schema}.submissions(
             processor_id, processor_name, user_id, status, created_at)
-            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW()) RETURNING template_id;`
+            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW()) RETURNING template_id, processor_id;`
 
         // Run the query
         runQuery(postgresDB, sqlQuery)
@@ -145,7 +145,8 @@ const createSubmmission = async (req, res) => {
                 let obj = {
                     success: true,
                     message: 'Submission Created Successfully!',
-                    template_id: row[0]?.template_id
+                    template_id: row[0]?.template_id,
+                    processor_id: row[0]?.processor_id
                 }
                 return apiResponse(res, 201, obj)
             })
@@ -190,7 +191,7 @@ const generateUploadSignedUrl = async (req, res) => {
             headers: { 'Content-Type': contentType, 'x-goog-resumable': 'start', 'Origin': Origin }
         })
 
-        return generateBodyResponse({ success: true, sessionUrl: signedURI.headers.location, fileUrl: fileUrl, fileType: contentType }, res)
+        return generateBodyResponse({ success: true, sessionUrl: signedURI.headers.location, fileUrl: fileUrl, fileType: contentType, fileId: id }, res)
     }
     catch (e) {
         console.log('e', e)
@@ -203,44 +204,37 @@ const uploadDocuments = async (req, res) => {
         const pendingPromises = []
         let errArr = []
         let allForms = []
-        let { template_file_name, project_name, table_name, template_id, project_id, processorId, is_custom, files } = req.body
+        let { template_id, processorId, files } = req.body
 
         const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
+        const user_email = 'waqas@aretecinc.com'
 
         let sqlQuery = ``
 
-        table_name = table_name.replace(/ /g, '_')
-
-        for (const [index, file] of (files).entries()) {
+        for (const file of files) {
             let fileId = file.fileId
             let fileUrl = file.fileUrl
             let file_type = file.fileType
 
             let is_completed = true
             let fileOriginalName = file?.originalname?.replace(/ /g, '')
-            let fileName = `${file.fileType}-${fileId}-${fileOriginalName}`
+            let fileName = file?.fileName
 
             let postData = {
                 fileUrl,
-                keyPairTable,
-                template_file_name,
                 fileName,
-                project_name,
                 fileId,
-                table_name,
                 original_artifact_name: fileOriginalName,
                 user_id,
-                user_email: user_email,
+                user_email,
                 template_id,
-                processorId,
-                is_custom,
-                project_id
+                processorId
             }
             is_completed = false
             allForms.push(postData)
 
-            let size = (file.size / 1024 / 1024).toFixed(4) + ' mb'
-            sqlQuery = `INSERT INTO ${schema}.documents(id, template_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at)) VALUES('${fileId}', '${template_id}, '${fileName}', ${validateData(user_id)}, '${file_type}', '${fileUrl}', '${fileOriginalName}', '${size}', ${is_completed}, ${validateData(file?.originalFileUrl)}, NOW(), NOW())`
+            let size = (file?.fileSize / 1024 / 1024).toFixed(4) + ' mb'
+            sqlQuery = `INSERT INTO ${schema}.documents(id, template_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${fileId}', '${template_id}', '${fileName}', ${validateData(user_id)}, '${file_type}', '${fileUrl}', '${fileOriginalName}', '${size}', ${is_completed}, ${validateData(file?.originalFileUrl)}, NOW(), NOW())`
 
             pendingPromises.push(runQuery(postgresDB, sqlQuery))
         }

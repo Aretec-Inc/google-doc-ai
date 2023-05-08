@@ -822,7 +822,11 @@
 }
 
 .submission-div {
-    margin-top: 15px;
+    margin-top: 40px;
+}
+
+.submission-head-div {
+    margin-top: 20px;
 }
 
 .processor-data {

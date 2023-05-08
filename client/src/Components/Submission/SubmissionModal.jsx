@@ -33,7 +33,7 @@ const CreateSubmission = (props) => {
     const [buttonText, setButtonText] = useState('Upload')
     const defaultParser = {
         displayName: 'Form Parser',
-        id: 'default'
+        id: 'aebf936ce61ab3b1'
     }
 
     useEffect(() => {
@@ -162,14 +162,14 @@ const CreateSubmission = (props) => {
 
                 try {
                     const data = await secureApi.post(`${POST?.GET_UPLOAD_URL}?fileOriginalName=${fileData.name}&contentType=${contentType}`)
-                    // console.log('origin', origin)
                     if (data?.success) {
-                        // console.log("SIGNED URL", data)
                         const { sessionUrl, fileId, fileUrl, fileType } = data
                         file.fileId = fileId
                         file.fileUrl = fileUrl
                         file.fileType = fileType
                         file.originalFileUrl = data?.originalFileUrl || fileUrl
+                        arr[i].fileSize = arr[i]?.size
+                        arr[i].fileName = `${fileId}-${arr[i]?.fileOriginalName}`
                         arr[i].sessionUrl = sessionUrl
                         arr[i].fileId = fileId
                         arr[i].fileUrl = fileUrl
@@ -211,7 +211,6 @@ const CreateSubmission = (props) => {
             }))
         }
 
-        let filePromises = []
         Promise.all(pendingPromises)
             .then(async () => {
                 if (allFilesData?.length) {
@@ -222,60 +221,48 @@ const CreateSubmission = (props) => {
                     secureApi.post(POST.CREATE_SUBMISSION, obj)
                         .then((data) => {
                             if (data?.success) {
-                                fileList?.forEach((f) => {
-                                    filePromises.push(new Promise(async (resolve, reject) => {
-                                        try {
-                                            let formData = new FormData()
-                                            formData.append('file', f?.originFileObj)
-                                            formData.append('fileUrl', f?.fileUrl)
-                                            const config = {
-                                                headers: { 'content-type': 'multipart/form-data' }
-                                            }
-                                            secureApi.post(POST?.UPLOADPDF, formData, config)
-                                                .then((data) => {
-                                                    resolve(data)
-                                                    setLoading(false)
-                                                    setFileList([])
-                                                })
-                                                .catch(error => {
-                                                    console.log("ERROR", error)
-                                                })
-                                        }
-                                        catch (err) {
-                                            reject(err)
-                                        }
+                                let newObj = {
+                                    template_id: data?.template_id,
+                                    processorId: data?.processor_id,
+                                    files: fileList
+                                }
 
-                                    }))
-                                    setFileList([])
-                                })
-                                Promise.all(filePromises)
-                                    .then(async () => {
-                                        setUploadLoading(false)
-                                        setFileList([])
-                                        setButtonText('Upload')
-                                        successMessage('Your file(s) will be available shortly.')
+                                secureApi.post(POST?.UPLOAD_DOCUMENTS, newObj)
+                                    .then((data) => {
+                                        setLoading(false)
+                                        if (data?.success) {
+                                            successMessage('Your file(s) Uploaded Successfully.')
+                                            setFileList([])
+                                            closeModal()
+                                        }
+                                        else {
+                                            errorMessage(data?.message)
+                                        }
                                     })
-
-                                setFileList([])
+                                    .catch(error => {
+                                        console.log('ERROR', error)
+                                    })
+                                    .finally(() => {
+                                        setUploadLoading(false)
+                                        setButtonText('Upload')
+                                    })
                             }
                         })
                         .catch((err) => {
                             errorMessage(err?.response?.data?.message)
                         })
-                        .finally(() => {
-                            setLoading(false)
-                        })
                 }
                 else {
                     setUploadLoading(false)
                     setButtonText('Upload')
-                    setFileList([])
+                    errorMessage()
                 }
             })
             .catch(e => {
                 setUploadLoading(false)
                 setButtonText('Upload')
                 console.log('error all promises ', e)
+                errorMessage()
             })
     }
 

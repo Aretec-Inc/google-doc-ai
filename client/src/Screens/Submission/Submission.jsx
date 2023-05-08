@@ -49,9 +49,7 @@ const dateFormat = 'YYYY/MM/DD'
 
 const Submission = (props) => {
     const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
-    const [open, setOpen] = useState(true)
-
-    console.log('allSubmissions', allSubmissions)
+    const [open, setOpen] = useState(false)
 
     const showModal = () => {
         setOpen(true)
@@ -68,7 +66,7 @@ const Submission = (props) => {
 
     return (
         <div className='template-screen'>
-            <div className='row'>
+            <div className='row submission-head-div'>
                 <div className='col-lg-2 pl-0'>
                     <Select
                         className='width subdropdes'
@@ -105,22 +103,13 @@ const Submission = (props) => {
                 </div>
             </div>
 
-
             <div className='submission-div'>
-                <div className='row'>
-                    <div className='col-lg-12 p-0'>
-                        <div className='tepm-id'>
-                            <h5>Template ID:3275</h5>
-                        </div>
-                    </div>
-                </div>
                 <div className='submission-card'>
                     <div className='submission-card-div'>
                         <div className='submission-main-list'>
                             <div className='submission-heading'>
                                 <p className='submission-title mg_lf_15px'>30 Templates</p>
                                 <div className='processor-data'>
-                                    <p>Processor:Invoice Parser</p>
                                     <CiMenuKebab className='menuicon' />
                                 </div>
                             </div>
@@ -145,7 +134,7 @@ const Submission = (props) => {
                                                         key={i}
                                                     >
                                                         <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                            <Link>{v?.template_id}</Link>
+                                                            <Link>{`000${v?.template_id}`?.slice(-4,)}</Link>
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>
