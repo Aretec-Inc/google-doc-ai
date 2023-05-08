@@ -1,5 +1,5 @@
 const fs = require('fs')
-const axios = require('axios')
+const codes = require('./codes.json')
 const { projectId, docAiClient } = require('../config/gcpConfig')
 
 const checkDocumentQuality = async (filePath) => {

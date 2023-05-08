@@ -382,7 +382,7 @@ const CreateSubmission = (props) => {
                                         </Tooltip>
                                         <div className='progress-bar-line'>
                                             <Space direction='vertical' style={{ width: '100%' }}>
-                                                <Progress className='progress-thickness' percent={50} size={[300, 20]} />
+                                                <Progress className='progress-thickness' percent={50} size={[300, 20]} strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }} />
                                             </Space>
                                         </div>
                                     </div>

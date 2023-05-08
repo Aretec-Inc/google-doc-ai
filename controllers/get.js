@@ -1,6 +1,5 @@
-const { runQuery, validateData, imageTextDetection, isNull, apiResponse, successFalse, getAuthUrl } = require('virgin-helpers')
-const { service_key, projectId } = require('../config')
-const { getDocumentAIProcessorsList } = require('../helpers')
+const { service_key, projectId, schema, contextOltp } = require('../config')
+const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
@@ -15,7 +14,28 @@ const getAllProcessors = async (req, res) => {
     }
 }
 
+const getAllSubmmissions = async (req, res) => {
+    try {
+
+        let sqlQuery = `SELECT * FROM ${schema}.submissions order by created_at desc;`
+
+        // Run the query
+        let allSubmissions = await runQuery(contextOltp, sqlQuery)
+
+        let obj = {
+            success: true,
+            allSubmissions
+        }
+
+        apiResponse(res, 201, obj)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
 
 module.exports = {
-    getAllProcessors
+    getAllProcessors,
+    getAllSubmmissions
 }

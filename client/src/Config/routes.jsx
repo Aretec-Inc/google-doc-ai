@@ -5,7 +5,7 @@ import Result from 'antd/lib/result'
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { Submission, Dashboard, Configuration } from '../Screens'
 import { Header, Sidenav } from '../Components'
-import { getAllProcessors } from '../Redux/actions/docActions'
+import { getAllProcessors, getAllSubmissions } from '../Redux/actions/docActions'
 import SelectedArtifact from '../Components/SelectedArtifact/SelectedArtifact'
 import allPaths from './paths'
 
@@ -55,6 +55,7 @@ const WrapComponent = ({ Component, ...props }) => {
 
     useEffect(() => {
         dispatch(getAllProcessors())
+        dispatch(getAllSubmissions())
     }, [])
 
     return (

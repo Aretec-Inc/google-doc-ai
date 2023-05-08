@@ -8,7 +8,8 @@ const Origin = 'http://localhost:3000'
 
 
 const GET = {
-    ALL_PROCESSORS: `${api}/get-all-processors`
+    ALL_PROCESSORS: `${api}/get-all-processors`,
+    ALL_SUBMISSIONS: `${api}/get-all-submissions`
 }
 
 const POST = {

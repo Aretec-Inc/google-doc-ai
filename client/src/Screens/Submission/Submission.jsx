@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button } from 'antd'
+import { Select, DatePicker, Input, Button, Progress } from 'antd'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { CiMenuKebab } from 'react-icons/ci'
@@ -46,7 +48,10 @@ const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const Submission = (props) => {
+    const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
     const [open, setOpen] = useState(true)
+
+    console.log('allSubmissions', allSubmissions)
 
     const showModal = () => {
         setOpen(true)
@@ -92,9 +97,6 @@ const Submission = (props) => {
                         prefix={<BsSearch className='search-field-icon' />}
                     />
                 </div>
-                {/* <div className='col-lg-2'>
-
-                </div> */}
                 <div className='col-lg-4 pr-0'>
                     <div className='btn-specify'>
                         <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal} className='date width-sub height_57px'
@@ -127,29 +129,37 @@ const Submission = (props) => {
                                     <Table aria-label='simple table'>
                                         <TableHead>
                                             <TableRow className='submission-head'>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Name</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Submission ID</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Description</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Date</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Template ID</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Completion Date</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Uploaded By</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            <TableRow
-                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                            >
-                                                <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                    ddkcbj
-                                                </TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>ncdj</TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>cds</TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>cds</TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>vdvsd</TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>csd</TableCell>
-                                                <TableCell className='submission-table-cell submission-row-cell'>scsdcsdc</TableCell>
-                                            </TableRow>
+                                            {allSubmissions?.map((v, i) => {
+                                                return (
+                                                    <TableRow
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        key={i}
+                                                    >
+                                                        <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
+                                                            <Link>{v?.template_id}</Link>
+                                                        </TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>
+                                                            <Progress
+                                                                percent={50}
+                                                                strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }}
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('DD/MM/YYYY')}</TableCell>
+                                                    </TableRow>
+                                                )
+                                            })}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
