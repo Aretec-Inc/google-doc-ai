@@ -1,3 +1,5 @@
+const { schema } = require('../config')
+const docAIv3 = require('./docAiHelpers')
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3
 
 const getDocumentAIProcessorsList = (service_key, projectId) => {
@@ -26,6 +28,60 @@ const getDocumentAIProcessorsList = (service_key, projectId) => {
     })
 }
 
+const formLoop = async (arr) => {
+    let opt
+
+    console.log('arr', arr?.length)
+
+    let myPromises = arr.map(v => {
+        v.gcs_input_uri = v?.fileUrl
+        v.formKeyPairTableName = `schema_form_key_pairs`
+
+        return axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, v)
+    })
+
+    console.log('myPromises', myPromises)
+
+    let response = await Promise.allSettled(myPromises)
+
+    let secondPromise = []
+
+    for (var v of response) {
+        opt = v?.value?.data
+
+        if (!opt?.success) {
+            console.log('second try', opt)
+            // secondPromise.push(Promise.resolve(axios.post(opt?.template_id ?
+            //     `https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching` :
+            //     `https://context-api-2my7afm7yq-ue.a.run.app/api/offline_doc_ai`,
+            //     opt?.body
+            // )))
+            secondPromise.push(Promise.resolve(axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, opt?.body)))
+        }
+    }
+
+    console.log('after Loop***')
+
+    await Promise.allSettled(secondPromise)
+        .then((r) => console.log('r', r))
+        .catch((e) => console.log('e', e))
+
+    console.log('secondPromise')
+
+    await Promise.allSettled(dlpRedactionPromises)
+
+    let ids = arr.map(d => `'${d?.fileId}'`)
+
+    let sqlQuery = `UPDATE ${schema}.documents SET is_completed = ${true} WHERE id IN (${ids})`
+    await runQuery(postgresDB, sqlQuery)
+        .then((res) => console.log('res complete', res))
+        .catch((e) => console.log('e', e))
+
+    console.log('done****')
+
+}
+
 module.exports = {
-    getDocumentAIProcessorsList
+    getDocumentAIProcessorsList,
+    formLoop
 }

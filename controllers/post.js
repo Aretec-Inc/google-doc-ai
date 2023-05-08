@@ -3,9 +3,14 @@ const { v4: uuidv4 } = require('uuid')
 const bcrypt = require('bcryptjs')
 var jwt = require('jwt-simple')
 const moment = require('moment')
-const { runQuery, apiResponse, successFalse, validateData } = require('../helpers')
+const axios = require('axios')
+const { runQuery, apiResponse, successFalse, validateData, formLoop } = require('../helpers')
 const registerSecret = 'verify'
-const { contextOltp, service_key, languageClient, storage, dlpClient, projectId, schema } = require('../config')
+const { postgresDB, storage, schema } = require('../config')
+const { generateBodyResponse } = require('../services/tokenService')
+
+const docAIBucket = storage.bucket(`context_primary`)
+const keyPairTable = `context.schema_form_key_pairs`
 
 let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
@@ -16,10 +21,10 @@ const login = (req, res) => {
     try {
         const { email, password } = req.body
 
-        let sqlQuery = `SELECT user_id,password, name, email, auth_type, role, is_deleted, created_at, updated_at, last_login, curr_login FROM virgin_island.users WHERE email='${email}' AND auth_type='web' and is_deleted is not true`
+        let sqlQuery = `SELECT user_id, password, name, email, auth_type, role, is_deleted, created_at, updated_at, last_login, curr_login FROM ${schema}.users WHERE email='${email}' AND auth_type='web' and is_deleted is not true`
 
         // Run the query
-        runQuery(contextOltp, sqlQuery)
+        runQuery(postgresDB, sqlQuery)
             .then(async (row) => {
                 console.log('SQL QUERY ROW', row)
                 if (!row?.length) {
@@ -35,7 +40,7 @@ const login = (req, res) => {
                 else {
                     let sqlQuery = `SELECT user_id, name, email, auth_type, role, created_at, updated_at, TO_CHAR(last_login,'Mon dd, yyyy hh12:mi AM') as last_login_date FROM virgin_island.users WHERE email='${email}'`
 
-                    const userRow = await runQuery(contextOltp, sqlQuery)
+                    const userRow = await runQuery(postgresDB, sqlQuery)
                     console.log('userRow ==>', userRow)
                     let dbUser = userRow?.[0]
                     let token = await jwt.encode({
@@ -77,7 +82,7 @@ const register = (req, res) => {
         let token, hashPassword
 
         // Run the query
-        runQuery(contextOltp, sqlQuery)
+        runQuery(postgresDB, sqlQuery)
             .then(async (row) => {
                 if (row?.length > 0) {
                     return successFalse(res, 'User Already Exist With This Email, Please Login through Email and Password!', 406)
@@ -93,7 +98,7 @@ const register = (req, res) => {
                     sqlQuery = `INSERT INTO virgin_island.users(user_id, name, email, password, auth_type, created_at, updated_at, role) VALUES ('${id}', '${name}', '${email}', '${hashPassword}', 'web',  NOW(), NOW(), 'applicant')`
                     req.body.token = token
                     console.log(token)
-                    runQuery(contextOltp, sqlQuery)
+                    runQuery(postgresDB, sqlQuery)
                         .then(async () => {
                             let obj = {
                                 success: true,
@@ -132,14 +137,15 @@ const createSubmmission = async (req, res) => {
 
         let sqlQuery = `INSERT INTO ${schema}.submissions(
             processor_id, processor_name, user_id, status, created_at)
-            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW());`
+            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW()) RETURNING template_id;`
 
         // Run the query
-        runQuery(contextOltp, sqlQuery)
+        runQuery(postgresDB, sqlQuery)
             .then(async (row) => {
                 let obj = {
                     success: true,
-                    message: 'Submission Created Successfully!'
+                    message: 'Submission Created Successfully!',
+                    template_id: row[0]?.template_id
                 }
                 return apiResponse(res, 201, obj)
             })
@@ -154,8 +160,119 @@ const createSubmmission = async (req, res) => {
     }
 }
 
+const generateUploadSignedUrl = async (req, res) => {
+    try {
+        let { fileOriginalName, contentType } = req.query
+        let Origin = process.env.NODE_ENV === 'production' ? `https://${process.env.ALLOWED_ORIGIN}` : 'http://localhost:3000'
+        const folder = 'doc_ai'
+        let id = uuidv4()
+
+        if (!fileOriginalName || !contentType) {
+            return successFalse(res, 'All Fields are Required!')
+        }
+
+        console.log('Origin', Origin)
+
+        fileOriginalName = `${id}-${fileOriginalName}`
+
+        // These options will allow temporary uploading of the file with outgoing
+        const options = {
+            version: 'v4',
+            action: 'resumable',
+            expires: Date.now() + 600 * 60 * 1000, // 10 hours
+            contentType: contentType
+        }
+
+        const [url] = await docAIBucket.file(`${folder}/${fileOriginalName}`).getSignedUrl(options)
+        let fileUrl = `gs://${docAIBucket.name}/${folder}/${fileOriginalName}`
+
+        let signedURI = await axios.post(`${url}`, {}, {
+            headers: { 'Content-Type': contentType, 'x-goog-resumable': 'start', 'Origin': Origin }
+        })
+
+        return generateBodyResponse({ success: true, sessionUrl: signedURI.headers.location, fileUrl: fileUrl, fileType: contentType }, res)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message)
+    }
+}
+
+const uploadDocuments = async (req, res) => {
+    try {
+        const pendingPromises = []
+        let errArr = []
+        let allForms = []
+        let { template_file_name, project_name, table_name, template_id, project_id, processorId, is_custom, files } = req.body
+
+        const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
+
+        let sqlQuery = ``
+
+        table_name = table_name.replace(/ /g, '_')
+
+        for (const [index, file] of (files).entries()) {
+            let fileId = file.fileId
+            let fileUrl = file.fileUrl
+            let file_type = file.fileType
+
+            let is_completed = true
+            let fileOriginalName = file?.originalname?.replace(/ /g, '')
+            let fileName = `${file.fileType}-${fileId}-${fileOriginalName}`
+
+            let postData = {
+                fileUrl,
+                keyPairTable,
+                template_file_name,
+                fileName,
+                project_name,
+                fileId,
+                table_name,
+                original_artifact_name: fileOriginalName,
+                user_id,
+                user_email: user_email,
+                template_id,
+                processorId,
+                is_custom,
+                project_id
+            }
+            is_completed = false
+            allForms.push(postData)
+
+            let size = (file.size / 1024 / 1024).toFixed(4) + ' mb'
+            sqlQuery = `INSERT INTO ${schema}.documents(id, template_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at)) VALUES('${fileId}', '${template_id}, '${fileName}', ${validateData(user_id)}, '${file_type}', '${fileUrl}', '${fileOriginalName}', '${size}', ${is_completed}, ${validateData(file?.originalFileUrl)}, NOW(), NOW())`
+
+            pendingPromises.push(runQuery(postgresDB, sqlQuery))
+        }
+
+        Promise.all(pendingPromises)
+            .then(async () => {
+
+                // allForms?.length && formLoop(allForms)
+                console.log('after formLoop***')
+
+                let obj = {
+                    success: true,
+                    errData: errArr
+                }
+
+                return apiResponse(res, 200, obj)
+            })
+            .catch(e => {
+                console.log('error', e)
+                return successFalse(res, e?.message)
+            })
+    }
+    catch (e) {
+        console.log('error', e)
+        return successFalse(res, e?.message)
+    }
+}
+
 module.exports = {
     login,
     register,
-    createSubmmission
+    createSubmmission,
+    generateUploadSignedUrl,
+    uploadDocuments
 }

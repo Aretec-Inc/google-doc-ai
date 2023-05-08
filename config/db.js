@@ -32,9 +32,9 @@ const init = (cloudConfig = config) => {
 
 const connectDB = (cloudConfig = config) => init(cloudConfig)
 
-const contextOltp = connectDB(process.env.NODE_ENV === 'production' ? config.production : process.env.NODE_ENV === 'cloudDB' ? config.cloudDB : config.development)
+const postgresDB = connectDB(process.env.NODE_ENV === 'production' ? config.production : process.env.NODE_ENV === 'cloudDB' ? config.cloudDB : config.development)
 
 module.exports = {
-    contextOltp,
+    postgresDB,
     schema
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Select, Modal, Progress, Space, Button, Tooltip, Spin } from 'antd'
 import axios from 'axios'
 import Grid from '@mui/material/Grid'
@@ -7,6 +7,7 @@ import Step from '@mui/material/Step'
 import StepButton from '@mui/material/StepButton'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
+import { getAllSubmissions } from '../../Redux/actions/docActions'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import { useSelector } from 'react-redux'
 import LOCALDRIVE from '../../assets/localdrive.svg'
@@ -18,7 +19,7 @@ const { Option } = Select
 const steps = ['Processor', 'Sources']
 
 const CreateSubmission = (props) => {
-    const { closeModal } = props
+    const { closeModal, dispatch } = props
     const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
     const [processor, setProcessor] = useState(null)
     const [activeStep, setActiveStep] = useState(0)
@@ -28,11 +29,16 @@ const CreateSubmission = (props) => {
     const [completed, setCompleted] = useState({})
     const draggerRef = useRef(null)
     const [loading, setLoading] = useState(false)
-    const [buttonText, setButtonText] = useState('Proceed')
+    const [uploadloading, setUploadLoading] = useState(false)
+    const [buttonText, setButtonText] = useState('Upload')
     const defaultParser = {
         displayName: 'Form Parser',
         id: 'default'
     }
+
+    useEffect(() => {
+        dispatch(getAllSubmissions())
+    }, [loading, uploadloading])
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''
@@ -135,7 +141,8 @@ const CreateSubmission = (props) => {
     }
 
     const onFinish = async () => {
-        setLoading(true)
+        const origin = 'http://localhost:3000'
+        setUploadLoading(true)
         setButtonText('Uploading...')
         let allFilesData = []
         const pendingPromises = []
@@ -156,7 +163,6 @@ const CreateSubmission = (props) => {
                 try {
                     const data = await secureApi.post(`${POST?.GET_UPLOAD_URL}?fileOriginalName=${fileData.name}&contentType=${contentType}`)
                     // console.log('origin', origin)
-                    // console.log('data', data)
                     if (data?.success) {
                         // console.log("SIGNED URL", data)
                         const { sessionUrl, fileId, fileUrl, fileType } = data
@@ -172,7 +178,7 @@ const CreateSubmission = (props) => {
 
                         let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': origin }
 
-                        axios.put(sessionUrl, null, {
+                        axios.put(sessionUrl, fileData, {
                             headers: headers,
                             onUploadProgress: (progressEvent) => {
                                 const fileProgress = parseInt(Math.round((progressEvent.loaded * 100) / progressEvent.total))
@@ -202,7 +208,6 @@ const CreateSubmission = (props) => {
                 catch (err) {
                     console.error("ERROR DURING UPLOAD", err)
                 }
-
             }))
         }
 
@@ -210,52 +215,65 @@ const CreateSubmission = (props) => {
         Promise.all(pendingPromises)
             .then(async () => {
                 if (allFilesData?.length) {
-                    fileList?.forEach((f) => {
-                        // console.log('f', f)
-                        filePromises.push(new Promise(async (resolve, reject) => {
-                            try {
-                                let formData = new FormData()
-                                formData.append('file', f?.originFileObj)
-                                formData.append('fileUrl', f?.fileUrl)
-                                const config = {
-                                    headers: { 'content-type': 'multipart/form-data' }
-                                }
-                                secureApi.post(POST?.UPLOADPDF, formData, config)
-                                    .then((data) => {
-                                        resolve(data)
-                                        setLoading(false)
+                    let obj = {
+                        processorId: processor?.id,
+                        processorName: processor?.displayName
+                    }
+                    secureApi.post(POST.CREATE_SUBMISSION, obj)
+                        .then((data) => {
+                            if (data?.success) {
+                                fileList?.forEach((f) => {
+                                    filePromises.push(new Promise(async (resolve, reject) => {
+                                        try {
+                                            let formData = new FormData()
+                                            formData.append('file', f?.originFileObj)
+                                            formData.append('fileUrl', f?.fileUrl)
+                                            const config = {
+                                                headers: { 'content-type': 'multipart/form-data' }
+                                            }
+                                            secureApi.post(POST?.UPLOADPDF, formData, config)
+                                                .then((data) => {
+                                                    resolve(data)
+                                                    setLoading(false)
+                                                    setFileList([])
+                                                })
+                                                .catch(error => {
+                                                    console.log("ERROR", error)
+                                                })
+                                        }
+                                        catch (err) {
+                                            reject(err)
+                                        }
+
+                                    }))
+                                    setFileList([])
+                                })
+                                Promise.all(filePromises)
+                                    .then(async () => {
+                                        setUploadLoading(false)
                                         setFileList([])
+                                        setButtonText('Upload')
+                                        successMessage('Your file(s) will be available shortly.')
                                     })
-                                    .catch(error => {
-                                        console.log("ERROR", error)
-                                    })
-                            }
-                            catch (err) {
-                                reject(err)
-                            }
 
-                        }))
-                        setFileList([])
-                    })
-                    Promise.all(filePromises)
-                        .then(async () => {
-                            setLoading(false)
-                            setFileList([])
-                            setButtonText('Upload')
-                            successMessage('Your file(s) will be available shortly.')
+                                setFileList([])
+                            }
                         })
-
-                    setFileList([])
-                    // uploadToServer(filesData, oldFiles)
+                        .catch((err) => {
+                            errorMessage(err?.response?.data?.message)
+                        })
+                        .finally(() => {
+                            setLoading(false)
+                        })
                 }
                 else {
-                    setLoading(false)
+                    setUploadLoading(false)
                     setButtonText('Upload')
                     setFileList([])
                 }
             })
             .catch(e => {
-                setLoading(false)
+                setUploadLoading(false)
                 setButtonText('Upload')
                 console.log('error all promises ', e)
             })
@@ -377,12 +395,14 @@ const CreateSubmission = (props) => {
                             {fileList?.map((v, i) => {
                                 return (
                                     <div className='single-bar-div' key={i}>
-                                        <Tooltip placement='top' title={convertTitle(v?.name)} color={'#1890ff'}>
-                                            {validateLength(convertTitle(v?.name), 16)}
-                                        </Tooltip>
+                                        <div className='upload-file-name'>
+                                            <Tooltip placement='top' title={convertTitle(v?.name)} color={'#1890ff'}>
+                                                {validateLength(convertTitle(v?.name), 16)}
+                                            </Tooltip>
+                                        </div>
                                         <div className='progress-bar-line'>
                                             <Space direction='vertical' style={{ width: '100%' }}>
-                                                <Progress className='progress-thickness' percent={50} size={[300, 20]} strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }} />
+                                                <Progress className='progress-thickness' percent={v?.progress} size={[300, 20]} strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }} />
                                             </Space>
                                         </div>
                                     </div>
@@ -390,8 +410,8 @@ const CreateSubmission = (props) => {
                             })}
                         </div>
                         <div className='btn-end-div'>
-                            <Button className='process-btn process-btn2' style={{ width: 140 }}>Cancel</Button>
-                            <Button className='process-btn' style={{ width: 140 }} type='primary'>{buttonText}</Button>
+                            <Button className='process-btn process-btn2' style={{ width: 140 }} disabled={uploadloading} onClick={() => (setShowFilesModal(false, setFileList([])))}>Back</Button>
+                            <Button className='process-btn' style={{ width: 140 }} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
                         </div>
                     </div>}
 

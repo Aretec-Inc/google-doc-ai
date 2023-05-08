@@ -1,8 +1,8 @@
 const { service_key, storage, projectId, languageClient, dlpClient } = require('./gcpConfig')
-const { contextOltp, schema } = require('./db')
+const { postgresDB, schema } = require('./db')
 
 module.exports = {
-    contextOltp,
+    postgresDB,
     schema,
     service_key,
     projectId,

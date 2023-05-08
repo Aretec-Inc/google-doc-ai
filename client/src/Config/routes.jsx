@@ -65,7 +65,7 @@ const WrapComponent = ({ Component, ...props }) => {
                 <Sidenav />
                 <div className='main-section'>
                     <div className='main-container'>
-                        <Component {...props} />
+                        <Component {...props} dispatch={dispatch} />
                     </div>
                 </div>
             </section>

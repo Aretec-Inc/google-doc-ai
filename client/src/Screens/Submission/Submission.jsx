@@ -186,7 +186,7 @@ const Submission = (props) => {
                     </div>
                 </div>
             </div>
-            {open ? <SubmissionModal closeModal={handleCancel} /> : null}
+            {open ? <SubmissionModal closeModal={handleCancel} {...props} /> : null}
         </div>
     )
 
