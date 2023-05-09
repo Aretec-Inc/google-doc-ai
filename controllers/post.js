@@ -217,7 +217,7 @@ const uploadDocuments = async (req, res) => {
             let file_type = file.fileType
 
             let is_completed = true
-            let fileOriginalName = file?.originalname?.replace(/ /g, '')
+            let fileOriginalName = file?.fileOriginalName
             let fileName = file?.fileName
 
             let postData = {

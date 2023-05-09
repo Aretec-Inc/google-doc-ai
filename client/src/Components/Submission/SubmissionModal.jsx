@@ -67,12 +67,7 @@ const CreateSubmission = (props) => {
         if (!processor && !isDefault) {
             return errorMessage('Please Select Model!')
         }
-        const newActiveStep =
-            isLastStep() && !allStepsCompleted()
-                ? // It's the last step, but not all steps have been completed,
-                // find the first step that has been completed
-                steps.findIndex((step, i) => !(i in completed))
-                : activeStep + 1
+        const newActiveStep = isLastStep() && !allStepsCompleted() ? steps.findIndex((step, i) => !(i in completed)) : activeStep + 1
         setActiveStep(newActiveStep)
     }
 
@@ -169,7 +164,8 @@ const CreateSubmission = (props) => {
                         file.fileType = fileType
                         file.originalFileUrl = data?.originalFileUrl || fileUrl
                         arr[i].fileSize = arr[i]?.size
-                        arr[i].fileName = `${fileId}-${arr[i]?.fileOriginalName}`
+                        arr[i].fileName = `${fileId}-${fileData.name}`
+                        arr[i].fileOriginalName = fileData.name
                         arr[i].sessionUrl = sessionUrl
                         arr[i].fileId = fileId
                         arr[i].fileUrl = fileUrl
