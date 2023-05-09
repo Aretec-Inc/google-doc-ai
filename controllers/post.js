@@ -10,7 +10,6 @@ const { postgresDB, storage, schema } = require('../config')
 const { generateBodyResponse } = require('../services/tokenService')
 
 const docAIBucket = storage.bucket(`context_primary`)
-const keyPairTable = `context.schema_form_key_pairs`
 
 let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
@@ -224,7 +223,7 @@ const uploadDocuments = async (req, res) => {
                 fileUrl,
                 fileName,
                 fileId,
-                original_artifact_name: fileOriginalName,
+                original_file_name: fileOriginalName,
                 user_id,
                 user_email,
                 template_id,

@@ -13,7 +13,7 @@ const Sidebar = (props) => {
     // }
 
 
-    const original_artifact_name = artifactData?.original_artifact_name
+    const original_file_name = artifactData?.original_file_name
     const [searchResults, setSearchResults] = useState('')
 
     let searchInArray = (searchQuery) => {
@@ -48,13 +48,13 @@ const Sidebar = (props) => {
         }
     }, [search])
 
-    let smallArtifactName = (original_artifact_name && original_artifact_name?.length > 30) ? original_artifact_name?.substr(original_artifact_name?.length - 30, original_artifact_name?.length) : original_artifact_name
-    let finalFileName = original_artifact_name ? smallArtifactName : "FILENAME.PDF"
+    let smallArtifactName = (original_file_name && original_file_name?.length > 30) ? original_file_name?.substr(original_file_name?.length - 30, original_file_name?.length) : original_file_name
+    let finalFileName = original_file_name ? smallArtifactName : "FILENAME.PDF"
 
     return (
         <div style={{ minWidth: 250, maxWidth: 350, width: `80%` }}>
             <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver` }}>
-                {/* <Tooltip arrow title={original_artifact_name || "FileName.pdf"}>
+                {/* <Tooltip arrow title={original_file_name || "FileName.pdf"}>
                     <div style={{ fontWeight: 'bold', fontSize: 15, padding: 18, cursor: "default" }} className="ParentFunctionsDiv" >
                         {finalFileName}
                     </div>

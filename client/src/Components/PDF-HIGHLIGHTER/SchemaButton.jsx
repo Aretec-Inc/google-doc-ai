@@ -11,7 +11,7 @@ const SchemaButton = ({ is_editable, isSchemaGenerated, artifactData ,refresh}) 
     const [tableId, setTableId] = useState(false)
     const [showDialog, setShowDialog] = useState(false)
     const [schemaOBJ, setSchemaOBJ] = useState({})
-    const file_name = artifactData?.artifact_name
+    const file_name = artifactData?.file_name
     let isAccurate = accuracy >= 100
     useEffect(() => {
         // getAccuracy()

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Select, Modal, Progress, Space, Button, Tooltip, Spin } from 'antd'
 import axios from 'axios'
 import Grid from '@mui/material/Grid'
@@ -7,12 +7,11 @@ import Step from '@mui/material/Step'
 import StepButton from '@mui/material/StepButton'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
-import { getAllSubmissions } from '../../Redux/actions/docActions'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import { useSelector } from 'react-redux'
 import LOCALDRIVE from '../../assets/localdrive.svg'
-import AMAZON from '../../assets/drive.svg'
-import DRIVE from '../../assets/S3.svg'
+import DRIVE from '../../assets/drive.svg'
+import AMAZON from '../../assets/S3.svg'
 import ONE_DRIVE from '../../assets/onedrive.svg'
 import GCP from '../../assets/gcp.svg'
 
@@ -21,7 +20,7 @@ const { Option } = Select
 const steps = ['Processor', 'Sources']
 
 const CreateSubmission = (props) => {
-    const { closeModal, dispatch } = props
+    const { closeModal } = props
     const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
     const [processor, setProcessor] = useState(null)
     const [activeStep, setActiveStep] = useState(0)
@@ -37,10 +36,6 @@ const CreateSubmission = (props) => {
         displayName: 'Form Parser',
         id: 'aebf936ce61ab3b1'
     }
-
-    useEffect(() => {
-        dispatch(getAllSubmissions())
-    }, [loading, uploadloading])
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''

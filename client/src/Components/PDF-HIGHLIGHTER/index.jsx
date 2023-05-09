@@ -4,18 +4,15 @@ import Tabs from './Tabs'
 import PropTypes from 'prop-types'
 import { errorMessage } from '../../utils/pdfHelpers'
 import IconButton from '@material-ui/core/IconButton'
-import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { Replay } from '@material-ui/icons'
-import { secureApiPDF } from '../../Config/api'
+import { secureApi } from '../../Config/api'
 import PDFContainer from './PDFContainer'
 import { CircularProgress, Tooltip } from '@material-ui/core'
 import TABLE from './Table'
 import { setArtifactData } from '../../Redux/actions/artifactActions'
 import { useDispatch } from 'react-redux'
 import Properties from './Properties'
-import { PDF_APIS } from '../../utils/apis'
-
-const { GET: { GET_PDF_DATA, GET_CUSTOM_FIELDS_BY_ARTIFACT } } = PDF_APIS
+import { PDF_APIS, GET } from '../../utils/apis'
 
 const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
     const dispatch = useDispatch()
@@ -35,7 +32,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
     const [availableKeyPairs, setAvailableKeyPairs] = useState([])
     let form1Name = `form-22a.pdf`
     const is_editable = !artifactData?.is_validate
-    let file_name = artifactData?.artifact_name || form1Name
+    let file_name = artifactData?.file_name || form1Name
     let file_address = artifactData?.file_address && artifactData?.file_address //|| updateUrl(form1)
     let form_name = artifactData?.form_name
     let redacted_file_address = artifactData?.redacted_file_address
@@ -74,8 +71,6 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
             }
             if (key_prs) {
                 setKey_pairs(key_prs)
-                getAvailableKeyPairs(key_prs)
-
                 let dlpKP = Array.isArray(key_prs) && key_prs.length && key_prs.filter(d => d?.dlp_info_type && d?.dlp_match_likelihood)
 
                 if (Array.isArray(dlpKP) && dlpKP.length) {
@@ -101,48 +96,13 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
     const getData = () => {
         if (file_name) {
             setLoading(true)
-            secureApiPDF.getPDF(`${GET_PDF_DATA}?file_name=${file_name}&form_name=${form_name}`)
+            secureApi.get(`${GET.PDF_DATA}?file_name=${file_name}&form_name=${form_name}`)
                 .then(onData)
                 .catch((err) => {
                     console.log(err)
                     let errMsg = err?.response?.data?.message
                     errMsg && errorMessage(errMsg)
-                    getAvailableKeyPairs()
                 })
-        }
-    }
-
-    const getAvailableKeyPairs = (keys) => {
-        if (!isTemplateView) {
-            let keyPairs = keys || key_pairs
-            secureApiPDF.getPDF(`${GET_CUSTOM_FIELDS_BY_ARTIFACT}?artifact_name=${artifactData?.artifact_name}`)
-                .then(data => {
-                    if (data?.success) {
-
-                        let d = data
-                        if (Array.isArray(d) && d?.length) {
-                            let alreadyAddedFieldNames = keyPairs.map(dd => [dd?.field_name, ...dd?.column_name ? [dd?.column_name] : []])?.flat?.()
-
-                            let filteredData = alreadyAddedFieldNames?.length ?
-                                d.filter(dd => alreadyAddedFieldNames?.indexOf(dd?.field_name) < 0)
-                                : d
-                            setAvailableKeyPairs(filteredData)
-                        }
-                    }
-                    else {
-                        let errMsg = data?.message;
-                        // errMsg && errorMessage(errMsg)
-                    }
-                })
-                .catch(err => {
-                    console.log("API: ", GET_CUSTOM_FIELDS_BY_ARTIFACT, err)
-                    let errMsg = err?.response?.data?.message;
-                    errMsg && errorMessage(errMsg);
-                })
-                .finally(() => setLoading(false))
-        }
-        else {
-            setLoading(false)
         }
     }
 

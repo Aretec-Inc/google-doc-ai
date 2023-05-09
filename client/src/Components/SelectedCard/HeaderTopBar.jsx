@@ -35,7 +35,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     const [isBookmarkLoading, setIsBookmarkLoading] = useState(true)
     const [updatedFile, setUpdatedFile] = useState(false)
     const [versions, setVersions] = useState(artifactData?.file_versions)
-    const [artifactNames, setArtifactNames] = useState(artifactData?.artifact_name_versions)
+    const [artifactNames, setArtifactNames] = useState(artifactData?.file_name_versions)
     const [version, setVersion] = useState(artifactData?.file_versions?.length - 1 || 0)
     const draggerRef = useRef(null)
     const currentProject = useSelector(store => store?.artifactReducer?.currentProject)
@@ -45,7 +45,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     const adj = props?.adj
     console.log('PORPSSSS==>', adj, props?.adj)
 
-    let originalName = artifactData?.original_artifact_name
+    let originalName = artifactData?.original_file_name
     let nameLength = originalName?.length
     let smallLengthName = nameLength > 20 ? '...' + originalName?.substr(nameLength - 20, nameLength) : originalName
     let artifact_type = artifactData?.artifact_type
@@ -56,7 +56,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
             setVersion(v || 0)
         }
         setVersions(artifactData?.file_versions)
-        setArtifactNames(artifactData?.artifact_name_versions)
+        setArtifactNames(artifactData?.file_name_versions)
     }, [artifactData])
 
     const goBackFunc = () => {
@@ -164,7 +164,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
 
     const uploadUpdatedFile = (file) => {
         let isCustom = currentProject?.template?.is_custom
-        let templateFileName = `${currentProject?.template?.id}-${currentProject?.template?.original_artifact_name}`
+        let templateFileName = `${currentProject?.template?.id}-${currentProject?.template?.original_file_name}`
         let tableName = `${currentProject?.name}_${currentProject?.id?.replace(/-/g, '_')}.${currentProject?.template?.template_name}`
         let md5 = SparkMD5.hash(file.name)
         setUpdatedFile(true)
@@ -231,7 +231,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
         setVersion(v)
         artifactData.file_address = versions[v]
         artifactData.original_file_address = versions[v]
-        artifactData.artifact_name = artifactNames[v]
+        artifactData.file_name = artifactNames[v]
         reduxActions.setArtifactData({ ...artifactData })
     }
 

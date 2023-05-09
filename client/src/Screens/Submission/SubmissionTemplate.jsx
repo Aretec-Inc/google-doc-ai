@@ -18,6 +18,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import UploadModal from '../../Components/Submission/UploadModal'
+import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
 import { templatePrefix, errorMessage, convertTitle } from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
@@ -57,6 +58,8 @@ const SubmissionTemplate = (props) => {
     const { templateData, dispatch, goBack } = props
     const template_id = templateData?.template_id
     const documents = useSelector((state) => state?.docReducer?.allDocuments[template_id] || [])
+    const [selectedDocument, setSelectedDocument] = useState({})
+    const [showDocument, setShowDocument] = useState(false)
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -90,8 +93,13 @@ const SubmissionTemplate = (props) => {
         setOpen(false)
     }
 
+    const showPDFDocument = (doc) => {
+        setSelectedDocument(doc)
+        setShowDocument(true)
+    }
+
     return (
-        <div className='template-screen'>
+        showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedDocument} /> : <div className='template-screen'>
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={1} lg={1} md={1} sm={1} xs={2}>
                     <div className='back-arrow' onClick={goBack}>
@@ -172,8 +180,8 @@ const SubmissionTemplate = (props) => {
                                                             key={i}
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                         >
-                                                            <TableCell className='submission-table-cell submission-row-cell firstcell_table'>
-                                                                <Link>{convertTitle(v?.original_file_name)}</Link>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>
+                                                                <Link onClick={() => showPDFDocument(v)}>{convertTitle(v?.original_file_name)}</Link>
                                                             </TableCell>
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress

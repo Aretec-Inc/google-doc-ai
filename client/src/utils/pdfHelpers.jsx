@@ -318,7 +318,7 @@ export const parseURL = (url) => url.replace(/\/\//g, "/")
 
 const returnDefaultData = (data) => {
     const withDefaultData = data.data?.filter((data) => {
-        let hasRequiredData = data?.item?.artifact_type && data?.item?.artifact_name && data?.item?.artifact_size && data?.item?.file_address && data?.item?.id
+        let hasRequiredData = data?.item?.artifact_type && data?.item?.file_name && data?.item?.artifact_size && data?.item?.file_address && data?.item?.id
         return hasRequiredData
     })
     return withDefaultData || []
@@ -582,12 +582,12 @@ export const load_artifact_data_by_type = (artifactData) => {
     return new Promise((resolve, reject) => {
 
         let artifact_type = artifactData?.artifact_type
-        let artifact_name = artifactData?.artifact_name
+        let file_name = artifactData?.file_name
         let artifactAPI = getAPIbyType(artifact_type)
 
         if (artifact_type) {
             if (artifactAPI) {
-                axios.get(`${artifactAPI}/${artifact_name}`)
+                axios.get(`${artifactAPI}/${file_name}`)
                     .then((data) => {
                         if (data?.success) {
                             if (Object.keys(data?.data).length !== 0 && (data?.data).constructor === Object) {

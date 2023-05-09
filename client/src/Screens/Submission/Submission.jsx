@@ -1,10 +1,10 @@
+import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Select, DatePicker, Input, Button, Progress } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
 import { CiMenuKebab } from 'react-icons/ci'
 import { BsSearch } from 'react-icons/bs'
 import moment from 'moment'
@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper'
 import SubmissionModal from '../../Components/Submission/SubmissionModal'
 import SubmissionTemplate from './SubmissionTemplate'
 import { templatePrefix } from '../../utils/helpers'
+import { getAllSubmissions } from '../../Redux/actions/docActions'
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -50,10 +51,15 @@ const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const Submission = (props) => {
+    const { dispatch } = props
     const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
     const [open, setOpen] = useState(false)
     const [showTemplate, setShowTemplate] = useState(false)
     const [templateData, setTemplateData] = useState({})
+
+    useEffect(() => {
+        dispatch(getAllSubmissions())
+    }, [open])
 
     const showModal = () => {
         setOpen(true)
@@ -111,7 +117,7 @@ const Submission = (props) => {
                     <div className='submission-card-div'>
                         <div className='submission-main-list'>
                             <div className='submission-heading'>
-                                <p className='submission-title mg_lf_15px'>30 Templates</p>
+                                <p className='submission-title mg_lf_15px'>{allSubmissions?.length} Templates</p>
                                 <div className='processor-data'>
                                     <CiMenuKebab className='menuicon' />
                                 </div>

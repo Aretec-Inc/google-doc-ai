@@ -1,29 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Modal, Progress, Space, Button, Tooltip } from 'antd'
 import axios from 'axios'
 import Grid from '@mui/material/Grid'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
-import { getAllSubmissions } from '../../Redux/actions/docActions'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import LOCALDRIVE from '../../assets/localdrive.svg'
-import AMAZON from '../../assets/drive.svg'
-import DRIVE from '../../assets/S3.svg'
+import DRIVE from '../../assets/drive.svg'
+import AMAZON from '../../assets/S3.svg'
 import ONE_DRIVE from '../../assets/onedrive.svg'
 import GCP from '../../assets/gcp.svg'
 
 const CreateSubmission = (props) => {
-    const { closeModal, dispatch, templateData } = props
+    const { closeModal, templateData } = props
     const [showFilesModal, setShowFilesModal] = useState(false)
     const [fileList, setFileList] = useState([])
     const draggerRef = useRef(null)
-    const [loading, setLoading] = useState(false)
     const [uploadloading, setUploadLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
-
-    useEffect(() => {
-        dispatch(getAllSubmissions())
-    }, [loading, uploadloading])
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''
@@ -135,7 +129,6 @@ const CreateSubmission = (props) => {
 
                     secureApi.post(POST?.UPLOAD_DOCUMENTS, newObj)
                         .then((data) => {
-                            setLoading(false)
                             if (data?.success) {
                                 successMessage('Your file(s) Uploaded Successfully.')
                                 setFileList([])

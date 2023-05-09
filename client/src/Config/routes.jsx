@@ -6,11 +6,11 @@ import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { Submission, Dashboard, Configuration } from '../Screens'
 import { Header, Sidenav } from '../Components'
 import { getAllProcessors, getAllSubmissions } from '../Redux/actions/docActions'
-import SelectedArtifact from '../Components/SelectedArtifact/SelectedArtifact'
+import SelectedDocument from '../Components/SelectedDocument/SelectedDocument'
 import allPaths from './paths'
 
 let data = {
-    artifact_name: 'form-f7bcc597-5fca-40c4-a586-078d202e233c-dd2875_form1(1)(2).pdf',
+    file_name: 'form-f7bcc597-5fca-40c4-a586-078d202e233c-dd2875_form1(1)(2).pdf',
     artifact_size: '0.0898 mb',
     artifact_type: 'pdf',
     created_at: '2022-09-20T10:52:01.629Z',
@@ -25,7 +25,7 @@ let data = {
     is_completed: true,
     is_validate: null,
     md5: null,
-    original_artifact_name: "pp.pdf",
+    original_file_name: "pp.pdf",
     original_file_address: null,
     project_id: "0188e8d9-13bb-4cdb-802c-9298670b64c4",
     shared: false,
@@ -92,7 +92,7 @@ const AllRoutes = () => {
                 <Route path={allPaths?.DASHBOARD} element={<WrapComponent Component={Dashboard} />} />
                 <Route path={allPaths?.SUBMISSION} element={<WrapComponent Component={Submission} />} />
                 <Route path={allPaths?.CONFIGURATION} element={<WrapComponent Component={Configuration} />} />
-                <Route path={'/document'} element={<WrapComponent Component={SelectedArtifact} getData={() => console.log('Hello')} openModal={false} disableBack={true} closeModal={() => console.log(false)} artifactData={data} />} />
+                <Route path={'/document'} element={<WrapComponent Component={SelectedDocument} getData={() => console.log('Hello')} openModal={false} disableBack={true} closeModal={() => console.log(false)} artifactData={data} />} />
                 <Route path='/:page404' exact element={<Page404 />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
                 <Route path="/files" element={<Files />} />

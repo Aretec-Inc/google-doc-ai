@@ -80,7 +80,7 @@ class SelectedCardData extends React.Component {
     refreshData = () => {
         const { selectedCard } = this.props
 
-        let name = selectedCard?.artifact_name
+        let name = selectedCard?.file_name
         if (name) {
             this.setState({ isRefreshing: true })
 

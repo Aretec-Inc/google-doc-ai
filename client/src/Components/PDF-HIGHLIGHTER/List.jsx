@@ -23,7 +23,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
     const [showAddFieldModal, setShowAddFieldModal] = useState(false)
 
     const is_editable = !artifactData?.is_validate
-    let artifact_name = artifactData?.artifact_name
+    let file_name = artifactData?.file_name
     let hasAvailableKeyPairs = Boolean(availableKeyPairs?.length) || isTemplateView
     //alert(highlights.length)
 
