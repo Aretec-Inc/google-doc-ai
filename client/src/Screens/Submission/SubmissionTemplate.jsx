@@ -1,10 +1,12 @@
+import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Select, DatePicker, Input, Button, Progress } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import Grid from '@mui/material/Grid'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
 import { CiMenuKebab } from 'react-icons/ci'
 import { BsSearch } from 'react-icons/bs'
 import moment from 'moment'
@@ -16,8 +18,10 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import SubmissionModal from '../../Components/Submission/SubmissionModal'
-import SubmissionTemplate from './SubmissionTemplate'
-import { templatePrefix } from '../../utils/helpers'
+import { templatePrefix, errorMessage, convertTitle } from '../../utils/helpers'
+import { setDocuments } from '../../Redux/actions/docActions'
+import { secureApi } from '../../Config/api'
+import { GET } from '../../utils/apis'
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -49,30 +53,58 @@ const { Option } = Select
 const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
-const Submission = (props) => {
-    const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
+const SubmissionTemplate = (props) => {
+    const { templateData, dispatch, goBack } = props
+    const template_id = templateData?.template_id
+    const documents = useSelector((state) => state?.docReducer?.allDocuments[template_id] || [])
     const [open, setOpen] = useState(false)
-    const [showTemplate, setShowTemplate] = useState(false)
-    const [templateData, setTemplateData] = useState({})
+    const [loading, setLoading] = useState(false)
+
+    console.log('documents', documents)
+
+    useEffect(() => {
+        getDocuments()
+    }, [])
+
+    const getDocuments = () => {
+        secureApi.get(`${GET.DOCUMENTS_BY_ID}?template_id=${template_id}`)
+            .then((data) => {
+                console.log('data', data)
+                dispatch(setDocuments({ [template_id]: data?.documents || [] }))
+            })
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message
+                errorMessage(errMsg)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     const showModal = () => {
         setOpen(true)
+    }
+
+    const handleOk = (e) => {
+        console.log(e)
+        setOpen(false)
     }
 
     const handleCancel = () => {
         setOpen(false)
     }
 
-    if (showTemplate && templateData?.template_id) {
-        return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />
-    }
-
     return (
         <div className='template-screen'>
-            <div className='row submission-head-div'>
-                <div className='col-lg-2 pl-0'>
+            <Grid container spacing={1} justifyContent={'space-between'}>
+                <Grid item xl={1} lg={1} md={1} sm={1} xs={2}>
+                    <div className='back-arrow' onClick={goBack}>
+                        <ArrowBackIcon />
+                    </div>
+                </Grid>
+                <Grid item xl={2} lg={2} md={3} sm={5} xs={10}>
                     <Select
-                        className='width subdropdes'
+                        className='subdropdes'
                         showSearch
                         placeholder='Filter'
                         optionFilterProp='children'
@@ -83,65 +115,72 @@ const Submission = (props) => {
                     >
                         <Option value='Communicated'>Communicated</Option>
                     </Select>
-                </div>
-                <div className='col-lg-3'>
+                </Grid>
+                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
                     <RangePicker
-                        className='date width'
+                        // onChange={onChangeDate}
                         defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
                         format={dateFormat}
                     />
-                </div>
-                <div className='col-lg-3'>
+                </Grid>
+                <Grid item xl={2} lg={2} md={4} sm={8} xs={12}>
                     <Input
-                        className='date width'
+                        // onChange={getValue}
                         placeholder='Search by ID or File name'
                         prefix={<BsSearch className='search-field-icon' />}
                     />
-                </div>
-                <div className='col-lg-4 pr-0'>
-                    <div className='btn-specify'>
-                        <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal} className='date width-sub height_57px'
-                        >Create Submission</Button>
-                    </div>
-                </div>
-            </div>
+                </Grid>
+                <Grid item xl={5} lg={5} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
+                    <Button style={{ background: '#4285F4', color: '#fff', width: '130px' }} onClick={showModal} className='date width-sub height_57px'
+                    >Upload</Button>
+                </Grid>
+            </Grid>
+
 
             <div className='submission-div'>
+                <div className='row'>
+                    <div className='col-lg-12 p-0'>
+                        <div className='tepm-id'>
+                            <h5>Template ID: {templatePrefix(template_id)}</h5>
+                        </div>
+                    </div>
+                </div>
                 <div className='submission-card'>
                     <div className='submission-card-div'>
                         <div className='submission-main-list'>
-                            <div className='submission-heading'>
-                                <p className='submission-title mg_lf_15px'>30 Templates</p>
+                            <div className='submission-heading margingless'>
+                                <p className='submission-title mg_lf_15px'>30 Documents</p>
                                 <div className='processor-data'>
+                                    <p>Processor: {templateData?.processor_name}</p>
                                     <CiMenuKebab className='menuicon' />
                                 </div>
+                            </div>
+                            <div className='exp-csv-btn'>
+                                <Button style={{ background: '#4285F4', color: '#fff', width: '100px' }} className='date width-sub height_57px'
+                                >Export Csv</Button>
                             </div>
                             <div className='submission-table-main'>
                                 <TableContainer component={Paper} className='submission-table'>
                                     <Table aria-label='simple table'>
                                         <TableHead>
                                             <TableRow className='submission-head'>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Template ID</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>File Name</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {allSubmissions?.map((v, i) => {
+                                            {documents?.map((v, i) => {
                                                 return (
                                                     <TableRow
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                         key={i}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                     >
-                                                        <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                            <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>{templatePrefix(v?.template_id)}</Link>
+                                                        <TableCell className='submission-table-cell submission-row-cell firstcell_table'>
+                                                            <Link>{convertTitle(v?.original_file_name)}</Link>
                                                         </TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>
+                                                        <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                             <Progress
                                                                 percent={50}
                                                                 strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }}
@@ -178,9 +217,9 @@ const Submission = (props) => {
                     </div>
                 </div>
             </div>
-            {open ? <SubmissionModal closeModal={handleCancel} {...props} /> : null}
+            {open ? <SubmissionModal closeModal={handleCancel} /> : null}
         </div>
     )
 }
 
-export default Submission
+export default SubmissionTemplate

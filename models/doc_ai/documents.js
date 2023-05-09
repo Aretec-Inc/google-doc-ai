@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes, schema) => {
     is_completed: DataTypes.BOOLEAN,
     error: DataTypes.STRING,
     original_file_address: DataTypes.STRING,
+    status: DataTypes.STRING,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false

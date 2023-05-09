@@ -1,6 +1,6 @@
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
-import { ALL_PROCESSORS, ALL_SUBMISSIONS } from './types'
+import { ALL_PROCESSORS, ALL_SUBMISSIONS, DOCUMENTS } from './types'
 
 const getAllProcessors = () => {
     return (dispatch) => {
@@ -32,7 +32,15 @@ const getAllSubmissions = () => {
     }
 }
 
+const setDocuments = (documents) => {
+    return {
+        type: DOCUMENTS,
+        documents
+    }
+}
+
 export {
     getAllProcessors,
-    getAllSubmissions
+    getAllSubmissions,
+    setDocuments
 }

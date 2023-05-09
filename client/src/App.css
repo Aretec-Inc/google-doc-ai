@@ -60,8 +60,6 @@
     background-repeat: no-repeat;
 }
 
-.loginname {}
-
 .loginname h6 {
     margin-bottom: 0px;
     font-size: 16px;
@@ -804,7 +802,6 @@
     margin-bottom: 0px;
     font-size: 19px;
     font-weight: 500;
-
 }
 
 .p-0 {
@@ -849,14 +846,10 @@
     background: #E3E3E3 !important;
 }
 
-.confgi-screen {}
-
 .confgi-screen h3 {
     font-size: 25px;
     font-weight: 600;
 }
-
-.config-fields {}
 
 .config-fields-main {
     display: flex;
@@ -877,13 +870,9 @@
     width: 200px !important;
 }
 
-.config-save {}
-
 .input-desin {
     height: 60px;
 }
-
-.modal-savebtn {}
 
 .modal-last-btn {
     display: flex;
@@ -909,4 +898,9 @@
 .chart-container {
     width: 380px;
     height: 150px;
+}
+
+.back-arrow {
+    margin-right: 20px;
+    /* padding-top: 5px; */
 }

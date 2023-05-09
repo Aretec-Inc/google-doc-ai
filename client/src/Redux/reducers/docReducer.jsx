@@ -1,4 +1,4 @@
-import { ALL_PROCESSORS, ALL_SUBMISSIONS } from '../actions/types'
+import { ALL_PROCESSORS, ALL_SUBMISSIONS, DOCUMENTS } from '../actions/types'
 
 const reducer = (state = {}, action) => {
     switch (action.type) {
@@ -7,6 +7,9 @@ const reducer = (state = {}, action) => {
         }
         case ALL_SUBMISSIONS: {
             return { ...state, allSubmissions: action?.allSubmissions }
+        }
+        case DOCUMENTS: {
+            return { ...state, allDocuments: { ...state?.allDocuments, ...action?.documents } }
         }
         default: {
             return state
