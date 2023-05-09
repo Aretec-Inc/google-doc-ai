@@ -244,7 +244,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 
     return (
         <div style={{ background: '#f6f6f6' }}>
-
             <div style={{ display: 'flex', flexDirection: 'row', maxHeight: '95vh', minHeight: '75vh', overflow: 'hidden' }}>
                 {!redacted && <SideBar
                     isTemplateView={isTemplateView}
@@ -269,26 +268,21 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     {...props}
                 />}
 
-
                 <div style={{ padding: 0, overflow: 'hidden', width: '100%' }} flex={3}>
 
 
                     <div style={{
-                        // justifyContent: 'center',
-                        // alignItems: 'center',
                         height: globalHeight,
                         position: 'relative',
                     }}>
                         <div>
                             <div style={{ backgroundColor: '#f6f6f6', marginBottom: 15 }} className='ParentFunctionsDiv' >
-
                                 <FlexRowDiv style={{ justifyContent: 'space-between' }} >
                                     <FlexRowDiv  >
                                         <LongClickButton
                                             Button={(props) => (
                                                 <Tooltip title='Zoom Out - Long click for full Zoom out'>
                                                     <IconButton  {...props} disabled={!isScaleDecreasePossible}   >
-
                                                         <ZoomOutIcon style={isScaleDecreasePossible ? { color: Icon_Blue_Color } : null} />
                                                     </IconButton>
                                                 </Tooltip>
@@ -296,16 +290,10 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 
                                             onLongClick={() => onLongClickZoom(false)}
                                             onShortClick={() => onShortClickZoom(false)}
-
-
                                         />
-
-
                                         <Tooltip title='Current Zoom'>
                                             <span style={{ fontSize: 11, fontWeight: 'bold' }}> {Math.floor(parseFloat(scale * 100))}%</span>
                                         </Tooltip>
-
-
                                         <LongClickButton
                                             Button={(props) => (
                                                 <Tooltip title='Zoom In - Long click for full Zoom In'>
@@ -314,17 +302,11 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                                     </IconButton>
                                                 </Tooltip>
                                             )}
-
                                             onLongClick={() => onLongClickZoom(true)}
                                             onShortClick={() => onShortClickZoom(true)}
-
                                         />
-
-
                                     </FlexRowDiv>
-
-                                    <FlexRowDiv >
-
+                                    <FlexRowDiv>
                                         <LongClickButton
                                             Button={(props) => (
                                                 <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}   >
@@ -333,7 +315,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             )}
                                             onLongClick={() => onLongClickPage(false)}
                                             onShortClick={() => onShortClickPage(false)}
-
                                         />
                                         <span style={{ fontSize: 11, fontWeight: 'bold', cursor: 'pointer' }}>
 
@@ -357,17 +338,13 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                                         let newPage = parseInt(event.target.value)
                                                         if (newPage && newPage <= numPages && newPage > 0)
                                                             setPageNumber(newPage)
-                                                                ;
                                                     }}
                                                 >
-                                                    {
-                                                        faltuArray.map((d, i) => (
-                                                            <MenuItem key={i + 'pagelist'} value={i + 1}># {i + 1}</MenuItem>
-                                                        ))}
-
+                                                    {faltuArray.map((d, i) => (
+                                                        <MenuItem key={i + 'pagelist'} value={i + 1}># {i + 1}</MenuItem>
+                                                    ))}
                                                 </Select>
                                             </span>
-
                                         </span>
                                         <LongClickButton
                                             Button={(props) => (
@@ -375,19 +352,11 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                                     <ArrowDownwardIcon style={isPageIncreasePossible ? { color: Icon_Blue_Color } : null} />
                                                 </IconButton>
                                             )}
-
                                             onLongClick={() => onLongClickPage(true)}
                                             onShortClick={() => onShortClickPage(true)}
-
-
                                         />
-
-
-
                                     </FlexRowDiv>
-
                                 </FlexRowDiv>
-
                             </div>
                         </div>
 
@@ -399,13 +368,10 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                             padding: 10,
                             display: 'flex',
                             minHeight: 400
-
-                        }} >
+                        }}>
                             <div ref={PageWrapper} style={{
                                 display: 'flex',
-                                // alignItems: 'center',
                                 justifyContent: 'center',
-                                // width: '65vw',
                                 width: '100%',
                                 justifyContent: 'center',
                                 position: 'relative'
@@ -453,19 +419,15 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     )
 }
 
-
 PDFContainer.defaultProps = {
-
-    highlights: {},
-
+    highlights: {}
 }
 
 PDFContainer.propTypes = {
     highlights: PropTypes.array, //PropTypes.arrayOf(PropTypes.object)
     file_address: PropTypes.string,
     isLoading: PropTypes.bool,
-    artifactData: PropTypes.object,
-
+    artifactData: PropTypes.object
 }
 
 export default PDFContainer

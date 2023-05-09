@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { IconButton, TextField, InputAdornment, Input, Tooltip } from '@material-ui/core'
-import { Icon_Blue_Color } from '../../utils/pdfConstants'
+import React, { useState, useEffect } from 'react'
+import { IconButton, InputAdornment, Input } from '@material-ui/core'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import CloseIcon from '@material-ui/icons/Close'
 import PropTypes from 'prop-types'
 import List from './List'
+
 const Sidebar = (props) => {
     let { globalHeight, search, setSearch, highlights, isLoading, artifactData } = props
-    // if (highlights?.flat()) {
-    //     highlights = highlights?.flat()
-
-    // }
-
-
     const original_file_name = artifactData?.original_file_name
     const [searchResults, setSearchResults] = useState('')
 
@@ -20,15 +14,12 @@ const Sidebar = (props) => {
         return highlights.filter(d => {
             let d1 = d?.[0]?.content?.text
             let d2 = d?.[1]?.content?.text
-
             let data = d1 + " " + d2
-
-
             let matchingWords = data?.toLowerCase()?.indexOf(searchQuery?.toLowerCase()) > -1
+
             return matchingWords
         })
     }
-
 
     let userSearchTimeout = null
 
@@ -49,19 +40,12 @@ const Sidebar = (props) => {
     }, [search])
 
     let smallArtifactName = (original_file_name && original_file_name?.length > 30) ? original_file_name?.substr(original_file_name?.length - 30, original_file_name?.length) : original_file_name
-    let finalFileName = original_file_name ? smallArtifactName : "FILENAME.PDF"
 
     return (
         <div style={{ minWidth: 250, maxWidth: 350, width: `80%` }}>
             <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver` }}>
-                {/* <Tooltip arrow title={original_file_name || "FileName.pdf"}>
-                    <div style={{ fontWeight: 'bold', fontSize: 15, padding: 18, cursor: "default" }} className="ParentFunctionsDiv" >
-                        {finalFileName}
-                    </div>
-                </Tooltip> */}
                 <Input className='input-desin'
                     disabled={isLoading}
-
                     startAdornment={
                         <InputAdornment onClick={() => setSearch('')} style={{ marginLeft: 10, cursor: 'pointer' }} position="start">
                             <FilterListIcon />
@@ -87,7 +71,6 @@ const Sidebar = (props) => {
     )
 }
 
-
 Sidebar.defaultProps = {
     globalHeight: 800,
     search: '',
@@ -98,6 +81,7 @@ Sidebar.defaultProps = {
     setShouldScrollSidebar: () => null,
     setShouldScrollPDF: () => null,
 }
+
 Sidebar.propTypes = {
     globalHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     search: PropTypes.string,
@@ -105,7 +89,6 @@ Sidebar.propTypes = {
     highlights: PropTypes.array,
     setSelectedHighLights: PropTypes.func,
     selectedHighLights: PropTypes.arrayOf(PropTypes.string),
-
     shouldScrollSidebar: PropTypes.bool,
     setShouldScrollSidebar: PropTypes.func,
     setShouldScrollPDF: PropTypes.func,

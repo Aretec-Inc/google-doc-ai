@@ -4,13 +4,11 @@ import SelectedCardData from '../SelectedCard/SelectedCardData'
 import { Spin } from 'antd'
 
 const SelectedDocument = (props) => {
-    const { graphFileView, backAction, closeModal } = props
+    const { backAction, closeModal } = props
     const [hasRequiredData, setHasRequiredData] = useState(true)
     let artifactData = useSelector(store => store?.artifactReducer?.artifactData || {})
 
     artifactData = props?.artifactData || artifactData
-
-    console.log('artifactData', artifactData)
 
     useEffect(() => {
         let requiredData = (artifactData &&

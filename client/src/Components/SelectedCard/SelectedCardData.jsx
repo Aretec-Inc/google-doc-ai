@@ -6,7 +6,6 @@ import { randomInteger, load_artifact_data_by_type, errorMessage } from '../../u
 import { fadeList, isPDF } from '../../utils/pdfConstants'
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index'
 import { Tabs } from 'antd'
-import Properties from '../PDF-HIGHLIGHTER/Properties'
 import './SelectedCardData.css'
 import HeaderTopBar from './HeaderTopBar'
 
@@ -139,7 +138,7 @@ class SelectedCardData extends React.Component {
             <div className='card-div' style={(!isPDF(artifact_type)) ? { filter: `drop-shadow(0px 0px 20px silver)` } : {}}>
                 <HeaderTopBar {...this.props} selectedCard={selectedCard || this.props.selectedCard} goBack={this.props.goBack} />
                 <div style={conditionalStyle}>
-                    {(alreadyHasTabs) ? allElements : allElements}
+                    {alreadyHasTabs ? allElements : allElements}
                 </div>
             </div>
         )

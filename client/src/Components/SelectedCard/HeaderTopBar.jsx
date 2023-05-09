@@ -42,13 +42,9 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     const project_id = currentProject?.id
 
     const user = useSelector((store) => store?.authReducer?.user)
-    const adj = props?.adj
-    console.log('PORPSSSS==>', adj, props?.adj)
-
     let originalName = artifactData?.original_file_name
     let nameLength = originalName?.length
     let smallLengthName = nameLength > 20 ? '...' + originalName?.substr(nameLength - 20, nameLength) : originalName
-    let artifact_type = artifactData?.artifact_type
 
     useEffect(() => {
         let v = artifactData?.file_versions?.length - 1

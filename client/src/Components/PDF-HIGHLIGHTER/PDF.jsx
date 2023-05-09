@@ -356,7 +356,8 @@ const PDFTEST = (
 
                         if (isCurrentlyHighlighted) { //If its already highlighted remove it.
                           setSelectedHighLights(allIdsWithoutThis)
-                        } else {//Add it to highlight
+                        }
+                        else {//Add it to highlight
                           setSelectedHighLights([...selectedHighLights, id])
                         }
                       }
