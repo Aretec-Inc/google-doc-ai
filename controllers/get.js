@@ -64,10 +64,9 @@ const getDocumentsById = async (req, res) => {
     }
 }
 
-const manageAndResolvePDFData = async (req, res, artifactData) => {
+const manageAndResolvePDFData = async (req, res, fileData) => {
 
-    let isCompleted = Boolean(artifactData?.is_completed)
-    let redacted_file_address = await getAuthUrl(artifactData?.redacted_file_address, storage)
+    let isCompleted = Boolean(fileData?.is_completed)
 
     let { parsedPages, key_pairs } = await pdfparser.generateDataFromBigQuery(req, res)
     let hasKeyPairs = Boolean(Array.isArray(key_pairs) && key_pairs.length)
@@ -81,9 +80,8 @@ const manageAndResolvePDFData = async (req, res, artifactData) => {
             //raw_data: document || {},
             parsed_data: parsedPages,
             key_pairs: key_pairs || [],
-            artifactData: { //artifact data which needs reload.
-                is_completed: isCompleted,
-                redacted_file_address
+            fileData: {
+                is_completed: isCompleted
             }
         })
     }
@@ -94,18 +92,18 @@ const manageAndResolvePDFData = async (req, res, artifactData) => {
 
 const getPdfData = async (req, res) => {
     const file_name = req?.query?.file_name || req?.query?.file_name || req?.body?.file_name
-    let [documentData] = await pdfparser.getDocumentData(file_name)
-    let error = !isNull(documentData?.error) ? documentData?.error : null
+    let [fileData] = await pdfparser.getDocumentData(file_name)
+    let error = !isNull(fileData?.error) ? fileData?.error : null
     let hasError = Boolean(error)
 
     try {
-        if (documentData?.is_completed) {
+        if (fileData?.is_completed) {
             if (!hasError) {
-                manageAndResolvePDFData(req, res, documentData)
+                manageAndResolvePDFData(req, res, fileData)
             }
             else {
 
-                throw new Error(documentData?.error)
+                throw new Error(fileData?.error)
             }
         }
         else {

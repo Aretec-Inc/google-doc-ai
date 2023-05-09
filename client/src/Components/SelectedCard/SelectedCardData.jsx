@@ -139,19 +139,8 @@ class SelectedCardData extends React.Component {
             <div className='card-div' style={(!isPDF(artifact_type)) ? { filter: `drop-shadow(0px 0px 20px silver)` } : {}}>
                 <HeaderTopBar {...this.props} selectedCard={selectedCard || this.props.selectedCard} goBack={this.props.goBack} />
                 <div style={conditionalStyle}>
-                    {(alreadyHasTabs) ?
-                        (
-                            <Tabs style={{ width: '100%' }} defaultActiveKey='1' >
-                                <TabPane tab=' Overview' key='1'>
-                                    {allElements}
-                                </TabPane>
-                                <TabPane tab='Properties' key='2'>
-                                    <Properties artifactData={selectedCard || this.props.selectedCard} />
-                                </TabPane>
-                            </Tabs>
-                        ) : allElements}
+                    {(alreadyHasTabs) ? allElements : allElements}
                 </div>
-
             </div>
         )
     }

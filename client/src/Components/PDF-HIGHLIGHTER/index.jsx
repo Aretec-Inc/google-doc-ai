@@ -12,7 +12,8 @@ import TABLE from './Table'
 import { setArtifactData } from '../../Redux/actions/artifactActions'
 import { useDispatch } from 'react-redux'
 import Properties from './Properties'
-import { PDF_APIS, GET } from '../../utils/apis'
+import { GET } from '../../utils/apis'
+
 
 const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
     const dispatch = useDispatch()
@@ -64,13 +65,14 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                 }
             })
 
-            if (data?.artifactData && typeof data?.artifactData == "object") {
+            if (data?.fileData && typeof data?.fileData == "object") {
 
-                let updatedArtifact = Object.assign(artifactData || {}, data?.artifactData)
+                let updatedArtifact = Object.assign(artifactData || {}, data?.fileData)
                 dispatch(setArtifactData(updatedArtifact))
             }
             if (key_prs) {
                 setKey_pairs(key_prs)
+
                 let dlpKP = Array.isArray(key_prs) && key_prs.length && key_prs.filter(d => d?.dlp_info_type && d?.dlp_match_likelihood)
 
                 if (Array.isArray(dlpKP) && dlpKP.length) {
@@ -102,6 +104,9 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                     console.log(err)
                     let errMsg = err?.response?.data?.message
                     errMsg && errorMessage(errMsg)
+                })
+                .finally(() => {
+                    setLoading(false)
                 })
         }
     }
