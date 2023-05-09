@@ -122,7 +122,7 @@ const Dashboard = (props) => {
                     <div className='col-lg-4'>
                         <div className='dash-top-card'>
                             <div className='dash-top-card-main'>
-                                <h1>Total Documents</h1>
+                                <h1>Total Submissions</h1>
                                 <p>28</p>
                             </div>
                         </div>
@@ -200,18 +200,18 @@ const Dashboard = (props) => {
                             height={250}
                         />
                     </div>
-                    <div class="grid-container-bottom">
-                        <div class="grid-item-card">
+                    <div className="grid-container-bottom">
+                        <div className="grid-item-card">
                             Field Transcription Automation
                             <h2>98.9</h2>
                         </div>
-                        <div class="grid-item-card">
+                        <div className="grid-item-card">
                             Table Transcription Automation
                             <h2>100%</h2></div>
-                        <div class="grid-item-card">
+                        <div className="grid-item-card">
                             Machine Field Automation
                             <h2>2282</h2></div>
-                        <div class="grid-item-card">
+                        <div className="grid-item-card">
                             Machine Table Transcription
                             <h2>2262</h2></div>
                     </div>

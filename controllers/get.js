@@ -1,5 +1,5 @@
-const { service_key, projectId, schema, postgresDB } = require('../config')
-const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse } = require('../helpers')
+const { service_key, projectId, schema, postgresDB, storage } = require('../config')
+const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
@@ -46,12 +46,16 @@ const getDocumentsById = async (req, res) => {
         // Run the query
         let documents = await runQuery(postgresDB, sqlQuery)
 
+        for (var i in documents) {
+            documents[i].file_address = await getAuthUrl(documents?.[i]?.file_address, storage)
+        }
+
         let obj = {
             success: true,
             documents
         }
 
-        apiResponse(res, 201, obj)
+        apiResponse(res, 200, obj)
     }
     catch (e) {
         console.log('e', e)

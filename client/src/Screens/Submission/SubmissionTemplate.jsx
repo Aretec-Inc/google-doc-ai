@@ -17,7 +17,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
-import SubmissionModal from '../../Components/Submission/SubmissionModal'
+import UploadModal from '../../Components/Submission/UploadModal'
 import { templatePrefix, errorMessage, convertTitle } from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
@@ -62,7 +62,7 @@ const SubmissionTemplate = (props) => {
 
     useEffect(() => {
         getDocuments()
-    }, [])
+    }, [open])
 
     const getDocuments = () => {
         if (!documents?.length) {
@@ -181,7 +181,7 @@ const SubmissionTemplate = (props) => {
                                                                     strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }}
                                                                 />
                                                             </TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.is_completed === true ? 'Completed' : 'Processing'}</TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
                                                         </TableRow>
                                                     )
@@ -213,7 +213,7 @@ const SubmissionTemplate = (props) => {
                     </div>
                 </Spin>
             </div>
-            {open ? <SubmissionModal closeModal={handleCancel} /> : null}
+            {open ? <UploadModal closeModal={handleCancel} {...props} /> : null}
         </div>
     )
 }

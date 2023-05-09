@@ -13,6 +13,8 @@ import { useSelector } from 'react-redux'
 import LOCALDRIVE from '../../assets/localdrive.svg'
 import AMAZON from '../../assets/drive.svg'
 import DRIVE from '../../assets/S3.svg'
+import ONE_DRIVE from '../../assets/onedrive.svg'
+import GCP from '../../assets/gcp.svg'
 
 const { Option } = Select
 
@@ -266,10 +268,8 @@ const CreateSubmission = (props) => {
         <div className='template-screen'>
             <Modal
                 open={true}
-                // onOk={handleOk}
                 onCancel={handleCancel}
                 footer={null}
-                // size='small'
                 width={800}
             >
                 <Spin spinning={loading}>
@@ -335,32 +335,32 @@ const CreateSubmission = (props) => {
                             <Grid container justifyContent={'space-between'}>
                                 <Grid item>
                                     <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
-                                        <img src={LOCALDRIVE} alt="" />
+                                        <img src={LOCALDRIVE} alt="" className='upload-image' />
                                         <span>Local Drive</span>
                                     </div>
                                 </Grid>
                                 <Grid item>
                                     <div className='process-tiles-main'>
-                                        <img src={AMAZON} alt="" />
+                                        <img src={AMAZON} alt="" className='upload-image' />
                                         <span>Amazon</span>
                                     </div>
                                 </Grid>
                                 <Grid item>
                                     <div className='process-tiles-main'>
-                                        <img src={DRIVE} alt="" />
+                                        <img src={DRIVE} alt="" className='upload-image' />
                                         <span>Drive</span>
                                     </div>
                                 </Grid>
                                 <Grid item>
                                     <div className='process-tiles-main'>
-                                        <img src={DRIVE} alt="" />
-                                        <span>Drive</span>
+                                        <img src={ONE_DRIVE} alt="" className='upload-image' />
+                                        <span>OneDrive</span>
                                     </div>
                                 </Grid>
                                 <Grid item>
                                     <div className='process-tiles-main'>
-                                        <img src={DRIVE} alt="" />
-                                        <span>Drive</span>
+                                        <img src={GCP} alt="" className='upload-image' />
+                                        <span>Google Cloud Storage</span>
                                     </div>
                                 </Grid>
                             </Grid>

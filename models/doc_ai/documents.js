@@ -31,9 +31,9 @@ module.exports = (sequelize, DataTypes, schema) => {
     is_deleted: DataTypes.BOOLEAN,
     is_verified: DataTypes.BOOLEAN,
     is_completed: DataTypes.BOOLEAN,
+    number_of_attempts: DataTypes.INTEGER,
     error: DataTypes.STRING,
     original_file_address: DataTypes.STRING,
-    status: DataTypes.STRING,
     created_at: {
       type: DataTypes.DATE,
       allowNull: false

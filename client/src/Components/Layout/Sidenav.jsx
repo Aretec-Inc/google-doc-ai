@@ -18,10 +18,10 @@ const Sidenav = (props) => {
                     <Link to={allPaths?.SUBMISSION}><img src={FORWARD} alt='' /></Link>
                     <span>Submissions</span>
                 </div>
-                <div className='navlink-menu'>
+                {/* <div className='navlink-menu'>
                     <Link to={allPaths?.DASHBOARD}><img src={FORWARD} alt='' /></Link>
                     <span>Upload</span>
-                </div>
+                </div> */}
                 <div className='navlink-menu'>
                     <Link to={allPaths?.CONFIGURATION}><img src={MENU} alt='' /></Link>
                     <span>Configuration</span>

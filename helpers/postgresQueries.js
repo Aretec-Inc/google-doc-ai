@@ -5,7 +5,6 @@ const runQuery = async (db, query) => {
     return Array.isArray(data) ? data?.flat() : data
 }
 
-
 module.exports = {
     runQuery
 }

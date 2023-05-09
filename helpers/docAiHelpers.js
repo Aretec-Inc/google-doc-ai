@@ -1,7 +1,25 @@
 const { v4: uuidv4 } = require('uuid')
+const download_pdf = require('./downloadFileFromStorage')
+const insertToDB = require('./insertToDB')
+const { typeEntities } = require('../constants')
+const get_form_field_values = require('./getFormFieldValues')
 const { default: axios } = require('axios')
-const { runQuery, apiResponse } = require('./index')
-const { postgresDB, schema } = require('../config')
+const { runQuery } = require('./postgresQueries')
+const { postgresDB, schema, projectId, docAiClient } = require('../config')
+
+const getUniqueArrayOfObjects = (ary, objectPropertName) => {
+    let cleanProperty = (property) => typeof property == 'string' ? property?.trim().toLowerCase() : property
+    return ary.filter((elem, index) => {
+        let filteredByProperty = ary?.findIndex(obj => {
+            let obj1V = obj?.[objectPropertName]
+            let obj2V = elem?.[objectPropertName]
+            let value1 = cleanProperty(obj1V)
+            let value2 = cleanProperty(obj2V)
+            return value1 == value2
+        })
+        return filteredByProperty == index
+    })
+}
 
 const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTesting, formKeyPairTableName }) => {
 
@@ -101,7 +119,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
             try {
                 if (!isTesting && text) {
                     console.log('pdf_document start')
-                    insertToBigquery.pdf_document({ file_name: exact_file_name_with_ext || '', pages_count: pages?.length || 0, entities_count: entities?.length || 0, text })
+                    insertToDB.pdf_document({ file_name: exact_file_name_with_ext || '', pages_count: pages?.length || 0, entities_count: entities?.length || 0, text })
 
                     console.log('pdf_document end')
                 }
@@ -116,7 +134,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
                 try {
                     if (!isTesting) {
                         console.log('pdf_pages start')
-                        pagesArray.push(insertToBigquery.pdf_pages({ file_name: exact_file_name_with_ext, dimensions: page.dimension, pageNumber: page.pageNumber, paragraphs: page.paragraphs }))
+                        pagesArray.push(insertToDB.pdf_pages({ file_name: exact_file_name_with_ext, dimensions: page.dimension, pageNumber: page.pageNumber, paragraphs: page.paragraphs }))
                         console.log('pdf_pages end')
                     }
                 }
@@ -171,13 +189,13 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
             let formEntities = arrayToString(entitiesArray)
 
             console.log('insert_form_key_pair_with_values start')
-            let insert_form_fields = (!isTesting && formFieldsValues?.length) ? insertToBigquery.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formFieldsValues }) : null
+            let insert_form_fields = (!isTesting && formFieldsValues?.length) ? insertToDB.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formFieldsValues }) : null
 
             console.log('insert_form_key_pair_with_values end')
 
             console.log('insert_form_key_pair_with_values start')
 
-            let insert_form_entities = (!isTesting && formEntities?.length) ? insertToBigquery.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formEntities }) : null
+            let insert_form_entities = (!isTesting && formEntities?.length) ? insertToDB.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formEntities }) : null
 
             console.log('insert_form_key_pair_with_values end')
 
@@ -236,18 +254,18 @@ const isFalsyValue = (value) => {
     }
 }
 
-const docAIv3 = async (req, res) => {
+const docAIv3 = async (obj) => {
     // console.log(req,'====>request')
     const id = uuidv4()
-    const artifactTable = `artifacts`
-    const should_update = req?.query?.should_update || true
+    const documentTable = `${schema}.documents`
+    const should_update = true
 
     // let queryLocation = req?.query?.location
-    let bodyLocation = req?.body?.location
+    let bodyLocation = obj?.location
     let defaultLocation = 'us'
 
     // let queryProcessorId = req?.query?.processorId
-    let bodyProcessorId = req?.body?.processorId
+    let bodyProcessorId = obj?.processorId
     let defaultProcessorId = 'aebf936ce61ab3b1'
 
     const location = !isFalsyValue(bodyLocation) ? bodyLocation : defaultLocation
@@ -255,16 +273,17 @@ const docAIv3 = async (req, res) => {
 
     const formKeyPairTableName = `${schema}.schema_form_key_pairs` // table to save keypairs data.
 
-    var gcs_input_uri = (req?.body?.gcs_input_uri || req?.query?.gcs_input_uri)
+    var gcs_input_uri = obj?.gcs_input_uri
     var match = gcs_input_uri?.match(/gs:\/\/(.+?)\/(.+)/i)
 
     const file_name = match?.[2]
     const bucket_name = match?.[1]
 
-    console.log('BUCKEt', bucket_name, 'f', file_name, gcs_input_uri, 'body', req?.body)
+    console.log('BUCKEt', bucket_name, 'f', file_name, gcs_input_uri, 'body', obj)
 
-    const given_json = (req?.body?.json || req?.query?.json) || {}
-    const isTesting = !isFalsyValue(req?.body?.isTesting || req?.query?.isTesting)
+    const given_json = {}
+    // const isTesting = true
+    const isTesting = !isFalsyValue(obj?.isTesting)
 
     let removeQuotes = (txt) => typeof txt?.replace == 'function' ? txt?.replace(/[''`]+/g, '') : txt
 
@@ -273,14 +292,14 @@ const docAIv3 = async (req, res) => {
             if (!isTesting) {
                 let justFileName = file_name?.slice(file_name.lastIndexOf('/') + 1, file_name.length)
 
-                let query = `SELECT * FROM ${artifactTable} where artifact_name='${justFileName}'`
+                let query = `SELECT * FROM ${documentTable} where file_name='${justFileName}'`
                 // let artifactData = await runBigQuery(query)
                 let artifactData = await runQuery(postgresDB, query)
                 let numberOfAttempt = parseInt(artifactData[0]?.number_of_attempts) || 0
                 let hasError = Boolean(error)
                 let errorStr = hasError ? `'${removeQuotes(error)}'` : null
 
-                let updateQuery = `UPDATE ${artifactTable} SET number_of_attempts=${numberOfAttempt + 1}, error=${errorStr} where artifact_name='${justFileName}' `
+                let updateQuery = `UPDATE ${documentTable} SET number_of_attempts=${numberOfAttempt + 1}, error=${errorStr} where file_name='${justFileName}' `
                 console.log('qury1', query, 'query2', updateQuery)
                 // await runBigQuery(updateQuery)
                 await runQuery(postgresDB, updateQuery)
@@ -297,15 +316,15 @@ const docAIv3 = async (req, res) => {
         if (!given_json) {
             throw new Error('Missing JSON')
         }
-        if (!isTesting) {
-            axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/image_crop_vision_ai`, { gcs_input_uri })
-                .then((d) => {
-                    console.log('Succesfully Added Custom Fields using Vision AI', d?.data)
-                })
-                .catch(e => {
-                    console.error(`Custom fields from vision A.I failed`, e)
-                })
-        }
+        // if (!isTesting) {
+        //     axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/image_crop_vision_ai`, { gcs_input_uri })
+        //         .then((d) => {
+        //             console.log('Succesfully Added Custom Fields using Vision AI', d?.data)
+        //         })
+        //         .catch(e => {
+        //             console.error(`Custom fields from vision A.I failed`, e)
+        //         })
+        // }
 
         let result = await docAI({ location, processorId, file_name, bucket_name, id, given_json, isTesting, formKeyPairTableName })
 
@@ -315,14 +334,14 @@ const docAIv3 = async (req, res) => {
 
         if (should_update) {
             let justFileName = file_name?.slice(file_name.lastIndexOf('/') + 1, file_name.length)
-            let query = `UPDATE artifacts SET executed=${true} WHERE artifact_name='${justFileName}'`
+            let query = `UPDATE ${schema}.documents SET is_completed=${true} WHERE file_name='${justFileName}'`
             await runQuery(postgresDB, query)
         }
         let obj = {
             success: true,
             result
         }
-        return apiResponse(res, 201, obj)
+        return obj
     }
     catch (e) {
         let error = e?.message ? e.message : e.toString()
@@ -333,7 +352,7 @@ const docAIv3 = async (req, res) => {
         let obj = {
             message: error, error: e.toString()
         }
-        return apiResponse(res, 500, obj)
+        return obj
     }
 }
 

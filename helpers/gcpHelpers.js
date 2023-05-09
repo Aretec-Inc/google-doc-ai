@@ -35,9 +35,8 @@ const formLoop = async (arr) => {
 
     let myPromises = arr.map(v => {
         v.gcs_input_uri = v?.fileUrl
-        v.formKeyPairTableName = `schema_form_key_pairs`
 
-        return axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, v)
+        return docAIv3(v)
     })
 
     console.log('myPromises', myPromises)
@@ -56,29 +55,26 @@ const formLoop = async (arr) => {
             //     `https://context-api-2my7afm7yq-ue.a.run.app/api/offline_doc_ai`,
             //     opt?.body
             // )))
-            secondPromise.push(Promise.resolve(axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, opt?.body)))
+            // secondPromise.push(Promise.resolve(axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, opt?.body)))
         }
     }
 
-    console.log('after Loop***')
+    console.log('after Loop***', response)
 
-    await Promise.allSettled(secondPromise)
-        .then((r) => console.log('r', r))
-        .catch((e) => console.log('e', e))
+    // await Promise.allSettled(secondPromise)
+    //     .then((r) => console.log('r', r))
+    //     .catch((e) => console.log('e', e))
 
-    console.log('secondPromise')
+    // console.log('secondPromise')
 
-    await Promise.allSettled(dlpRedactionPromises)
+    // let ids = arr.map(d => `'${d?.fileId}'`)
 
-    let ids = arr.map(d => `'${d?.fileId}'`)
+    // let sqlQuery = `UPDATE ${schema}.documents SET is_completed = ${true} WHERE id IN (${ids})`
+    // await runQuery(postgresDB, sqlQuery)
+    //     .then((res) => console.log('res complete', res))
+    //     .catch((e) => console.log('e', e))
 
-    let sqlQuery = `UPDATE ${schema}.documents SET is_completed = ${true} WHERE id IN (${ids})`
-    await runQuery(postgresDB, sqlQuery)
-        .then((res) => console.log('res complete', res))
-        .catch((e) => console.log('e', e))
-
-    console.log('done****')
-
+    // console.log('done****')
 }
 
 module.exports = {

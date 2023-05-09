@@ -242,7 +242,7 @@ const uploadDocuments = async (req, res) => {
         Promise.all(pendingPromises)
             .then(async () => {
 
-                // allForms?.length && formLoop(allForms)
+                allForms?.length && formLoop(allForms)
                 console.log('after formLoop***')
 
                 let obj = {

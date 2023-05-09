@@ -905,3 +905,7 @@
     padding-top: 5px;
     cursor: pointer;
 }
+
+.upload-image {
+    height: 120px;
+}

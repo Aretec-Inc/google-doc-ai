@@ -1,4 +1,5 @@
 const fs = require('fs')
+const moment = require('moment')
 const codes = require('./codes.json')
 const { projectId, docAiClient } = require('../config/gcpConfig')
 
@@ -57,7 +58,8 @@ const uploadFileToStorage = (filepath, originalname, file_id, storage) => {
 
                     fs.unlinkSync(filepath)
 
-                } catch (err) {
+                }
+                catch (err) {
                     console.error("Error", err)
                 }
             }
@@ -112,6 +114,45 @@ const successFalse = (res, message, code = 500) => {
 
 const validateData = (data) => data ? "'" + data?.replace?.(/'|"/gi, '') + "'" : null
 
+const getUniqueArrayOfObjects = (ary, objectPropertName) => {
+    let cleanProperty = (property) => typeof property == 'string' ? property?.trim().toLowerCase() : property
+    return ary.filter((elem, index) => {
+        let filteredByProperty = ary?.findIndex(obj => {
+            let obj1V = obj?.[objectPropertName]
+            let obj2V = elem?.[objectPropertName]
+            let value1 = cleanProperty(obj1V)
+            let value2 = cleanProperty(obj2V)
+            return value1 == value2
+        })
+        return filteredByProperty == index
+    })
+}
+
+const getAuthUrl = async (uri, storage) => {
+    if (uri && uri.length) {
+        try {
+            const expires = moment(moment(), 'MM-DD-YYYY').add(2, 'days')
+            const bucketName = uri.split('/')[2]
+            const myBucket = storage.bucket(bucketName)
+
+            const config = {
+                action: 'read',
+                expires: expires,
+                accessibleAt: expires
+            }
+
+            let file = myBucket.file(uri.replace(`gs://${bucketName}/`, ''))
+            let [url] = await file.getSignedUrl(config)
+            return url
+        }
+        catch (e) {
+            console.log('e', e)
+            return uri
+        }
+    }
+    return undefined
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -121,5 +162,7 @@ module.exports = {
     checkDocumentQuality,
     apiResponse,
     successFalse,
-    validateData
+    validateData,
+    getUniqueArrayOfObjects,
+    getAuthUrl
 }
