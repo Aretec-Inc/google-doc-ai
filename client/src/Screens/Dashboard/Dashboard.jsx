@@ -15,7 +15,7 @@ const dateFormat = 'YYYY/MM/DD'
 const Dashboard = (props) => {
 
     return (
-        <div className='main_container'>
+        <div className='main_container-dashboard'>
             <div className='dashboard-section'>
                 <div className='row'>
                     <div className='col-lg-4'>

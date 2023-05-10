@@ -11,7 +11,7 @@ const Header = (props) => {
     // }
 
     return (
-        <div>
+        <div className='main-header-section'>
             <section className='mainheader'>
                 <div className='Top-header'>
                     <div className='header_left'>
