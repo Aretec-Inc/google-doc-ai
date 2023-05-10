@@ -186,7 +186,6 @@ const SubmissionTemplate = (props) => {
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress
                                                                     percent={50}
-                                                                    strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }}
                                                                 />
                                                             </TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.is_completed === true ? 'Completed' : 'Processing'}</TableCell>

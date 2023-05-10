@@ -5,6 +5,7 @@ import { Select, DatePicker, Input, Button, Progress } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
+import Grid from '@mui/material/Grid'
 import { CiMenuKebab } from 'react-icons/ci'
 import { BsSearch } from 'react-icons/bs'
 import moment from 'moment'
@@ -75,10 +76,10 @@ const Submission = (props) => {
 
     return (
         <div className='template-screen'>
-            <div className='row submission-head-div'>
-                <div className='col-lg-2 pl-0'>
+            <Grid container spacing={1} justifyContent={'space-between'}>
+                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
                     <Select
-                        className='width subdropdes'
+                        className='subdropdes'
                         showSearch
                         placeholder='Filter'
                         optionFilterProp='children'
@@ -89,28 +90,24 @@ const Submission = (props) => {
                     >
                         <Option value='Communicated'>Communicated</Option>
                     </Select>
-                </div>
-                <div className='col-lg-3'>
+                </Grid>
+                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
                     <RangePicker
-                        className='date width'
-                        defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+                        defaultValue={[moment(moment(), dateFormat), moment(moment(), dateFormat)]}
                         format={dateFormat}
                     />
-                </div>
-                <div className='col-lg-3'>
+                </Grid>
+                <Grid item xl={3} lg={3} md={4} sm={8} xs={12}>
                     <Input
-                        className='date width'
                         placeholder='Search by ID or File name'
                         prefix={<BsSearch className='search-field-icon' />}
                     />
-                </div>
-                <div className='col-lg-4 pr-0'>
-                    <div className='btn-specify'>
-                        <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal} className='date width-sub height_57px'
-                        >Create Submission</Button>
-                    </div>
-                </div>
-            </div>
+                </Grid>
+                <Grid item xl={5} lg={5} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
+                    <Button style={{ background: '#4285F4', color: '#fff', width: '180px' }} onClick={showModal} className='date width-sub height_57px'
+                    >Create Submission</Button>
+                </Grid>
+            </Grid>
 
             <div className='submission-div'>
                 <div className='submission-card'>
@@ -150,7 +147,6 @@ const Submission = (props) => {
                                                         <TableCell className='submission-table-cell submission-row-cell'>
                                                             <Progress
                                                                 percent={50}
-                                                                strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }}
                                                             />
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>

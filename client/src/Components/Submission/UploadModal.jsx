@@ -222,7 +222,7 @@ const CreateSubmission = (props) => {
                                     </div>
                                     <div className='progress-bar-line'>
                                         <Space direction='vertical' style={{ width: '100%' }}>
-                                            <Progress className='progress-thickness' percent={v?.progress} size={[300, 20]} strokeColor={{ '0%': '#4285F4', '100%': '#87d068' }} />
+                                            <Progress className='progress-thickness' percent={v?.progress} size={[300, 20]} />
                                         </Space>
                                     </div>
                                 </div>
