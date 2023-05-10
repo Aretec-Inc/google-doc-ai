@@ -15,12 +15,12 @@ module.exports = (sequelize, DataTypes, schema) => {
     }
     Submission.init(
         {
-            template_id: {
-                type: DataTypes.INTEGER,
+            id: {
+                type: DataTypes.STRING,
                 allowNull: false,
-                autoIncrement: true,
                 primaryKey: true
             },
+            name: DataTypes.STRING,
             processor_id: DataTypes.STRING,
             processor_name: DataTypes.STRING,
             aggregate_score: DataTypes.FLOAT,

@@ -3,7 +3,7 @@ provider "google" {
   region  = "us-central1"
 }
 
-resource "google_cloud_run_service" "nodejs_app" {
+resource "google_cloud_run_service" "doc-ai" {
   name     = "doc-ai"
   location = "us-central1"
 

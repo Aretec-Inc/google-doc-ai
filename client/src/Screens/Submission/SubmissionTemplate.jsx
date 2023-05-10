@@ -57,7 +57,7 @@ const dateFormat = 'YYYY/MM/DD'
 const SubmissionTemplate = (props) => {
     const { templateData, dispatch, goBack } = props
     const template_id = templateData?.template_id
-    const documents = useSelector((state) => state?.docReducer?.allDocuments[template_id] || [])
+    const documents = useSelector((state) => state?.docReducer?.allDocuments?.[template_id] || [])
     const [selectedDocument, setSelectedDocument] = useState({})
     const [showDocument, setShowDocument] = useState(false)
     const [open, setOpen] = useState(false)

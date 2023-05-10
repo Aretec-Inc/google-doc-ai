@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes, schema) => {
       primaryKey: true,
       type: DataTypes.STRING
     },
-    template_id: DataTypes.STRING,
+    submission_id: DataTypes.STRING,
     file_name: DataTypes.STRING,
     user_id: DataTypes.STRING,
     file_type: DataTypes.STRING,
