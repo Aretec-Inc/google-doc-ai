@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import LOGO from '../../assets/logo.svg'
 import { BsBell } from 'react-icons/bs'
 
 const Header = (props) => {
+    const { setToggleHeader } = props
 
+    // const [toggleHeader, setToggleHeader] = useState(false)
+
+
+    const clickToogle = () => {
+        setToggleHeader((state) => !state)
+    }
     // const logout = () => {
     //     localStorage.clear()
     //     dispatch(removeUser())
@@ -15,6 +22,9 @@ const Header = (props) => {
             <section className='mainheader'>
                 <div className='Top-header'>
                     <div className='header_left'>
+                        <span class="material-symbols-outlined menu_bar_icon" onClick={clickToogle}>
+                            menu
+                        </span>
                         <img src={LOGO} alt="" className='logomain' />
                     </div>
                     <div className='right_side'>

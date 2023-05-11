@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import Button from 'antd/lib/button'
 import Result from 'antd/lib/result'
@@ -52,6 +52,10 @@ const Page404 = (props) => {
 
 const WrapComponent = ({ Component, ...props }) => {
     const dispatch = useDispatch()
+    const [toggleHeader, setToggleHeader] = useState(false)
+
+    console.log('toggle click routes ==>', toggleHeader)
+
 
     useEffect(() => {
         dispatch(getAllProcessors())
@@ -60,9 +64,9 @@ const WrapComponent = ({ Component, ...props }) => {
 
     return (
         <div className='main_container'>
-            <Header />
+            <Header setToggleHeader={setToggleHeader} />
             <section className='main-screen'>
-                <Sidenav />
+                <Sidenav toggleHeader={toggleHeader} setToggleHeader={setToggleHeader} />
                 <div className='main-section'>
                     <div className='main-container'>
                         <Component {...props} dispatch={dispatch} />
