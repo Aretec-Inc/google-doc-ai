@@ -121,7 +121,10 @@ const Submission = (props) => {
                             </div>
                             <div className='submission-table-main'>
                                 <TableContainer component={Paper} className='submission-table'>
-                                    <Table aria-label='simple table'>
+                                    <Table
+                                        size="small" aria-label="a dense table"
+                                    // aria-label='simple table'
+                                    >
                                         <TableHead>
                                             <TableRow className='submission-head'>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
