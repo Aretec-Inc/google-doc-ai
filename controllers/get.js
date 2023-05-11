@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const pdfparser = require('./pdf')
 const { service_key, projectId, schema, postgresDB, storage } = require('../config')
 const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull } = require('../helpers')
@@ -44,13 +45,18 @@ const getDocumentsById = async (req, res) => {
         if (!submission_id) {
             throw 'Submission Id is Required!'
         }
-        let sqlQuery = `SELECT * FROM ${schema}.documents WHERE submission_id='${submission_id}' order by created_at desc;`
+        let sqlQuery = `SELECT d.*, ARRAY_AGG(CAST(s.confidence AS FLOAT)) AS average_confidence FROM ${schema}.documents d
+        LEFT JOIN ${schema}.schema_form_key_pairs AS s
+        ON d.file_name = s.file_name
+        WHERE d.submission_id='${submission_id}'
+        GROUP BY d.id order by created_at desc;`
 
         // Run the query
         let documents = await runQuery(postgresDB, sqlQuery)
 
         for (var i in documents) {
             documents[i].file_address = await getAuthUrl(documents?.[i]?.file_address, storage)
+            documents[i].average_confidence = _.round(_.mean(documents[i].average_confidence) * 100)
         }
 
         let obj = {
@@ -142,7 +148,6 @@ const getPdfData = async (req, res) => {
                 code: 'AI_FAILED'
             })
         }
-
     }
     catch (e) {
         console.log(e, "==> error In PDF API")

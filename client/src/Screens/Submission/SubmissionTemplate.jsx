@@ -189,7 +189,7 @@ const SubmissionTemplate = (props) => {
                                                             </TableCell>
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress
-                                                                    percent={50}
+                                                                    percent={v?.average_confidence}
                                                                 />
                                                             </TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.is_completed === true ? 'Completed' : 'Processing'}</TableCell>
