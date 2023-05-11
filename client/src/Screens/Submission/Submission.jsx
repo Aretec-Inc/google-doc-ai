@@ -150,7 +150,7 @@ const Submission = (props) => {
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>
                                                             <Progress
-                                                                percent={50}
+                                                                percent={v?.average_confidence}
                                                             />
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>

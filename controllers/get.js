@@ -18,12 +18,17 @@ const getAllProcessors = async (req, res) => {
 
 const getAllSubmmissions = async (req, res) => {
     try {
-        let sqlQuery = `SELECT s.*, CAST(COUNT(d.submission_id) as INT) AS total_forms FROM ${schema}.submissions s
-        LEFT JOIN ${schema}.documents d ON s.id = d.submission_id GROUP BY 
-        s.id order by s.created_at desc;`
+        let sqlQuery = `SELECT s.*, CAST(COUNT(d.submission_id) as INT) AS total_forms, ARRAY_AGG(CAST(k.confidence AS FLOAT)) AS average_confidence FROM ${schema}.submissions s
+        LEFT JOIN ${schema}.documents d ON s.id = d.submission_id 
+        LEFT JOIN google_doc_ai.schema_form_key_pairs AS k ON d.file_name = k.file_name
+        GROUP BY s.id order by s.created_at desc;`
 
         // Run the query
         let allSubmissions = await runQuery(postgresDB, sqlQuery)
+
+        for (var i in allSubmissions) {
+            allSubmissions[i].average_confidence = _.round(_.mean(allSubmissions[i].average_confidence) * 100)
+        }
 
         let obj = {
             success: true,
@@ -51,7 +56,6 @@ const getDocumentsById = async (req, res) => {
         WHERE d.submission_id='${submission_id}'
         GROUP BY d.id order by created_at desc;`
 
-        // Run the query
         let documents = await runQuery(postgresDB, sqlQuery)
 
         for (var i in documents) {
