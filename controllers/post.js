@@ -126,17 +126,17 @@ const register = (req, res) => {
 
 const createSubmmission = async (req, res) => {
     try {
-        const { processorId, processorName } = req.body
+        const { processorId, processorName, submissionName } = req.body
+        const id = uuidv4()
 
-        if (!processorId || !processorName) {
+        if (!processorId || !processorName || !submissionName) {
             return successFalse(res, 'Please Provide All Fields!', 500)
         }
 
         const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
 
-        let sqlQuery = `INSERT INTO ${schema}.submissions(
-            processor_id, processor_name, user_id, status, created_at)
-            VALUES (${validateData(processorId)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW()) RETURNING template_id, processor_id;`
+        let sqlQuery = `INSERT INTO ${schema}.submissions(id, processor_id, submission_name, processor_name, user_id, status, created_at)
+            VALUES ('${id}', ${validateData(processorId)}, ${validateData(submissionName)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW());`
 
         // Run the query
         runQuery(postgresDB, sqlQuery)
@@ -144,8 +144,8 @@ const createSubmmission = async (req, res) => {
                 let obj = {
                     success: true,
                     message: 'Submission Created Successfully!',
-                    template_id: row[0]?.template_id,
-                    processor_id: row[0]?.processor_id
+                    id,
+                    processor_id: processorId
                 }
                 return apiResponse(res, 201, obj)
             })
@@ -203,7 +203,7 @@ const uploadDocuments = async (req, res) => {
         const pendingPromises = []
         let errArr = []
         let allForms = []
-        let { template_id, processorId, files } = req.body
+        let { submission_id, processorId, files } = req.body
 
         const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
         const user_email = 'waqas@aretecinc.com'
@@ -226,14 +226,14 @@ const uploadDocuments = async (req, res) => {
                 original_file_name: fileOriginalName,
                 user_id,
                 user_email,
-                template_id,
+                submission_id,
                 processorId
             }
             is_completed = false
             allForms.push(postData)
 
             let size = (file?.fileSize / 1024 / 1024).toFixed(4) + ' mb'
-            sqlQuery = `INSERT INTO ${schema}.documents(id, template_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${fileId}', '${template_id}', '${fileName}', ${validateData(user_id)}, '${file_type}', '${fileUrl}', '${fileOriginalName}', '${size}', ${is_completed}, ${validateData(file?.originalFileUrl)}, NOW(), NOW())`
+            sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${fileId}', '${submission_id}', '${fileName}', ${validateData(user_id)}, '${file_type}', '${fileUrl}', '${fileOriginalName}', '${size}', ${is_completed}, ${validateData(file?.originalFileUrl)}, NOW(), NOW())`
 
             pendingPromises.push(runQuery(postgresDB, sqlQuery))
         }
