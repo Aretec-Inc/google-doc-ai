@@ -142,7 +142,7 @@ const Sidenav = (props) => {
                     onClick={() => setToggleHeader(false)}
                 >
                     <List>
-                        <ListItem key='1' disablePadding onClick={gotoDashboard}>
+                        <ListItem key='1' className='each_side' disablePadding onClick={gotoDashboard}>
                             <ListItemButton>
                                 <ListItemIcon>
                                     {/* <span class="material-symbols-outlined">
@@ -155,7 +155,7 @@ const Sidenav = (props) => {
                                 <ListItemText primary="Dashboard" className={`${window.location.href.split('/')[3] == '' ? 'active_tag' : ''}`} />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key='2' disablePadding onClick={gotoSubmission}>
+                        <ListItem key='2' className='each_side' disablePadding onClick={gotoSubmission}>
                             <ListItemButton>
                                 <ListItemIcon>
                                     <span class={`${window.location.href.split('/')[3] == 'submission' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}>
@@ -165,7 +165,7 @@ const Sidenav = (props) => {
                                 <ListItemText primary="Submissions" className={`${window.location.href.split('/')[3] == 'submission' ? 'active_tag' : ''}`} />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key='3' disablePadding onClick={gotoConfiguration}>
+                        <ListItem key='3' className='each_side' disablePadding onClick={gotoConfiguration}>
                             <ListItemButton>
                                 <ListItemIcon className=''>
                                     <span
