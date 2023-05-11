@@ -147,7 +147,7 @@ const Submission = (props) => {
                                                             </Link>
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>
                                                             <Progress
                                                                 percent={50}

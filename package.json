@@ -28,13 +28,11 @@
     "sequelize": "^6.31.1",
     "socket.io": "^4.5.1",
     "uuid": "^9.0.0",
-    "virgin-helpers": "https://github.com/Entrolics-LLC/Virgin-Island-Helpers.git#master",
     "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon",
-    "virgin-helpers": "yarn add https://github.com/Entrolics-LLC/Virgin-Island-Helpers.git#master",
     "dev-cloud": "NODE_ENV=cloudDB nodemon",
     "client": "npm start --prefix ./client && npm start --prefix client",
     "heroku-postbuild": "npm install --legacy-peer-deps --prefix client && npm run build --prefix client"

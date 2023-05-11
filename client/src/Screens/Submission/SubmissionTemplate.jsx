@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Spin } from 'antd'
+import { Select, DatePicker, Input, Button, Progress, Spin, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -19,7 +19,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import UploadModal from '../../Components/Submission/UploadModal'
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
-import { templatePrefix, errorMessage, convertTitle } from '../../utils/helpers'
+import { templatePrefix, errorMessage, convertTitle , validateLength} from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
@@ -181,7 +181,11 @@ const SubmissionTemplate = (props) => {
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                         >
                                                             <TableCell className='submission-table-cell submission-row-cell'>
-                                                                <Link onClick={() => showPDFDocument(v)}>{convertTitle(v?.original_file_name)}</Link>
+                                                                <Link onClick={() => showPDFDocument(v)}>
+                                                                    <Tooltip placement='top' title={convertTitle(v?.original_file_name)} color={'#1890ff'}>
+                                                                        {validateLength(convertTitle(v?.original_file_name), 30)}
+                                                                    </Tooltip>
+                                                                </Link>
                                                             </TableCell>
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress

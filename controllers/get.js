@@ -17,7 +17,9 @@ const getAllProcessors = async (req, res) => {
 
 const getAllSubmmissions = async (req, res) => {
     try {
-        let sqlQuery = `SELECT * FROM ${schema}.submissions order by created_at desc;`
+        let sqlQuery = `SELECT s.*, CAST(COUNT(d.submission_id) as INT) AS total_forms FROM ${schema}.submissions s
+        LEFT JOIN ${schema}.documents d ON s.id = d.submission_id GROUP BY 
+        s.id order by s.created_at desc;`
 
         // Run the query
         let allSubmissions = await runQuery(postgresDB, sqlQuery)
@@ -113,7 +115,7 @@ const manageAndResolvePDFData = async (req, res, fileData) => {
         })
     }
     else {
-        res.send({ success: false, message: "File still in process!", developerInfo: { message: "Did not receive data from database, looks like the A.I hasn't been applied to the file yet.", body: req?.body, query: req?.query } })
+        res.send({ success: false, message: 'File still in process!', developerInfo: { message: "Did not receive data from database, looks like the A.I hasn't been applied to the file yet.", body: req?.body, query: req?.query } })
     }
 }
 
