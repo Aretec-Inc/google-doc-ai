@@ -79,7 +79,7 @@ const Submission = (props) => {
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
                     <Select
-                        className='subdropdes'
+                        className='subdropdes ant-radius'
                         showSearch
                         placeholder='Filter'
                         optionFilterProp='children'
@@ -91,20 +91,23 @@ const Submission = (props) => {
                         <Option value='Communicated'>Communicated</Option>
                     </Select>
                 </Grid>
-                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
+                <Grid item xl={2} lg={3} md={4} sm={6} xs={12}>
                     <RangePicker
                         defaultValue={[moment(moment(), dateFormat), moment(moment(), dateFormat)]}
                         format={dateFormat}
+                        style={{ width: '100%' }}
+                        className='ant-radius'
                     />
                 </Grid>
-                <Grid item xl={3} lg={3} md={4} sm={8} xs={12}>
+                <Grid item xl={4} lg={4} md={4} sm={7} xs={12}>
                     <Input
+                        className='ant-radius'
                         placeholder='Search by ID or File name'
                         prefix={<BsSearch className='search-field-icon' />}
                     />
                 </Grid>
-                <Grid item xl={5} lg={5} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
-                    <Button style={{ background: '#4285F4', color: '#fff', width: '180px' }} onClick={showModal} className='date width-sub height_57px'
+                <Grid item xl={4} lg={3} md={12} sm={5} xs={12} style={{ textAlign: 'right' }}>
+                    <Button style={{ background: '#4285F4', color: '#fff', width: '180px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
                     >Create Submission</Button>
                 </Grid>
             </Grid>
@@ -122,8 +125,7 @@ const Submission = (props) => {
                             <div className='submission-table-main'>
                                 <TableContainer component={Paper} className='submission-table'>
                                     <Table
-                                        size="small" aria-label="a dense table"
-                                    // aria-label='simple table'
+                                        size='small' aria-label='a dense table'
                                     >
                                         <TableHead>
                                             <TableRow className='submission-head'>

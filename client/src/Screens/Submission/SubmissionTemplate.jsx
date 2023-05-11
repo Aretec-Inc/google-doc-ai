@@ -106,9 +106,9 @@ const SubmissionTemplate = (props) => {
                         <ArrowBackIcon />
                     </div>
                 </Grid>
-                <Grid item xl={2} lg={2} md={3} sm={5} xs={10}>
+                <Grid item xl={2} lg={3} md={3} sm={5} xs={10}>
                     <Select
-                        className='subdropdes'
+                        className='subdropdes ant-radius'
                         showSearch
                         placeholder='Filter'
                         optionFilterProp='children'
@@ -120,20 +120,23 @@ const SubmissionTemplate = (props) => {
                         <Option value='Communicated'>Communicated</Option>
                     </Select>
                 </Grid>
-                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
+                <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
                     <RangePicker
                         defaultValue={[moment(moment(), dateFormat), moment(moment(), dateFormat)]}
                         format={dateFormat}
+                        style={{ width: '100%' }}
+                        className='ant-radius'
                     />
                 </Grid>
-                <Grid item xl={2} lg={2} md={4} sm={8} xs={12}>
+                <Grid item xl={4} lg={3} md={4} sm={8} xs={12}>
                     <Input
                         placeholder='Search by ID or File name'
+                        className='ant-radius'
                         prefix={<BsSearch className='search-field-icon' />}
                     />
                 </Grid>
-                <Grid item xl={5} lg={5} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
-                    <Button style={{ background: '#4285F4', color: '#fff', width: '130px' }} onClick={showModal} className='date width-sub height_57px'
+                <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
+                    <Button style={{ background: '#4285F4', color: '#fff', width: '130px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
                     >Upload</Button>
                 </Grid>
             </Grid>

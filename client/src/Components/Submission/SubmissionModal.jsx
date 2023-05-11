@@ -289,7 +289,7 @@ const CreateSubmission = (props) => {
                     </div>
                     {activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
-                            <Input className='login-inp-field' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
+                            <Input className='login-inp-field ant-radius' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
                             <div className='modal-content-data'>
                                 <h6>General</h6>
                                 <p>Ready to use out-of-the-box processors for general document goals.</p>
@@ -312,7 +312,7 @@ const CreateSubmission = (props) => {
                                 <p>Schematized processors for domain-specific documents.</p>
                                 <div className='specialize-dropdown'>
                                     <Select
-                                        className='width subdropdes'
+                                        className='width subdropdes ant-radius'
                                         showSearch
                                         placeholder='Select Model'
                                         optionFilterProp='children'
