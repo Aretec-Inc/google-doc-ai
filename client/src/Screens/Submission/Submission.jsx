@@ -144,13 +144,13 @@ const Submission = (props) => {
                                                     >
                                                         <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
                                                             <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
-                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)} color={'#1890ff'}>
+                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)}>
                                                                     {validateLength(convertTitle(v?.submission_name), 16)}
                                                                 </Tooltip>
                                                             </Link>
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>
+                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>
                                                             <Progress
                                                                 percent={50}

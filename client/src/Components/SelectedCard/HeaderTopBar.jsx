@@ -248,12 +248,11 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
         <div className='myShadowCard'>
             <div className='artifact-top'>
                 <div className='artifact-sub'>
-
-                    <span style={{ cursor: 'pointer' ,paddingTop:'9px'}} onClick={goBackFunc}>
-                        <AiOutlineArrowLeft style={{ fontSize: 21,color:'#0057E7' }} />
+                    <span style={{ cursor: 'pointer', paddingTop: '9px' }} onClick={goBackFunc}>
+                        <AiOutlineArrowLeft style={{ fontSize: 21, color: '#0057E7' }} />
                     </span>
                     <Tooltip className='filename-topheader' title={originalName}>
-                        <p style={{ marginBottom: 0, marginLeft: 10,flex:1 }}>{highlighter(smallLengthName)}</p>
+                        <p style={{ marginBottom: 0, marginLeft: 10, flex: 1 }}>{highlighter(smallLengthName)}</p>
                     </Tooltip>
                 </div>
                 <div className='new-doc'>
@@ -263,7 +262,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                     <span><b>{artifactData?.is_completed ? 'COMPLETED' : 'PROCESSING'}</b></span>
                 </div> */}
                 {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
-                    {/* {isPDF(artifactData?.artifact_type) && (
+                {/* {isPDF(artifactData?.artifact_type) && (
                         <Spin spinning={updatedFile}>
                             <div className='artifact-version'>
                                 <Button
@@ -296,7 +295,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                             </div>
                         </Spin>
                     )} */}
-                    {/* <Tooltip title={isBookMarked ? (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to remove from bookmark') : (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to add as a bookmark')}>
+                {/* <Tooltip title={isBookMarked ? (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to remove from bookmark') : (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to add as a bookmark')}>
                         <span onClick={() => addOrRemoveBookMark()} id='artifactBookmark'>
 
                             {isBookMarked ? (
@@ -308,8 +307,8 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                         </span>
                     </Tooltip> */}
 
-                    {/* <CheckCircleOutline style={{ fontSize: 27, margin: '0px 6px', color: 'rgb(0, 128, 247)' }} /> */}
-                    {/* <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
+                {/* <CheckCircleOutline style={{ fontSize: 27, margin: '0px 6px', color: 'rgb(0, 128, 247)' }} /> */}
+                {/* <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
 
                     <DownloadButton selectedCard={artifactData} />
                 </div> */}
