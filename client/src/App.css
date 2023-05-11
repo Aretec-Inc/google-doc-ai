@@ -996,6 +996,12 @@ body {
     margin-bottom: 6px;
 }
 
+@media (max-width: 768px) {
+    .config-grid-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
 .each_card h4 {
     /* border-bottom: 1px solid #ffff; */
 }
