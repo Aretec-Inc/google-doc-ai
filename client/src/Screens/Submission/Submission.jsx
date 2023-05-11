@@ -141,7 +141,7 @@ const Submission = (props) => {
                                                     >
                                                         <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
                                                             <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
-                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)} color={'#1890ff'}>
+                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)}>
                                                                     {validateLength(convertTitle(v?.submission_name), 16)}
                                                                 </Tooltip>
                                                             </Link>

@@ -182,7 +182,7 @@ const SubmissionTemplate = (props) => {
                                                         >
                                                             <TableCell className='submission-table-cell submission-row-cell'>
                                                                 <Link onClick={() => showPDFDocument(v)}>
-                                                                    <Tooltip placement='top' title={convertTitle(v?.original_file_name)} color={'#1890ff'}>
+                                                                    <Tooltip placement='top' title={convertTitle(v?.original_file_name)}>
                                                                         {validateLength(convertTitle(v?.original_file_name), 30)}
                                                                     </Tooltip>
                                                                 </Link>

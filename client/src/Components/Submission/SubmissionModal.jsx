@@ -383,7 +383,7 @@ const CreateSubmission = (props) => {
                                 return (
                                     <div className='single-bar-div' key={i}>
                                         <div className='upload-file-name'>
-                                            <Tooltip placement='top' title={convertTitle(v?.name)} color={'#1890ff'}>
+                                            <Tooltip placement='top' title={convertTitle(v?.name)}>
                                                 {validateLength(convertTitle(v?.name), 16)}
                                             </Tooltip>
                                         </div>
