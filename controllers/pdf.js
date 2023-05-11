@@ -3,7 +3,7 @@ const { runQuery, isNull, getUniqueArrayOfObjects } = require('../helpers')
 const { postgresDB, schema } = require('../config')
 
 const getDocumentData = async (file_name) => {
-    let myQuery = `SELECT id, file_name, file_address as template_file_address, user_id, original_file_name, is_completed, number_of_attempts, file_address, template_id FROM ${schema}.documents where file_name='${file_name}'`
+    let myQuery = `SELECT id, file_name, file_address as template_file_address, user_id, original_file_name, is_completed, number_of_attempts, file_address, submission_id FROM ${schema}.documents where file_name='${file_name}'`
 
     const document = await runQuery(postgresDB, myQuery)
     return document

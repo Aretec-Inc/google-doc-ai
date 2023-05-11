@@ -37,12 +37,12 @@ const getAllSubmmissions = async (req, res) => {
 
 const getDocumentsById = async (req, res) => {
     try {
-        const { template_id } = req?.query
+        const { submission_id } = req?.query
 
-        if (!template_id) {
-            throw 'Template Id is Required!'
+        if (!submission_id) {
+            throw 'Submission Id is Required!'
         }
-        let sqlQuery = `SELECT * FROM ${schema}.documents WHERE template_id='${template_id}' order by created_at desc;`
+        let sqlQuery = `SELECT * FROM ${schema}.documents WHERE submission_id='${submission_id}' order by created_at desc;`
 
         // Run the query
         let documents = await runQuery(postgresDB, sqlQuery)
@@ -54,6 +54,33 @@ const getDocumentsById = async (req, res) => {
         let obj = {
             success: true,
             documents
+        }
+
+        apiResponse(res, 200, obj)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
+
+const getDashboardData = async (req, res) => {
+    try {
+        let promises = []
+        let sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.documents`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.submissions`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        let [documents, submissions] = await Promise.allSettled(promises)
+
+        let obj = {
+            success: true,
+            documents: documents?.value[0]?.count,
+            submissions: submissions?.value[0]?.count
         }
 
         apiResponse(res, 200, obj)
@@ -125,5 +152,6 @@ module.exports = {
     getAllProcessors,
     getAllSubmmissions,
     getDocumentsById,
-    getPdfData
+    getPdfData,
+    getDashboardData
 }

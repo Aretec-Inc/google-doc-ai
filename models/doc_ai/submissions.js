@@ -1,6 +1,6 @@
 'use strict';
 const {
-    Model, NOW
+    Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes, schema) => {
     class Submission extends Model {
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes, schema) => {
                 allowNull: false,
                 primaryKey: true
             },
-            name: DataTypes.STRING,
+            submission_name: DataTypes.STRING,
             processor_id: DataTypes.STRING,
             processor_name: DataTypes.STRING,
             aggregate_score: DataTypes.FLOAT,

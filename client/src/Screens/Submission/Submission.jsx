@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress } from 'antd'
+import { Select, DatePicker, Input, Button, Progress, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -18,7 +18,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import SubmissionModal from '../../Components/Submission/SubmissionModal'
 import SubmissionTemplate from './SubmissionTemplate'
-import { templatePrefix } from '../../utils/helpers'
+import { templatePrefix, validateLength, convertTitle } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions'
 
 const TabPanel = (props) => {
@@ -70,7 +70,7 @@ const Submission = (props) => {
         setOpen(false)
     }
 
-    if (showTemplate && templateData?.template_id) {
+    if (showTemplate && templateData?.id) {
         return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />
     }
 
@@ -114,7 +114,7 @@ const Submission = (props) => {
                     <div className='submission-card-div'>
                         <div className='submission-main-list'>
                             <div className='submission-heading'>
-                                <p className='submission-title mg_lf_15px'>{allSubmissions?.length} Templates</p>
+                                <p className='submission-title mg_lf_15px'>{allSubmissions?.length} Submissions</p>
                                 <div className='processor-data'>
                                     <CiMenuKebab className='menuicon' />
                                 </div>
@@ -124,7 +124,7 @@ const Submission = (props) => {
                                     <Table aria-label='simple table'>
                                         <TableHead>
                                             <TableRow className='submission-head'>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Template ID</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
@@ -140,7 +140,11 @@ const Submission = (props) => {
                                                         key={i}
                                                     >
                                                         <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                            <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>{templatePrefix(v?.template_id)}</Link>
+                                                            <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
+                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)} color={'#1890ff'}>
+                                                                    {validateLength(convertTitle(v?.submission_name), 16)}
+                                                                </Tooltip>
+                                                            </Link>
                                                         </TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
                                                         <TableCell className='submission-table-cell submission-row-cell'>{0}</TableCell>

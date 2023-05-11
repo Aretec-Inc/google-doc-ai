@@ -56,8 +56,8 @@ const dateFormat = 'YYYY/MM/DD'
 
 const SubmissionTemplate = (props) => {
     const { templateData, dispatch, goBack } = props
-    const template_id = templateData?.template_id
-    const documents = useSelector((state) => state?.docReducer?.allDocuments?.[template_id] || [])
+    const submission_id = templateData?.id
+    const documents = useSelector((state) => state?.docReducer?.allDocuments?.[submission_id] || [])
     const [selectedDocument, setSelectedDocument] = useState({})
     const [showDocument, setShowDocument] = useState(false)
     const [open, setOpen] = useState(false)
@@ -72,9 +72,9 @@ const SubmissionTemplate = (props) => {
             setLoading(true)
         }
 
-        secureApi.get(`${GET.DOCUMENTS_BY_ID}?template_id=${template_id}`)
+        secureApi.get(`${GET.DOCUMENTS_BY_ID}?submission_id=${submission_id}`)
             .then((data) => {
-                dispatch(setDocuments({ [template_id]: data?.documents || [] }))
+                dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
             })
             .catch((err) => {
                 let errMsg = err?.response?.data?.message
@@ -142,7 +142,7 @@ const SubmissionTemplate = (props) => {
                 <div className='row'>
                     <div className='col-lg-12 p-0'>
                         <div className='tepm-id'>
-                            <h5>Template ID: {templatePrefix(template_id)}</h5>
+                            <h5>Submission: {convertTitle(templateData?.submission_name)}</h5>
                         </div>
                     </div>
                 </div>

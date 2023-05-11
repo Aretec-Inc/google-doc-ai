@@ -122,7 +122,7 @@ const CreateSubmission = (props) => {
             .then(async () => {
                 if (allFilesData?.length) {
                     let newObj = {
-                        template_id: templateData?.template_id,
+                        submission_id: templateData?.id,
                         processorId: templateData?.processor_id,
                         files: fileList
                     }

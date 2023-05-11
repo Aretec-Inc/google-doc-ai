@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Select, Modal, Progress, Space, Button, Tooltip, Spin } from 'antd'
+import { Select, Modal, Progress, Space, Button, Tooltip, Spin, Input } from 'antd'
 import axios from 'axios'
 import Grid from '@mui/material/Grid'
 import Stepper from '@mui/material/Stepper'
@@ -32,6 +32,7 @@ const CreateSubmission = (props) => {
     const [loading, setLoading] = useState(false)
     const [uploadloading, setUploadLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
+    const [submissionName, setSubmissionName] = useState(null)
     const defaultParser = {
         displayName: 'Form Parser',
         id: 'aebf936ce61ab3b1'
@@ -61,9 +62,14 @@ const CreateSubmission = (props) => {
 
     const handleNext = (isDefault = false) => {
 
+        if (!submissionName) {
+            return errorMessage('Please Input Submission Name!')
+        }
+
         if (!processor && !isDefault) {
             return errorMessage('Please Select Model!')
         }
+
         const newActiveStep = isLastStep() && !allStepsCompleted() ? steps.findIndex((step, i) => !(i in completed)) : activeStep + 1
         setActiveStep(newActiveStep)
     }
@@ -92,7 +98,8 @@ const CreateSubmission = (props) => {
 
         let obj = {
             processorId: processor?.id,
-            processorName: processor?.displayName
+            processorName: processor?.displayName,
+            submissionName
         }
 
         setLoading(true)
@@ -209,13 +216,14 @@ const CreateSubmission = (props) => {
                 if (allFilesData?.length) {
                     let obj = {
                         processorId: processor?.id,
-                        processorName: processor?.displayName
+                        processorName: processor?.displayName,
+                        submissionName
                     }
                     secureApi.post(POST.CREATE_SUBMISSION, obj)
                         .then((data) => {
                             if (data?.success) {
                                 let newObj = {
-                                    template_id: data?.template_id,
+                                    submission_id: data?.id,
                                     processorId: data?.processor_id,
                                     files: fileList
                                 }
@@ -281,6 +289,7 @@ const CreateSubmission = (props) => {
                     </div>
                     {activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
+                            <Input className='login-inp-field' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
                             <div className='modal-content-data'>
                                 <h6>General</h6>
                                 <p>Ready to use out-of-the-box processors for general document goals.</p>
@@ -318,7 +327,7 @@ const CreateSubmission = (props) => {
                                     </Select>
                                 </div>
                                 <div className='btn-end-div'>
-                                    <Button className='process-btn' type='primary' disabled={!Boolean(processor)} onClick={handleNext}>Next</Button>
+                                    <Button className='process-btn' type='primary' disabled={!Boolean(processor) || !Boolean(submissionName)} onClick={handleNext}>Next</Button>
                                 </div>
                             </div>
                         </div>
