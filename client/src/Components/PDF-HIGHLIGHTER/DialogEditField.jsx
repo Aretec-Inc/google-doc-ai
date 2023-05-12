@@ -37,7 +37,6 @@ const FormDialog = ({ closeDialog, data, onSave, is_editable, artifactData }) =>
             .catch((err) => {
                 console.log(err)
             })
-        console.log("UPDATE CNFIDENEE==>")
     }, [])
 
     // let updateNow = (isFieldName) => {

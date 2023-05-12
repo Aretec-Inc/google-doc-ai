@@ -20,7 +20,6 @@ const AddFieldModal = ({ addedKeyPairs, setCropOptions, setAddedKeyPairs, onClos
     const availableKeyPairs = useMemo(() => availableKeyPair?.filter?.(d => addedKeyPairsName?.indexOf(d?.field_name) < 0), [availableKeyPair, addedKeyPairs])
 
     const [errors, setErrors] = useState({})
-    console.log("availableKeyPairs", availableKeyPairs)
 
     const uniqueAddedKeyPairs = useMemo(() => getUniqueArrayOfObjects(addedKeyPairs, "field_name"), [addedKeyPairs])
 

@@ -30,6 +30,7 @@ const EditableTableCell = ({ is_editable, setFinalText, Loading, isFieldName, re
     const isLoading = loading || Loading
     const shouldShowSave = Boolean((isFieldName ? f_n : f_v)?.trim()?.toLowerCase() !== text?.trim()?.toLowerCase())
     let onSAVE = typeof onSave == "function" ? onSave : () => console.log("Missing Props 'onSave' from component EditableCell")
+
     let updateNow = () => {
         setIsLoading(true)
         if (props?.setIsLoading) props.setIsLoading(true);

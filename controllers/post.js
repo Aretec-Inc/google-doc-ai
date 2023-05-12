@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 var jwt = require('jwt-simple')
 const moment = require('moment')
 const axios = require('axios')
-const { runQuery, apiResponse, successFalse, validateData, formLoop } = require('../helpers')
+const { runQuery, apiResponse, successFalse, validateData, formLoop, isNull } = require('../helpers')
 const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
 const pdfKeyPair = require('../helpers/pdf_keyPair')
@@ -274,10 +274,10 @@ const updateKeyPairs = async (req, res) => {
 
         if (id && (hasFieldName || hasFieldValue)) {
 
-            let shouldUpdate = await pdfKeyPair.shouldFieldUpdate(req, contextOltp)
+            let shouldUpdate = await pdfKeyPair.shouldFieldUpdate(req, postgresDB)
             console.log(shouldUpdate, '<==shouldUpdate')
             if (shouldUpdate) {
-                const updateResults = await pdfKeyPair.updateField(req, contextOltp)
+                const updateResults = await pdfKeyPair.updateField(req, postgresDB)
                 return res.status(200).send({ success: true, res: typeof updateResults?.flat == 'function' ? updateResults?.flat() : null })
             }
             else {
