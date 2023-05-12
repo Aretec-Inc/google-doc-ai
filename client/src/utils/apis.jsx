@@ -11,7 +11,8 @@ const GET = {
     ALL_PROCESSORS: `${api}/get-all-processors`,
     ALL_SUBMISSIONS: `${api}/get-all-submissions`,
     DOCUMENTS_BY_ID: `${api}/get-documents-by-id`,
-    PDF_DATA: `${api}/get-pdf-data`
+    PDF_DATA: `${api}/get-pdf-data`,
+    DASHBOARD_DATA: `${api}/get-dashboard-data`
 }
 
 const POST = {

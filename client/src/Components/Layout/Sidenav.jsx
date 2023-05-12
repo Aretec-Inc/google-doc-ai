@@ -39,7 +39,6 @@ const Sidenav = (props) => {
     const { toggleHeader, setToggleHeader } = props;
 
     const navigate = useNavigate()
-    console.log("TOGGLE HEADER SIDE NAV ===>", toggleHeader)
 
     const clickToogle = () => {
         setToggleHeader((state) => !state)

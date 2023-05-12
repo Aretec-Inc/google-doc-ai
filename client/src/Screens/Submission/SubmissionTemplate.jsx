@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Spin, Tooltip } from 'antd'
+import { Select, DatePicker, Input, Button, Progress, Spin, Tooltip, Divider } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -19,10 +19,12 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import UploadModal from '../../Components/Submission/UploadModal'
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
-import { templatePrefix, errorMessage, convertTitle , validateLength} from '../../utils/helpers'
+import { templatePrefix, errorMessage, convertTitle, validateLength } from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
+import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
+
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -100,6 +102,47 @@ const SubmissionTemplate = (props) => {
 
     return (
         showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedDocument} /> : <div className='template-screen'>
+            <div className='secondary_header_container'>
+                <div className='left_sec_head'>
+                    <div className='secondary_header_left'>
+                        <img width={'30px'} src={SHARE_ICON} alt='SHARE_ICON' />
+                        <h2 className='secondary_header_heading'>
+                            Submission
+                        </h2>
+                    </div>
+                    <h2 className='secondary_header_heading'>
+                        Services
+                    </h2>
+                    <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
+                        <span class="material-symbols-outlined">
+                            upload_file
+                        </span>
+                        <span>
+                            UPLOAD
+                        </span>
+                    </Button>
+                </div>
+                <div className='right_sec_head'>
+                    <Button type='text' className='secondary_header_buttons'>
+                        <span class="material-symbols-outlined mg_rgt_3px">
+                            chat
+                        </span>
+                        <span>
+                            Help Assistant
+                        </span>
+                    </Button>
+                    <Button type='text' className='secondary_header_buttons'>
+                        <span class="material-symbols-outlined mg_rgt_3px">
+                            school
+                        </span>
+                        <span>
+                            Learn
+                        </span>
+                    </Button>
+                </div>
+            </div>
+            <Divider />
+            <br />
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={1} lg={1} md={1} sm={1} xs={2}>
                     <div className='back-arrow' onClick={goBack}>

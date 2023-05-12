@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Tooltip } from 'antd'
+import { Select, DatePicker, Input, Button, Progress, Tooltip, Divider } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@mui/material/Grid'
 import { CiMenuKebab } from 'react-icons/ci'
 import { BsSearch } from 'react-icons/bs'
@@ -20,6 +21,14 @@ import SubmissionModal from '../../Components/Submission/SubmissionModal'
 import SubmissionTemplate from './SubmissionTemplate'
 import { templatePrefix, validateLength, convertTitle } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions'
+import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
+
+
+const useStyles = makeStyles({
+    tableHead: {
+        backgroundColor: '#f5f5f5',
+    },
+});
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -53,6 +62,7 @@ const dateFormat = 'YYYY/MM/DD'
 
 const Submission = (props) => {
     const { dispatch } = props
+    const classes = useStyles();
     const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
     const [open, setOpen] = useState(false)
     const [showTemplate, setShowTemplate] = useState(false)
@@ -76,6 +86,47 @@ const Submission = (props) => {
 
     return (
         <div className='template-screen'>
+            <div className='secondary_header_container'>
+                <div className='left_sec_head'>
+                    <div className='secondary_header_left'>
+                        <img width={'30px'} src={SHARE_ICON} alt='SHARE_ICON' />
+                        <h2 className='secondary_header_heading'>
+                            Submission
+                        </h2>
+                    </div>
+                    <h2 className='secondary_header_heading'>
+                        Services
+                    </h2>
+                    <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
+                        <span class="material-symbols-outlined">
+                            add
+                        </span>
+                        <span>
+                            Create Submission
+                        </span>
+                    </Button>
+                </div>
+                <div className='right_sec_head'>
+                    <Button type='text' className='secondary_header_buttons'>
+                        <span class="material-symbols-outlined mg_rgt_3px">
+                            chat
+                        </span>
+                        <span>
+                            Help Assistant
+                        </span>
+                    </Button>
+                    <Button type='text' className='secondary_header_buttons'>
+                        <span class="material-symbols-outlined mg_rgt_3px">
+                            school
+                        </span>
+                        <span>
+                            Learn
+                        </span>
+                    </Button>
+                </div>
+            </div>
+            <Divider />
+            <br />
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
                     <Select
@@ -127,7 +178,7 @@ const Submission = (props) => {
                                     <Table
                                         size='small' aria-label='a dense table'
                                     >
-                                        <TableHead>
+                                        <TableHead  className={classes.tableHead}>
                                             <TableRow className='submission-head'>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
                                                 <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
