@@ -54,9 +54,6 @@ const WrapComponent = ({ Component, ...props }) => {
     const dispatch = useDispatch()
     const [toggleHeader, setToggleHeader] = useState(false)
 
-    console.log('toggle click routes ==>', toggleHeader)
-
-
     useEffect(() => {
         dispatch(getAllProcessors())
         dispatch(getAllSubmissions())
