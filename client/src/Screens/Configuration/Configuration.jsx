@@ -14,8 +14,8 @@ const Configuration = (props) => {
         <Button style={{ background: '#4285F4', color: '#fff', borderRadius: '4px' }} className='date width-sub height_57px'>
           Add Configuration
         </Button>
-        <div class="config-grid-container">
-          <div class="config-grid-item">
+        <div className="config-grid-container">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -24,7 +24,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -33,7 +33,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -42,7 +42,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />

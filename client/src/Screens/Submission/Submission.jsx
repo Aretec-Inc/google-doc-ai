@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Tooltip } from 'antd'
+import { Select, DatePicker, Input, Button, Progress, Tooltip, Spin } from 'antd'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -18,7 +18,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import SubmissionModal from '../../Components/Submission/SubmissionModal'
 import SubmissionTemplate from './SubmissionTemplate'
-import { templatePrefix, validateLength, convertTitle } from '../../utils/helpers'
+import { validateLength, convertTitle, disabledDate } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions'
 
 const TabPanel = (props) => {
@@ -54,13 +54,21 @@ const dateFormat = 'YYYY/MM/DD'
 const Submission = (props) => {
     const { dispatch } = props
     const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
+    const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
     const [open, setOpen] = useState(false)
     const [showTemplate, setShowTemplate] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [templateData, setTemplateData] = useState({})
+    const [submissionName, setSubmissionName] = useState('')
+    const [processorId, setProcessorId] = useState('')
+    const [dateRange, setDateRange] = useState(null)
 
     useEffect(() => {
-        dispatch(getAllSubmissions())
-    }, [open])
+        if (!allSubmissions?.length) {
+            setLoading(true)
+        }
+        dispatch(getAllSubmissions({ submissionName, processorId, dateRange }, setLoading))
+    }, [open, submissionName, processorId, dateRange])
 
     const showModal = () => {
         setOpen(true)
@@ -68,6 +76,16 @@ const Submission = (props) => {
 
     const handleCancel = () => {
         setOpen(false)
+    }
+
+    const setRange = (d) => {
+        if (!d) {
+            return setDateRange(null)
+        }
+        setDateRange({
+            start: d[0].format('YYYY-MM-DD'),
+            end: moment(d[1]).add(1, 'day').format('YYYY-MM-DD')
+        })
     }
 
     if (showTemplate && templateData?.id) {
@@ -87,16 +105,18 @@ const Submission = (props) => {
                         filterSort={(optionA, optionB) =>
                             optionA?.children?.toLowerCase()?.localeCompare(optionB?.children?.toLowerCase())
                         }
+                        onChange={(e) => setProcessorId(e)}
                     >
-                        <Option value='Communicated'>Communicated</Option>
+                        {allProcessors?.map((v, i) => <Option key={i} value={v?.id}>{v?.displayName}</Option>)}
                     </Select>
                 </Grid>
                 <Grid item xl={2} lg={3} md={4} sm={6} xs={12}>
                     <RangePicker
-                        defaultValue={[moment(moment(), dateFormat), moment(moment(), dateFormat)]}
                         format={dateFormat}
                         style={{ width: '100%' }}
                         className='ant-radius'
+                        disabledDate={disabledDate}
+                        onChange={setRange}
                     />
                 </Grid>
                 <Grid item xl={4} lg={4} md={4} sm={7} xs={12}>
@@ -104,6 +124,7 @@ const Submission = (props) => {
                         className='ant-radius'
                         placeholder='Search by ID or File name'
                         prefix={<BsSearch className='search-field-icon' />}
+                        onChange={(e) => setSubmissionName(e?.target?.value)}
                     />
                 </Grid>
                 <Grid item xl={4} lg={3} md={12} sm={5} xs={12} style={{ textAlign: 'right' }}>
@@ -123,49 +144,51 @@ const Submission = (props) => {
                                 </div>
                             </div>
                             <div className='submission-table-main'>
-                                <TableContainer component={Paper} className='submission-table'>
-                                    <Table
-                                        size='small' aria-label='a dense table'
-                                    >
-                                        <TableHead>
-                                            <TableRow className='submission-head'>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
-                                                <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {allSubmissions?.map((v, i) => {
-                                                return (
-                                                    <TableRow
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        key={i}
-                                                    >
-                                                        <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                            <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
-                                                                <Tooltip placement='top' title={convertTitle(v?.submission_name)}>
-                                                                    {validateLength(convertTitle(v?.submission_name), 16)}
-                                                                </Tooltip>
-                                                            </Link>
-                                                        </TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>
-                                                            <Progress
-                                                                percent={v?.average_confidence}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
-                                                        <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
-                                                    </TableRow>
-                                                )
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <Spin spinning={loading}>
+                                    <TableContainer component={Paper} className='submission-table'>
+                                        <Table
+                                            size='small' aria-label='a dense table'
+                                        >
+                                            <TableHead>
+                                                <TableRow className='submission-head'>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
+                                                    <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {allSubmissions?.map((v, i) => {
+                                                    return (
+                                                        <TableRow
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                            key={i}
+                                                        >
+                                                            <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
+                                                                <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
+                                                                    <Tooltip placement='top' title={convertTitle(v?.submission_name)}>
+                                                                        {validateLength(convertTitle(v?.submission_name), 16)}
+                                                                    </Tooltip>
+                                                                </Link>
+                                                            </TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>
+                                                                <Progress
+                                                                    percent={v?.average_confidence}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
+                                                            <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Spin>
                             </div>
                             <div className='submissions-foote'>
                                 <div className='display-flex'>

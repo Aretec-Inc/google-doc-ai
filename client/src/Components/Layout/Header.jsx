@@ -22,7 +22,7 @@ const Header = (props) => {
             <section className='mainheader'>
                 <div className='Top-header'>
                     <div className='header_left'>
-                        <span class="material-symbols-outlined menu_bar_icon" onClick={clickToogle}>
+                        <span className="material-symbols-outlined menu_bar_icon" onClick={clickToogle}>
                             menu
                         </span>
                         <img src={LOGO} alt="" className='logomain' />

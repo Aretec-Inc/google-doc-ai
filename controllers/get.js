@@ -18,9 +18,29 @@ const getAllProcessors = async (req, res) => {
 
 const getAllSubmmissions = async (req, res) => {
     try {
-        let sqlQuery = `SELECT s.*, CAST(COUNT(d.submission_id) as INT) AS total_forms, ARRAY_AGG(CAST(k.confidence AS FLOAT)) AS average_confidence FROM ${schema}.submissions s
+        const { submissionName, processorId, dateRange } = req?.body
+        let whereClause = ``
+
+        if (submissionName) {
+            whereClause += ` s.submission_name ILIKE '%${submissionName}%' AND`
+        }
+
+        if (processorId) {
+            whereClause += ` s.processor_id='${processorId}' AND`
+        }
+
+        if (dateRange?.start && dateRange?.end) {
+            whereClause += `s.created_at BETWEEN '${dateRange?.start}' AND '${dateRange?.end}' AND`
+        }
+
+        if (whereClause?.length > 5) {
+            whereClause = `WHERE ${whereClause?.slice(0, -3)}`
+        }
+
+        let sqlQuery = `SELECT s.*, CAST(COUNT(DISTINCT d.submission_id) as INT) AS total_forms, ARRAY_AGG(CAST(k.confidence AS FLOAT)) AS average_confidence FROM ${schema}.submissions s
         LEFT JOIN ${schema}.documents d ON s.id = d.submission_id 
         LEFT JOIN google_doc_ai.schema_form_key_pairs AS k ON d.file_name = k.file_name
+        ${whereClause}
         GROUP BY s.id order by s.created_at desc;`
 
         // Run the query
@@ -35,7 +55,7 @@ const getAllSubmmissions = async (req, res) => {
             allSubmissions
         }
 
-        apiResponse(res, 201, obj)
+        apiResponse(res, 200, obj)
     }
     catch (e) {
         console.log('e', e)

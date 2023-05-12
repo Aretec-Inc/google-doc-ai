@@ -17,9 +17,9 @@ const getAllProcessors = () => {
     }
 }
 
-const getAllSubmissions = () => {
+const getAllSubmissions = (body = {}, setLoading = null) => {
     return (dispatch) => {
-        secureApi.get(GET?.ALL_SUBMISSIONS)
+        secureApi.post(GET?.ALL_SUBMISSIONS, body)
             .then((data) => {
                 dispatch({
                     type: ALL_SUBMISSIONS,
@@ -28,6 +28,11 @@ const getAllSubmissions = () => {
             })
             .catch((e) => {
                 dispatch({ type: ALL_SUBMISSIONS, allSubmissions: [] })
+            })
+            .finally(() => {
+                if (setLoading) {
+                    setLoading(false)
+                }
             })
     }
 }

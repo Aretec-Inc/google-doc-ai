@@ -3,7 +3,7 @@ const { getAllProcessors, getAllSubmmissions, getDocumentsById, getPdfData, getD
 
 router.get('/get-all-processors', getAllProcessors)
 
-router.get('/get-all-submissions', getAllSubmmissions)
+router.post('/get-all-submissions', getAllSubmmissions)
 
 router.get('/get-documents-by-id', getDocumentsById)
 

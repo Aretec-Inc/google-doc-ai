@@ -108,7 +108,7 @@ const Sidenav = (props) => {
                 <section className='mainheader'>
                     <div className='Top-header'>
                         <div className='header_left'>
-                            <span class="material-symbols-outlined menu_bar_icon" onClick={clickToogle}>
+                            <span className="material-symbols-outlined menu_bar_icon" onClick={clickToogle}>
                                 menu
                             </span>
                             <img src={LOGO} alt="" className='logomain' />
@@ -145,10 +145,10 @@ const Sidenav = (props) => {
                         <ListItem key='1' className='each_side' disablePadding onClick={gotoDashboard}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    {/* <span class="material-symbols-outlined">
+                                    {/* <span className="material-symbols-outlined">
                                         dashboard
                                     </span> */}
-                                    <span class={`${window.location.href.split('/')[3] == '' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}>
+                                    <span className={`${window.location.href.split('/')[3] == '' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}>
                                         full_stacked_bar_chart
                                     </span>
                                 </ListItemIcon>
@@ -158,7 +158,7 @@ const Sidenav = (props) => {
                         <ListItem key='2' className='each_side' disablePadding onClick={gotoSubmission}>
                             <ListItemButton>
                                 <ListItemIcon>
-                                    <span class={`${window.location.href.split('/')[3] == 'submission' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}>
+                                    <span className={`${window.location.href.split('/')[3] == 'submission' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}>
                                         screen_share
                                     </span>
                                 </ListItemIcon>
@@ -169,8 +169,8 @@ const Sidenav = (props) => {
                             <ListItemButton>
                                 <ListItemIcon className=''>
                                     <span
-                                        class={`${window.location.href.split('/')[3] == 'configuration' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}
-                                    // class="material-symbols-outlined active_icon"
+                                        className={`${window.location.href.split('/')[3] == 'configuration' ? 'material-symbols-outlined active_icon' : 'material-symbols-outlined'}`}
+                                    // className="material-symbols-outlined active_icon"
                                     >
                                         settings
                                     </span>

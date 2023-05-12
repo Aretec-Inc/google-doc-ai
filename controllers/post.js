@@ -173,7 +173,7 @@ const generateUploadSignedUrl = async (req, res) => {
 
         console.log('Origin', Origin)
 
-        fileOriginalName = `${id}-${fileOriginalName}`
+        fileOriginalName = `${id}-${fileOriginalName}`?.replace(/'|"/g, '')
 
         // These options will allow temporary uploading of the file with outgoing
         const options = {
@@ -216,8 +216,8 @@ const uploadDocuments = async (req, res) => {
             let file_type = file.fileType
 
             let is_completed = true
-            let fileOriginalName = file?.fileOriginalName
-            let fileName = file?.fileName
+            let fileOriginalName = file?.fileOriginalName?.replace(/'|"/g, '')
+            let fileName = file?.fileName?.replace(/'|"/g, '')
 
             let postData = {
                 fileUrl,

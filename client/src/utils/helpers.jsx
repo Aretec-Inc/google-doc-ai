@@ -1,4 +1,6 @@
 import { message, notification } from 'antd'
+import momentTz from 'moment-timezone'
+
 const requiredMessage = (value) => `Please input your ${value}!`
 
 const inputPlace = (value) => `Input your ${value} Here...!`
@@ -50,6 +52,11 @@ const validateLength = (val, len = 15) => val.length > len ? `${val.slice(0, len
 
 const templatePrefix = (id) => `000${id}`?.slice(-4,)
 
+const disabledDate = (current) => {
+    let customDate = momentTz().format('YYYY-MM-DD')
+    return current && current > momentTz(customDate, 'YYYY-MM-DD')
+}
+
 export {
     requiredMessage,
     inputPlace,
@@ -63,5 +70,6 @@ export {
     stringLimiter,
     templatePrefix,
     updateId,
-    validateLength
+    validateLength,
+    disabledDate
 }
