@@ -47,7 +47,7 @@ const CreateSubmission = (props) => {
     }
 
     const onFinish = async () => {
-        const origin = 'http://localhost:3000'
+        const origin = process.env.NODE_ENV === 'prdouction' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
         setUploadLoading(true)
         setButtonText('Uploading...')
         let allFilesData = []
