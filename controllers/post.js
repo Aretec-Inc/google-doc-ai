@@ -7,6 +7,7 @@ const axios = require('axios')
 const { runQuery, apiResponse, successFalse, validateData, formLoop } = require('../helpers')
 const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
+const pdfKeyPair = require('../helpers/pdf_keyPair')
 const { generateBodyResponse } = require('../services/tokenService')
 
 const docAIBucket = storage.bucket(process.env?.storage_bucket || `doc_ai_form`)
@@ -261,10 +262,42 @@ const uploadDocuments = async (req, res) => {
     }
 }
 
+const updateKeyPairs = async (req, res) => {
+    try {
+        let body = req?.body
+        let id = body?.id
+        let validated_field_name = body?.validated_field_name
+        let validated_field_value = body?.validated_field_value
+
+        const hasFieldName = !isNull(validated_field_name)
+        const hasFieldValue = !isNull(validated_field_value)
+
+        if (id && (hasFieldName || hasFieldValue)) {
+
+            let shouldUpdate = await pdfKeyPair.shouldFieldUpdate(req, contextOltp)
+            console.log(shouldUpdate, '<==shouldUpdate')
+            if (shouldUpdate) {
+                const updateResults = await pdfKeyPair.updateField(req, contextOltp)
+                return res.status(200).send({ success: true, res: typeof updateResults?.flat == 'function' ? updateResults?.flat() : null })
+            }
+            else {
+                return res.status(406).send({ success: false, message: 'The field is already reconciled' })
+            }
+        }
+        else {
+            return res.status(402).send({ success: false, message: 'Please write updated value..', developerInfo: { message: 'Missing params, Required Params Are: id && (validated_field_name || validated_field_value)', body: body } })
+        }
+    }
+    catch (e) {
+        return res.status(500).send({ success: false, error: e, message: e?.message || "Something wen't wrong!" })
+    }
+}
+
 module.exports = {
     login,
     register,
     createSubmmission,
     generateUploadSignedUrl,
-    uploadDocuments
+    uploadDocuments,
+    updateKeyPairs
 }

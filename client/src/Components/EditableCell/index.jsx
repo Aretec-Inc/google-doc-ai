@@ -4,11 +4,10 @@ import { CircularProgress, IconButton, TextField, Tooltip } from '@material-ui/c
 import { CheckCircle, Edit, Save, Close } from '@material-ui/icons'
 import { cleanFieldName, isNull, successMessage } from '../../utils/pdfHelpers'
 import { secureApi } from '../../Config/api'
-import { PDF_APIS } from '../../utils/apis'
+import { POST } from '../../utils/apis'
 const str_validated_field_name = 'validated_field_name'
 const str_validated_field_value = 'validated_field_value'
 
-const { POST: { UPDATE_KEY_PAIRS } } = PDF_APIS
 const EditableTableCell = ({ is_editable, setFinalText, Loading, isFieldName, refresh, key_pair, onSave, dontEditBigquery, errorMessage, ...props }) => {
     const f_n = key_pair?.field_name
     const f_v = key_pair?.field_value
@@ -34,7 +33,7 @@ const EditableTableCell = ({ is_editable, setFinalText, Loading, isFieldName, re
     let updateNow = () => {
         setIsLoading(true)
         if (props?.setIsLoading) props.setIsLoading(true);
-        secureApi.post(UPDATE_KEY_PAIRS, { id, [isFieldName ? str_validated_field_name : str_validated_field_value]: text })
+        secureApi.post(POST?.UPDATE_KEY_PAIRS, { id, [isFieldName ? str_validated_field_name : str_validated_field_value]: text })
             .then(results => {
                 setIsLoading(false)
                 setIsEdit(false)

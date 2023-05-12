@@ -3,14 +3,11 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { allAPIs } from '../../utils/pdfConstants'
-import { errorMessage, isNull, parseURL, successMessage } from '../../utils/pdfHelpers'
+import { isNull } from '../../utils/pdfHelpers'
 import { Spin } from 'antd'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import Table from './Table'
-const str_validated_field_name = 'validated_field_name'
-const str_validated_field_value = 'validated_field_value'
 
 const FormDialog = ({ closeDialog, data, onSave, is_editable, artifactData }) => {
     let id = data?.field_name_id || data?.field_value_id
@@ -82,7 +79,7 @@ const FormDialog = ({ closeDialog, data, onSave, is_editable, artifactData }) =>
             </div>
             <DialogActions>
                 <div className='modal-last-btn'>
-                    <Button  className='modal-savebtn'> Save</Button>
+                    <Button className='modal-savebtn'> Save</Button>
 
                     <Button disabled={isLoading} onClick={close} color='primary'>
                         {isLoading && <Spin />}   {isLoading ? 'Loading...' : 'Close'}
