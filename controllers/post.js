@@ -164,7 +164,7 @@ const generateUploadSignedUrl = async (req, res) => {
     try {
         let { fileOriginalName, contentType } = req.query
         // let Origin = process.env.NODE_ENV === 'production' ? `https://${process.env.ALLOWED_ORIGIN}` : 'http://localhost:3000'
-        const Origin = process.env.NODE_ENV === 'prdouction' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
+        const Origin = process.env.NODE_ENV === 'production' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
         const folder = 'doc_ai'
         let id = uuidv4()
 
