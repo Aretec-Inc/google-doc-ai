@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from 'react'
-import { FaUpload } from "react-icons/fa"
 import { Button, Input, Divider, Modal, Form, Select, Slider } from 'antd'
 import SETTING_ICON from '../../assets/icons/secondary_head_icons/settingblack.svg'
 

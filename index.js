@@ -41,5 +41,5 @@ app.use(express.json())
 
 server.listen(PORT, () => {
   console.log(`Server up and running on ${PORT}`)
-  // configureBucketCors()
+  configureBucketCors()
 })

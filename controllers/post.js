@@ -9,7 +9,7 @@ const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
 const { generateBodyResponse } = require('../services/tokenService')
 
-const docAIBucket = storage.bucket(`context_primary`)
+const docAIBucket = storage.bucket(`doc_ai_form`)
 
 let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
@@ -184,8 +184,8 @@ const generateUploadSignedUrl = async (req, res) => {
             contentType: contentType
         }
 
-        const [url] = await docAIBucket.file(`${folder}/${fileOriginalName}`).getSignedUrl(options)
-        let fileUrl = `gs://${docAIBucket.name}/${folder}/${fileOriginalName}`
+        const [url] = await docAIBucket.file(`${fileOriginalName}`).getSignedUrl(options)
+        let fileUrl = `gs://${docAIBucket.name}/${fileOriginalName}`
 
         let signedURI = await axios.post(`${url}`, {}, {
             headers: { 'Content-Type': contentType, 'x-goog-resumable': 'start', 'Origin': Origin }

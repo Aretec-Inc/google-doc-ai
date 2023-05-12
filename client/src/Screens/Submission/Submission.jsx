@@ -181,18 +181,19 @@ const Submission = (props) => {
                         onChange={setRange}
                     />
                 </Grid>
-                <Grid item xl={4} lg={4} md={4} sm={7} xs={12}>
+                <Grid item xl={8} lg={7} md={4} sm={7} xs={12}>
                     <Input
                         className='ant-radius'
                         placeholder='Search by Submission name'
                         prefix={<BsSearch className='search-field-icon' />}
                         onChange={(e) => setSubmissionName(e?.target?.value)}
+                        style={{ maxWidth: 600 }}
                     />
                 </Grid>
-                <Grid item xl={4} lg={3} md={12} sm={5} xs={12} style={{ textAlign: 'right' }}>
+                {/* <Grid item xl={4} lg={3} md={12} sm={5} xs={12} style={{ textAlign: 'right' }}>
                     <Button style={{ background: '#4285F4', color: '#fff', width: '180px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
                     >Create Submission</Button>
-                </Grid>
+                </Grid> */}
             </Grid>
 
             <div className='submission-div'>
