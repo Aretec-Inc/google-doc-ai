@@ -168,6 +168,14 @@ const isNull = (value) => { //work for strings/numbers/arrays/objects/boolean
     }
 }
 
+const calculateOffset = (pageNo = 1, pageSize = 10) => {
+    if (pageNo <= 1) {
+        return 0
+    }
+
+    return (pageNo - 1) * pageSize
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -180,5 +188,6 @@ module.exports = {
     validateData,
     getUniqueArrayOfObjects,
     getAuthUrl,
-    isNull
+    isNull,
+    calculateOffset
 }

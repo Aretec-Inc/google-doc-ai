@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Spin, Tooltip } from 'antd'
+import DatePicker from 'antd/lib/date-picker'
+import Button from 'antd/lib/button'
+import Progress from 'antd/lib/progress'
+import Tooltip from 'antd/lib/tooltip'
+import Spin from 'antd/lib/spin'
+import Input from 'antd/lib/input'
+import Pagination from 'antd/lib/pagination'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -19,7 +25,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import UploadModal from '../../Components/Submission/UploadModal'
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
-import { errorMessage, convertTitle, validateLength } from '../../utils/helpers'
+import { errorMessage, convertTitle, validateLength, disabledDate, itemRender } from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
@@ -50,31 +56,43 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired
 }
 
-const { Option } = Select
 const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const SubmissionTemplate = (props) => {
     const { templateData, dispatch, goBack } = props
     const submission_id = templateData?.id
-    const documents = useSelector((state) => state?.docReducer?.allDocuments?.[submission_id] || [])
-    const [selectedDocument, setSelectedDocument] = useState({})
+    const allFiles = useSelector((state) => state?.docReducer?.allDocuments?.[submission_id] || [])
+    const [totalFiles, setTotalFiles] = useState(0)
+    const [selectedFile, setSelectedFiles] = useState({})
     const [showDocument, setShowDocument] = useState(false)
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [fileName, setFileName] = useState('')
+    const [dateRange, setDateRange] = useState(null)
+    const [pageSize, setPageSize] = useState(10)
+    const [pageNo, setPageNo] = useState(1)
 
     useEffect(() => {
-        getDocuments()
-    }, [open])
+        getAllFiles()
+    }, [open, fileName, dateRange, pageNo, pageSize])
 
-    const getDocuments = () => {
-        if (!documents?.length) {
+    const getAllFiles = () => {
+        if (!allFiles?.length) {
             setLoading(true)
         }
 
-        secureApi.get(`${GET.DOCUMENTS_BY_ID}?submission_id=${submission_id}`)
+        let obj = {
+            fileName,
+            dateRange,
+            pageNo,
+            pageSize
+        }
+
+        secureApi.post(`${GET.FILES_BY_ID}?submission_id=${submission_id}`, obj)
             .then((data) => {
                 dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
+                setTotalFiles(data?.totalFiles || 0)
             })
             .catch((err) => {
                 let errMsg = err?.response?.data?.message
@@ -94,38 +112,35 @@ const SubmissionTemplate = (props) => {
     }
 
     const showPDFDocument = (doc) => {
-        setSelectedDocument(doc)
+        setSelectedFiles(doc)
         setShowDocument(true)
     }
 
+    const setRange = (d) => {
+        if (!d) {
+            return setDateRange(null)
+        }
+        setDateRange({
+            start: d[0].format('YYYY-MM-DD'),
+            end: moment(d[1]).add(1, 'day').format('YYYY-MM-DD')
+        })
+    }
+
     return (
-        showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedDocument} /> : <div className='template-screen'>
+        showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedFile} /> : <div className='template-screen'>
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={1} lg={1} md={1} sm={1} xs={2}>
                     <div className='back-arrow' onClick={goBack}>
                         <ArrowBackIcon />
                     </div>
                 </Grid>
-                <Grid item xl={2} lg={3} md={3} sm={5} xs={10}>
-                    <Select
-                        className='subdropdes ant-radius'
-                        showSearch
-                        placeholder='Filter'
-                        optionFilterProp='children'
-                        filterOption={(input, option) => option?.children?.includes(input)}
-                        filterSort={(optionA, optionB) =>
-                            optionA?.children?.toLowerCase()?.localeCompare(optionB?.children?.toLowerCase())
-                        }
-                    >
-                        <Option value='Communicated'>Communicated</Option>
-                    </Select>
-                </Grid>
                 <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
                     <RangePicker
-                        defaultValue={[moment(moment(), dateFormat), moment(moment(), dateFormat)]}
                         format={dateFormat}
                         style={{ width: '100%' }}
                         className='ant-radius'
+                        disabledDate={disabledDate}
+                        onChange={setRange}
                     />
                 </Grid>
                 <Grid item xl={4} lg={3} md={4} sm={8} xs={12}>
@@ -133,6 +148,7 @@ const SubmissionTemplate = (props) => {
                         placeholder='Search by ID or File name'
                         className='ant-radius'
                         prefix={<BsSearch className='search-field-icon' />}
+                        onChange={(e) => setFileName(e?.target?.value)}
                     />
                 </Grid>
                 <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
@@ -155,7 +171,7 @@ const SubmissionTemplate = (props) => {
                         <div className='submission-card-div'>
                             <div className='submission-main-list'>
                                 <div className='submission-heading margingless'>
-                                    <p className='submission-title mg_lf_15px'>{documents?.length} Documents</p>
+                                    <p className='submission-title mg_lf_15px'>{totalFiles || allFiles?.length} Documents</p>
                                     <div className='processor-data'>
                                         <p>Processor: {templateData?.processor_name}</p>
                                         <CiMenuKebab className='menuicon' />
@@ -180,7 +196,7 @@ const SubmissionTemplate = (props) => {
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                                {documents?.map((v, i) => {
+                                                {allFiles?.map((v, i) => {
                                                     return (
                                                         <TableRow
                                                             key={i}
@@ -208,22 +224,16 @@ const SubmissionTemplate = (props) => {
                                     </TableContainer>
                                 </div>
                                 <div className='submissions-foote'>
-                                    <div className='display-flex'>
-                                        <div className='select-main'>
-                                            <div className='select-div'>
-                                                <select name='pages' className='submission-pagination'>
-                                                    <option className='submission-pagination-option' value={5}>05</option>
-                                                    <option className='submission-pagination-option' value={10}>10</option>
-                                                    <option className='submission-pagination-option' value={20}>20</option>
-                                                </select>
-                                            </div>
-                                            <p className='per-page'>Per Page</p>
-                                        </div>
-                                        <div className='pages-list'>
-                                            <span className='page-list'>3</span>
-                                            <span className='page-list'>of 2</span>
-                                        </div>
-                                    </div>
+                                    <Pagination
+                                        total={totalFiles || allFiles?.length || 0}
+                                        pageSize={pageSize}
+                                        current={pageNo}
+                                        itemRender={itemRender}
+                                        showQuickJumper
+                                        hideOnSinglePage
+                                        onShowSizeChange={(e) => setPageSize(e * 10)}
+                                        onChange={setPageNo}
+                                    />
                                 </div>
                             </div>
                         </div>

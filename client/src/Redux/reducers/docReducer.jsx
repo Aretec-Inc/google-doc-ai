@@ -6,7 +6,7 @@ const reducer = (state = {}, action) => {
             return { ...state, allProcessors: action?.allProcessors }
         }
         case ALL_SUBMISSIONS: {
-            return { ...state, allSubmissions: action?.allSubmissions }
+            return { ...state, allSubmissions: action?.allSubmissions || [], totalSubmissions: action?.totalSubmissions || 0 }
         }
         case DOCUMENTS: {
             return { ...state, allDocuments: { ...state?.allDocuments, ...action?.documents } }

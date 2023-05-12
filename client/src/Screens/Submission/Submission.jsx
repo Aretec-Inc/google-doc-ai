@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Select, DatePicker, Input, Button, Progress, Tooltip, Spin } from 'antd'
+import Select from 'antd/lib/select'
+import DatePicker from 'antd/lib/date-picker'
+import Button from 'antd/lib/button'
+import Progress from 'antd/lib/progress'
+import Tooltip from 'antd/lib/tooltip'
+import Spin from 'antd/lib/spin'
+import Input from 'antd/lib/input'
+import Pagination from 'antd/lib/pagination'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -18,7 +25,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import SubmissionModal from '../../Components/Submission/SubmissionModal'
 import SubmissionTemplate from './SubmissionTemplate'
-import { validateLength, convertTitle, disabledDate } from '../../utils/helpers'
+import { validateLength, convertTitle, disabledDate, itemRender } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions'
 
 const TabPanel = (props) => {
@@ -54,6 +61,7 @@ const dateFormat = 'YYYY/MM/DD'
 const Submission = (props) => {
     const { dispatch } = props
     const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
+    const totalSubmissions = useSelector((state) => state?.docReducer?.totalSubmissions || 0)
     const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
     const [open, setOpen] = useState(false)
     const [showTemplate, setShowTemplate] = useState(false)
@@ -62,13 +70,15 @@ const Submission = (props) => {
     const [submissionName, setSubmissionName] = useState('')
     const [processorId, setProcessorId] = useState('')
     const [dateRange, setDateRange] = useState(null)
+    const [pageSize, setPageSize] = useState(10)
+    const [pageNo, setPageNo] = useState(1)
 
     useEffect(() => {
         if (!allSubmissions?.length) {
             setLoading(true)
         }
-        dispatch(getAllSubmissions({ submissionName, processorId, dateRange }, setLoading))
-    }, [open, submissionName, processorId, dateRange])
+        dispatch(getAllSubmissions({ submissionName, processorId, dateRange, pageNo, pageSize }, setLoading))
+    }, [open, submissionName, processorId, dateRange, pageNo, pageSize])
 
     const showModal = () => {
         setOpen(true)
@@ -122,7 +132,7 @@ const Submission = (props) => {
                 <Grid item xl={4} lg={4} md={4} sm={7} xs={12}>
                     <Input
                         className='ant-radius'
-                        placeholder='Search by ID or File name'
+                        placeholder='Search by Submission name'
                         prefix={<BsSearch className='search-field-icon' />}
                         onChange={(e) => setSubmissionName(e?.target?.value)}
                     />
@@ -138,7 +148,7 @@ const Submission = (props) => {
                     <div className='submission-card-div'>
                         <div className='submission-main-list'>
                             <div className='submission-heading'>
-                                <p className='submission-title mg_lf_15px'>{allSubmissions?.length} Submissions</p>
+                                <p className='submission-title mg_lf_15px'>{totalSubmissions} Submissions</p>
                                 <div className='processor-data'>
                                     <CiMenuKebab className='menuicon' />
                                 </div>
@@ -191,22 +201,16 @@ const Submission = (props) => {
                                 </Spin>
                             </div>
                             <div className='submissions-foote'>
-                                <div className='display-flex'>
-                                    <div className='select-main'>
-                                        <div className='select-div'>
-                                            <select name='pages' className='submission-pagination'>
-                                                <option className='submission-pagination-option' value={5}>05</option>
-                                                <option className='submission-pagination-option' value={10}>10</option>
-                                                <option className='submission-pagination-option' value={20}>20</option>
-                                            </select>
-                                        </div>
-                                        <p className='per-page'>Per Page</p>
-                                    </div>
-                                    <div className='pages-list'>
-                                        <span className='page-list'>3</span>
-                                        <span className='page-list'>of 2</span>
-                                    </div>
-                                </div>
+                                <Pagination
+                                    total={totalSubmissions}
+                                    pageSize={pageSize}
+                                    current={pageNo}
+                                    itemRender={itemRender}
+                                    showQuickJumper
+                                    hideOnSinglePage
+                                    onShowSizeChange={(e) => setPageSize(e * 10)}
+                                    onChange={setPageNo}
+                                />
                             </div>
                         </div>
                     </div>

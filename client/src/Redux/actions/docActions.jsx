@@ -1,5 +1,6 @@
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
+import { callFinally } from '../../utils/helpers'
 import { ALL_PROCESSORS, ALL_SUBMISSIONS, DOCUMENTS } from './types'
 
 const getAllProcessors = () => {
@@ -23,17 +24,14 @@ const getAllSubmissions = (body = {}, setLoading = null) => {
             .then((data) => {
                 dispatch({
                     type: ALL_SUBMISSIONS,
-                    allSubmissions: data?.allSubmissions || []
+                    allSubmissions: data?.allSubmissions,
+                    totalSubmissions: data?.totalSubmissions
                 })
             })
             .catch((e) => {
-                dispatch({ type: ALL_SUBMISSIONS, allSubmissions: [] })
+                dispatch({ type: ALL_SUBMISSIONS })
             })
-            .finally(() => {
-                if (setLoading) {
-                    setLoading(false)
-                }
-            })
+            .finally(() => callFinally(setLoading))
     }
 }
 

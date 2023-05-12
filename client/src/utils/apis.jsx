@@ -10,7 +10,7 @@ const Origin = 'http://localhost:3000'
 const GET = {
     ALL_PROCESSORS: `${api}/get-all-processors`,
     ALL_SUBMISSIONS: `${api}/get-all-submissions`,
-    DOCUMENTS_BY_ID: `${api}/get-documents-by-id`,
+    FILES_BY_ID: `${api}/get-files-by-id`,
     PDF_DATA: `${api}/get-pdf-data`
 }
 

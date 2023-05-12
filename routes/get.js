@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const { getAllProcessors, getAllSubmmissions, getDocumentsById, getPdfData, getDashboardData } = require('../controllers/get')
+const { getAllProcessors, getAllSubmmissions, getFilesById, getPdfData, getDashboardData } = require('../controllers/get')
 
 router.get('/get-all-processors', getAllProcessors)
 
 router.post('/get-all-submissions', getAllSubmmissions)
 
-router.get('/get-documents-by-id', getDocumentsById)
+router.post('/get-files-by-id', getFilesById)
 
 router.get('/get-pdf-data', getPdfData)
 

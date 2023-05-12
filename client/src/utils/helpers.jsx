@@ -57,6 +57,27 @@ const disabledDate = (current) => {
     return current && current > momentTz(customDate, 'YYYY-MM-DD')
 }
 
+const itemRender = (_, type, originalElement) => {
+    if (type === 'prev') {
+        return <a>Previous</a>
+    }
+    if (type === 'next') {
+        return <a>Next</a>
+    }
+    return originalElement
+}
+
+const callFinally = (setLoading) => {
+    try {
+        if (setLoading) {
+            setLoading(false)
+        }
+    }
+    catch (e) {
+
+    }
+}
+
 export {
     requiredMessage,
     inputPlace,
@@ -71,5 +92,7 @@ export {
     templatePrefix,
     updateId,
     validateLength,
-    disabledDate
+    disabledDate,
+    itemRender,
+    callFinally
 }

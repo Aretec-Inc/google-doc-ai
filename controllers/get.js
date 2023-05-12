@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const pdfparser = require('./pdf')
 const { service_key, projectId, schema, postgresDB, storage } = require('../config')
-const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull } = require('../helpers')
+const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
@@ -18,8 +18,10 @@ const getAllProcessors = async (req, res) => {
 
 const getAllSubmmissions = async (req, res) => {
     try {
-        const { submissionName, processorId, dateRange } = req?.body
+        let { submissionName, processorId, dateRange, pageNo, pageSize } = req?.body
         let whereClause = ``
+        pageSize = pageSize || 10
+        let offset = calculateOffset(pageNo, pageSize)
 
         if (submissionName) {
             whereClause += ` s.submission_name ILIKE '%${submissionName}%' AND`
@@ -37,11 +39,11 @@ const getAllSubmmissions = async (req, res) => {
             whereClause = `WHERE ${whereClause?.slice(0, -3)}`
         }
 
-        let sqlQuery = `SELECT s.*, CAST(COUNT(DISTINCT d.submission_id) as INT) AS total_forms, ARRAY_AGG(CAST(k.confidence AS FLOAT)) AS average_confidence FROM ${schema}.submissions s
+        let sqlQuery = `SELECT s.*, CAST(COUNT(DISTINCT d.file_name) as INT) AS total_forms, ARRAY_AGG(CAST(k.confidence AS FLOAT)) AS average_confidence FROM ${schema}.submissions s
         LEFT JOIN ${schema}.documents d ON s.id = d.submission_id 
         LEFT JOIN google_doc_ai.schema_form_key_pairs AS k ON d.file_name = k.file_name
         ${whereClause}
-        GROUP BY s.id order by s.created_at desc;`
+        GROUP BY s.id order by s.created_at desc LIMIT ${pageSize} OFFSET ${offset};`
 
         // Run the query
         let allSubmissions = await runQuery(postgresDB, sqlQuery)
@@ -50,9 +52,17 @@ const getAllSubmmissions = async (req, res) => {
             allSubmissions[i].average_confidence = _.round(_.mean(allSubmissions[i].average_confidence) * 100)
         }
 
+        sqlQuery = `SELECT CAST(COUNT(DISTINCT s.id) as INT) AS total_submissions FROM ${schema}.submissions s
+        LEFT JOIN ${schema}.documents d ON s.id = d.submission_id 
+        LEFT JOIN google_doc_ai.schema_form_key_pairs AS k ON d.file_name = k.file_name
+        ${whereClause}`
+
+        let totalSubmissions = await runQuery(postgresDB, sqlQuery)
+
         let obj = {
             success: true,
-            allSubmissions
+            allSubmissions,
+            totalSubmissions: totalSubmissions[0]?.total_submissions
         }
 
         apiResponse(res, 200, obj)
@@ -63,20 +73,43 @@ const getAllSubmmissions = async (req, res) => {
     }
 }
 
-const getDocumentsById = async (req, res) => {
+const getFilesById = async (req, res) => {
     try {
         const { submission_id } = req?.query
+        const { fileName, dateRange, pageNo, pageSize } = req?.body
 
         if (!submission_id) {
             throw 'Submission Id is Required!'
         }
+
+        let whereClause = ``
+        let offset = calculateOffset(pageNo, pageSize)
+
+        if (fileName) {
+            whereClause += `AND d.file_name ILIKE '%${fileName}%' `
+        }
+
+        if (dateRange?.start && dateRange?.end) {
+            whereClause += `AND d.created_at BETWEEN '${dateRange?.start}' AND '${dateRange?.end}'`
+        }
+
+        whereClause = `WHERE d.submission_id='${submission_id}' ${whereClause}`
+
         let sqlQuery = `SELECT d.*, ARRAY_AGG(CAST(s.confidence AS FLOAT)) AS average_confidence FROM ${schema}.documents d
         LEFT JOIN ${schema}.schema_form_key_pairs AS s
         ON d.file_name = s.file_name
-        WHERE d.submission_id='${submission_id}'
-        GROUP BY d.id order by created_at desc;`
+        ${whereClause}
+        GROUP BY d.id order by created_at desc LIMIT ${pageSize} OFFSET ${offset};`
 
         let documents = await runQuery(postgresDB, sqlQuery)
+
+        sqlQuery = `SELECT CAST(COUNT(DISTINCT d.file_name) as INT) AS total_files FROM ${schema}.documents d
+        LEFT JOIN ${schema}.schema_form_key_pairs AS s
+        ON d.file_name = s.file_name
+        ${whereClause}
+        GROUP BY d.submission_id;`
+
+        let totalFiles = await runQuery(postgresDB, sqlQuery)
 
         for (var i in documents) {
             documents[i].file_address = await getAuthUrl(documents?.[i]?.file_address, storage)
@@ -85,7 +118,8 @@ const getDocumentsById = async (req, res) => {
 
         let obj = {
             success: true,
-            documents
+            documents,
+            totalFiles: totalFiles[0]?.total_files
         }
 
         apiResponse(res, 200, obj)
@@ -182,7 +216,7 @@ const getPdfData = async (req, res) => {
 module.exports = {
     getAllProcessors,
     getAllSubmmissions,
-    getDocumentsById,
+    getFilesById,
     getPdfData,
     getDashboardData
 }
