@@ -26,6 +26,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import UploadModal from '../../Components/Submission/UploadModal'
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
+import FLAG from '../../assets/flag.svg'
 import { errorMessage, convertTitle, validateLength, disabledDate, itemRender } from '../../utils/helpers'
 import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
@@ -143,7 +144,7 @@ const SubmissionTemplate = (props) => {
                         Services
                     </h2>
                     <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                             upload_file
                         </span>
                         <span>
@@ -153,7 +154,7 @@ const SubmissionTemplate = (props) => {
                 </div>
                 <div className='right_sec_head'>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             chat
                         </span>
                         <span>
@@ -161,7 +162,7 @@ const SubmissionTemplate = (props) => {
                         </span>
                     </Button>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             school
                         </span>
                         <span>
@@ -173,12 +174,12 @@ const SubmissionTemplate = (props) => {
             <Divider />
             <br />
             <Grid container spacing={1} justifyContent={'space-between'}>
-                <Grid item xl={1} lg={1} md={1} sm={1} xs={2}>
+                <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
                     <div className='back-arrow' onClick={goBack}>
                         <ArrowBackIcon />
                     </div>
                 </Grid>
-                <Grid item xl={3} lg={3} md={4} sm={6} xs={12}>
+                <Grid item xl={3} lg={3} md={4} sm={5} xs={5}>
                     <RangePicker
                         format={dateFormat}
                         style={{ width: '100%' }}
@@ -187,18 +188,19 @@ const SubmissionTemplate = (props) => {
                         onChange={setRange}
                     />
                 </Grid>
-                <Grid item xl={4} lg={3} md={4} sm={8} xs={12}>
+                <Grid item xl={8} lg={8} md={7} sm={6} xs={6}>
                     <Input
                         placeholder='Search by ID or File name'
                         className='ant-radius'
                         prefix={<BsSearch className='search-field-icon' />}
                         onChange={(e) => setFileName(e?.target?.value)}
+                        style={{ maxWidth: 600 }}
                     />
                 </Grid>
-                <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
+                {/* <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
                     <Button style={{ background: '#4285F4', color: '#fff', width: '130px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
                     >Upload</Button>
-                </Grid>
+                </Grid> */}
             </Grid>
 
             <div className='submission-div'>
@@ -252,6 +254,7 @@ const SubmissionTemplate = (props) => {
                                                                         {validateLength(convertTitle(v?.original_file_name), 30)}
                                                                     </Tooltip>
                                                                 </Link>
+                                                                {v?.is_completed === true && v?.average_confidence < 50 ? <img src={FLAG} className='file-flag' /> : null}
                                                             </TableCell>
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress

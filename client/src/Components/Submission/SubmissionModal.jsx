@@ -33,10 +33,7 @@ const CreateSubmission = (props) => {
     const [uploadloading, setUploadLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
     const [submissionName, setSubmissionName] = useState(null)
-    const defaultParser = {
-        displayName: 'Form Parser',
-        id: 'aebf936ce61ab3b1'
-    }
+    const [defaultParser, setDefaultParser] = useState(allProcessors?.filter((v, i) => v?.displayName === 'Document AI')[0])
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''
@@ -140,7 +137,6 @@ const CreateSubmission = (props) => {
     }
 
     const onFinish = async () => {
-        const origin = process.env.NODE_ENV === 'production' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
         setUploadLoading(true)
         setButtonText('Uploading...')
         let allFilesData = []
@@ -162,7 +158,7 @@ const CreateSubmission = (props) => {
                 try {
                     const data = await secureApi.post(`${POST?.GET_UPLOAD_URL}?fileOriginalName=${fileData.name}&contentType=${contentType}`)
                     if (data?.success) {
-                        const { sessionUrl, fileId, fileUrl, fileType } = data
+                        const { sessionUrl, fileId, fileUrl, fileType, Origin } = data
                         file.fileId = fileId
                         file.fileUrl = fileUrl
                         file.fileType = fileType
@@ -176,7 +172,7 @@ const CreateSubmission = (props) => {
                         arr[i].fileType = fileType
                         arr[i].originalFileUrl = data?.originalFileUrl || fileUrl
 
-                        let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': origin }
+                        let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': Origin }
 
                         axios.put(sessionUrl, fileData, {
                             headers: headers,
@@ -298,10 +294,10 @@ const CreateSubmission = (props) => {
                                 <div className='row'>
                                     <div className='col-lg-4 col-md-5 col-sm-10 col-xs-12'>
                                         <div className='modal-tiles-main'>
-                                            <h5>Form Parser</h5>
+                                            <h5>{defaultParser?.displayName}</h5>
                                             <p>Extract form elements such as text and checkboxes</p>
                                             <div className='create-sub' onClick={setDefaultProcessor}>
-                                                Select Default Processor
+                                                Select {defaultParser?.displayName} Processor
                                             </div>
                                         </div>
                                     </div>

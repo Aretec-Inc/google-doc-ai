@@ -89,7 +89,7 @@ const Submission = (props) => {
             setLoading(true)
         }
         dispatch(getAllSubmissions({ submissionName, processorId, dateRange, pageNo, pageSize }, setLoading))
-    }, [open, submissionName, processorId, dateRange, pageNo, pageSize])
+    }, [open, showTemplate, submissionName, processorId, dateRange, pageNo, pageSize])
 
     const showModal = () => {
         setOpen(true)
@@ -127,7 +127,7 @@ const Submission = (props) => {
                         Services
                     </h2>
                     <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                             add
                         </span>
                         <span>
@@ -137,7 +137,7 @@ const Submission = (props) => {
                 </div>
                 <div className='right_sec_head'>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             chat
                         </span>
                         <span>
@@ -145,7 +145,7 @@ const Submission = (props) => {
                         </span>
                     </Button>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             school
                         </span>
                         <span>
@@ -161,6 +161,7 @@ const Submission = (props) => {
                     <Select
                         className='subdropdes ant-radius'
                         showSearch
+                        allowClear
                         placeholder='Filter'
                         optionFilterProp='children'
                         filterOption={(input, option) => option?.children?.includes(input)}

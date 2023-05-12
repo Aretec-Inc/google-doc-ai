@@ -60,7 +60,7 @@ const Configuration = (props) => {
             Services
           </h2>
           <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={() => setIsOpen(true)}>
-            <span class="material-symbols-outlined">
+            <span className="material-symbols-outlined">
               add
             </span>
             <span>
@@ -70,7 +70,7 @@ const Configuration = (props) => {
         </div>
         <div className='right_sec_head'>
           <Button type='text' className='secondary_header_buttons'>
-            <span class="material-symbols-outlined mg_rgt_3px">
+            <span className="material-symbols-outlined mg_rgt_3px">
               chat
             </span>
             <span>
@@ -78,7 +78,7 @@ const Configuration = (props) => {
             </span>
           </Button>
           <Button type='text' className='secondary_header_buttons'>
-            <span class="material-symbols-outlined mg_rgt_3px">
+            <span className="material-symbols-outlined mg_rgt_3px">
               school
             </span>
             <span>
@@ -95,10 +95,10 @@ const Configuration = (props) => {
         {/* <Button style={{ background: '#4285F4', color: '#fff', borderRadius: '4px' }} className='date width-sub height_57px'>
           Add Configuration
         </Button> */}
-        <div class="config-grid-container">
+        <div className="config-grid-container">
           {config?.map((v, i) => {
             return (
-              <div class="config-grid-item">
+              <div className="config-grid-item">
                 <div className='each_card'>
                   <h4>CONFIGURATION CARD-{i}</h4>
                   <Divider />
@@ -118,7 +118,7 @@ const Configuration = (props) => {
               </div>
             )
           })}
-          {/* <div class="config-grid-item">
+          {/* <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -127,7 +127,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -136,7 +136,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -145,7 +145,7 @@ const Configuration = (props) => {
               </div>
             </div>
           </div>
-          <div class="config-grid-item">
+          <div className="config-grid-item">
             <div className='each_card'>
               <h4>CONFIGURATION CARD</h4>
               <Divider />
@@ -192,7 +192,7 @@ const Configuration = (props) => {
                 Cancel
               </Button>
               <Button type='text' className='secondary_header_buttons mg_lft_4rem' key="submit" htmlType="submit" onClick={handleOk}>
-                <span class="material-symbols-outlined">
+                <span className="material-symbols-outlined">
                   add
                 </span>
                 <span>
@@ -235,7 +235,7 @@ const Configuration = (props) => {
               </Form.Item>
               <Form.Item>
                 <Button type='text' htmlType="submit" className='secondary_header_buttons mg_lft_4rem'>
-                  <span class="material-symbols-outlined">
+                  <span className="material-symbols-outlined">
                     add
                   </span>
                   <span>

@@ -16,7 +16,6 @@ class SelectedCardData extends React.Component {
     constructor(props) {
         super(props)
         const { freqWord, artifactData, selectedCard, adj } = this.props
-        console.log("PROPS", adj)
 
         this.state = {
             detailTabs: ['General', 'Insights', 'Transcripts', 'Similar', 'General', 'Insights', 'Transcripts', 'Similar'],
@@ -41,38 +40,6 @@ class SelectedCardData extends React.Component {
             visible: false,
             disabled: true,
             isRefreshing: false
-        }
-    }
-
-    componentDidMount() {
-        this.loadData()
-        // this.refreshData()
-    }
-    loadData = () => {
-        let selectedCard = this?.props?.selectedCard || this?.props?.artifactData
-        if (selectedCard?.artifact_type !== 'csv' && selectedCard?.artifact_type !== 'xml') {
-            load_artifact_data_by_type(selectedCard)
-                .then((data) => {
-                    this.setState({
-                        selectedCard: data,
-                        artifact_id: selectedCard.id,
-                        loading: false
-                    })
-                    console.log('load Data Executed ', data)
-                    this.props.setArtifactData(data)
-                    if (!data?.success) {
-                        let errMsg = data?.message;
-                        errMsg && errorMessage(errMsg);
-                    }
-                    // console.log(d,'LIne 63')
-                })
-                .catch((err) => {
-                    console.log('e', err)
-                    let errMsg = err?.response?.data?.message;
-                    errMsg && errorMessage(errMsg);
-                    // if (e.code !== 'NO_PARAMS' && e?.message) errorMessage(e?.message);
-                    // this.setState({ loading: false })
-                })
         }
     }
 

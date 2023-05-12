@@ -9,7 +9,7 @@ const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
 const { generateBodyResponse } = require('../services/tokenService')
 
-const docAIBucket = storage.bucket(`doc_ai_form`)
+const docAIBucket = storage.bucket(process.env?.storage_bucket || `doc_ai_form`)
 
 let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
@@ -163,9 +163,7 @@ const createSubmmission = async (req, res) => {
 const generateUploadSignedUrl = async (req, res) => {
     try {
         let { fileOriginalName, contentType } = req.query
-        // let Origin = process.env.NODE_ENV === 'production' ? `https://${process.env.ALLOWED_ORIGIN}` : 'http://localhost:3000'
-        const Origin = process.env.NODE_ENV === 'production' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
-        const folder = 'doc_ai'
+        let Origin = process.env.NODE_ENV === 'production' ? `https://${process.env.ALLOWED_ORIGIN}` : 'http://localhost:3000'
         let id = uuidv4()
 
         if (!fileOriginalName || !contentType) {
@@ -191,7 +189,7 @@ const generateUploadSignedUrl = async (req, res) => {
             headers: { 'Content-Type': contentType, 'x-goog-resumable': 'start', 'Origin': Origin }
         })
 
-        return generateBodyResponse({ success: true, sessionUrl: signedURI.headers.location, fileUrl: fileUrl, fileType: contentType, fileId: id }, res)
+        return generateBodyResponse({ success: true, sessionUrl: signedURI.headers.location, fileUrl: fileUrl, fileType: contentType, fileId: id, Origin }, res)
     }
     catch (e) {
         console.log('e', e)

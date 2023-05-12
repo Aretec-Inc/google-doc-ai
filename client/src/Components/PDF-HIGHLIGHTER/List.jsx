@@ -10,6 +10,7 @@ import { CheckCircle, Edit, Add } from '@material-ui/icons/'
 import DialogEdit from './DialogEditField'
 import { isNull } from '../../utils/pdfHelpers'
 import Highlighter from 'react-highlight-words'
+import round from 'lodash/round'
 
 const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTriggerAddKeyPair, width, availableKeyPairs, highlights, artifactData, setSelectedHighLights, selectedHighLights, search, searchResults, setSearch, shouldScrollSidebar, setShouldScrollSidebar, setShouldScrollPDF, refresh, isCompleted, searchKey }) => {
 
@@ -126,7 +127,12 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
                                                         <span className='VALUEOFVALUEPAIR'>
                                                             {fieldValueContent && HandleTypesOfContent(fieldValueContent, isCurrentlyHighlighted)}
                                                         </span>
-                                                    </Tooltip >
+                                                    </Tooltip>
+                                                    <Tooltip title={`${round(parseFloat(fieldValue?.key_pair?.confidence) * 100)}%`}>
+                                                        <span className='value_confidence'>
+                                                            {round(parseFloat(fieldValue?.key_pair?.confidence) * 100)}%
+                                                        </span>
+                                                    </Tooltip>
                                                 </span>
                                             ) : (
                                                 d?.content?.text

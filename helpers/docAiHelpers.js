@@ -7,6 +7,26 @@ const { default: axios } = require('axios')
 const { runQuery } = require('./postgresQueries')
 const { postgresDB, schema, projectId, docAiClient } = require('../config')
 
+const cleanFieldName = (name, dontTrim) => {
+    /**
+     *  A column name must contain only letters (a-z, A-Z), numbers (0-9), or underscores (_), and it must start with a letter or underscore. The maximum column name length is 300 characters. A column name cannot use any of the following prefixes:
+
+     */
+    let removeExtraSpacesOrUnderScore = (txt) => txt?.replace(/ |\/|\\/gi, '_')?.replace(/__/gi, '_')
+
+    let cleanedWord = removeExtraSpacesOrUnderScore((dontTrim ? name : name?.trim())?.replace(/[^a-z0-9_/\\ ]/gi, ""))
+    if (cleanedWord?.startsWith("_")) {
+        cleanedWord = cleanedWord?.slice(1, cleanedWord?.length)
+        cleanedWord = removeExtraSpacesOrUnderScore(cleanedWord)
+    }
+
+    if (!isNaN(cleanedWord?.[0])) {
+        cleanedWord = "a_" + cleanedWord?.slice(0, cleanedWord?.length)
+        cleanedWord = removeExtraSpacesOrUnderScore(cleanedWord)
+    }
+    return cleanedWord
+}
+
 const getUniqueArrayOfObjects = (ary, objectPropertName) => {
     let cleanProperty = (property) => typeof property == 'string' ? property?.trim().toLowerCase() : property
     return ary.filter((elem, index) => {

@@ -47,7 +47,6 @@ const CreateSubmission = (props) => {
     }
 
     const onFinish = async () => {
-        const origin = process.env.NODE_ENV === 'production' ? 'https://doc-ai-znp7f527ca-uc.a.run.app' : 'http://localhost:3000'
         setUploadLoading(true)
         setButtonText('Uploading...')
         let allFilesData = []
@@ -69,7 +68,7 @@ const CreateSubmission = (props) => {
                 try {
                     const data = await secureApi.post(`${POST?.GET_UPLOAD_URL}?fileOriginalName=${fileData.name}&contentType=${contentType}`)
                     if (data?.success) {
-                        const { sessionUrl, fileId, fileUrl, fileType } = data
+                        const { sessionUrl, fileId, fileUrl, fileType, Origin } = data
                         file.fileId = fileId
                         file.fileUrl = fileUrl
                         file.fileType = fileType
@@ -83,7 +82,7 @@ const CreateSubmission = (props) => {
                         arr[i].fileType = fileType
                         arr[i].originalFileUrl = data?.originalFileUrl || fileUrl
 
-                        let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': origin }
+                        let headers = { 'Content-Type': contentType, 'Content-Length': fileData.size, 'Origin': Origin }
 
                         axios.put(sessionUrl, fileData, {
                             headers: headers,

@@ -92,7 +92,7 @@ button {
     white-space: nowrap;
     text-overflow: ellipsis;
     /* width: 50%; */
-    width:110px;
+    width: 110px;
 
     color: gray
 }
@@ -102,5 +102,15 @@ button {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 150px
+    width: 150px;
+}
+
+.value_confidence {
+    margin-left: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 40px;
+    color: #3a7ce0;
+    padding-left: 6px;
 }

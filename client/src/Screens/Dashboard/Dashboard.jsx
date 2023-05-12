@@ -216,7 +216,7 @@ const Dashboard = (props) => {
                 </div>
                 <div className='right_sec_head'>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             chat
                         </span>
                         <span>
@@ -224,7 +224,7 @@ const Dashboard = (props) => {
                         </span>
                     </Button>
                     <Button type='text' className='secondary_header_buttons'>
-                        <span class="material-symbols-outlined mg_rgt_3px">
+                        <span className="material-symbols-outlined mg_rgt_3px">
                             school
                         </span>
                         <span>
@@ -326,11 +326,11 @@ const Dashboard = (props) => {
                             height={250}
                         />
                     </div> */}
-                    <div class="grid-charts-cont">
-                        <div class="column-chart">
+                    <div className="grid-charts-cont">
+                        <div className="column-chart">
                             <ReactApexChart options={pie.options} series={pie.series} type="pie" width={380} />
                         </div>
-                        <div class="column-chart">
+                        <div className="column-chart">
                             <TableContainer component={Paper}>
                                 <Table size="small" aria-label="a dense table">
                                     <TableHead className={classes.tableHead}>

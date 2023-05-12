@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import Button from 'antd/lib/button'
 import Result from 'antd/lib/result'
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from 'react-router-dom'
 import { Submission, Dashboard, Configuration } from '../Screens'
 import { Header, Sidenav } from '../Components'
 import { getAllProcessors, getAllSubmissions } from '../Redux/actions/docActions'
@@ -52,12 +52,13 @@ const Page404 = (props) => {
 
 const WrapComponent = ({ Component, ...props }) => {
     const dispatch = useDispatch()
+    const location = useLocation()
     const [toggleHeader, setToggleHeader] = useState(false)
 
     useEffect(() => {
         dispatch(getAllProcessors())
         dispatch(getAllSubmissions())
-    }, [])
+    }, [location?.pathname])
 
     return (
         <div className='main_container'>
