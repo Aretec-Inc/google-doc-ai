@@ -1128,9 +1128,48 @@ body {
     .grid-charts-cont {
         grid-template-columns: 1fr;
     }
-    .right_sec_head{
+
+    .right_sec_head {
         display: none;
     }
 }
 
 /* <---------------------------------------- CONFIGURATION STYLING -------------------------------------------------------> */
+/* <---------------------------------------- DASHBOARD STYLING -------------------------------------------------------> */
+.container-dash {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    margin: 20px 0px;
+}
+
+.box-dash {
+    width: calc(33.33% - 10px);
+    margin-bottom: 20px;
+
+}
+
+.border_left {
+    border-left: 1px solid #e8eaed;
+}
+
+.padding_6px {
+    padding: 10px;
+}
+
+@media (max-width: 899px) {
+    .box-dash {
+        /* width: calc(50% - 10px); */
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .box-dash {
+        width: 100%;
+    }
+}
+
+/* <---------------------------------------- DASHBOARD STYLING -------------------------------------------------------> */
