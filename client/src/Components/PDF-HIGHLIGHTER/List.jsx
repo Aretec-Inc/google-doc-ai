@@ -121,7 +121,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
                                 var timeOut = null
 
                                 const setScrollsSetting = () => {
-                                    setShouldScrollPDF(true)
+                                    setShouldScrollPDF(false)
                                     setShouldScrollSidebar(false)
                                 }
 
