@@ -213,13 +213,18 @@ const SubmissionTemplate = (props) => {
             </Grid>
 
             <div className='submission-div'>
-                <div className='row'>
-                    <div className='col-lg-12 p-0'>
+                <Grid container justifyContent={'space-between'}>
+                    <Grid item>
                         <div className='tepm-id'>
                             <h5>Submission: {convertTitle(templateData?.submission_name)}</h5>
                         </div>
-                    </div>
-                </div>
+                    </Grid>
+                    <Grid item>
+                        <div className='tepm-id'>
+                            <h5>Threshold: {threshold}</h5>
+                        </div>
+                    </Grid>
+                </Grid>
 
                 <Spin spinning={loading}>
                     <div className='submission-card'>
