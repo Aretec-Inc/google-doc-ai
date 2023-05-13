@@ -20,6 +20,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import SubmissionVisuals from './SubmissionVisuals';
+import ProcessorVisuals from './ProcessorVisuals';
+import LineChart from './LineChart';
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -85,7 +88,7 @@ const Dashboard = (props) => {
         ]
     };
 
-    const data = {
+    const data1 = {
         options: {
             chart: {
                 id: "basic-bar"
@@ -188,17 +191,29 @@ const Dashboard = (props) => {
         },
 
     }
-    const data2 = {
-        series: [documents, submissions],
-        labels: ['Documents', 'Submissions'],
+
+    const data = [
+        { type: 'A', value: 27 },
+        { type: 'B', value: 25 },
+        { type: 'C', value: 18 },
+        { type: 'D', value: 15 },
+        { type: 'E', value: 10 },
+        { type: 'F', value: 5 },
+    ];
+
+    const config = {
+        data,
+        angleField: 'value',
+        colorField: 'type',
+        autoFit: true,
+        // width: '100%',
+        // height: '100%',
+        label: {
+            type: 'outer',
+            content: '{percentage}',
+        },
     };
 
-    const options = {
-        chart: {
-            type: 'pie',
-        },
-        labels: data.labels,
-    };
 
     return (
         <div className='main_container-dashboard'>
@@ -261,7 +276,7 @@ const Dashboard = (props) => {
                                     <p>Average Submissions confidence score</p>
                                 </div>
                                 <div className="right">
-                                    <Chart options={data.options} series={data.series} type="bar" height={120} />
+                                    <Chart options={data1.options} series={data1.series} type="bar" height={120} />
                                 </div>
                             </div>
                         </div>
@@ -326,8 +341,8 @@ const Dashboard = (props) => {
                             height={250}
                         />
                     </div> */}
-                    <div className="grid-charts-cont">
-                        <div className="column-chart">
+                    {/* <div class="grid-charts-cont">
+                        <div class="column-chart">
                             <ReactApexChart options={pie.options} series={pie.series} type="pie" width={380} />
                         </div>
                         <div className="column-chart">
@@ -362,6 +377,49 @@ const Dashboard = (props) => {
                                 </Table>
                             </TableContainer>
                         </div>
+                    </div> */}
+                    <div className="container-dash">
+                        <div className="box-dash">
+                            <SubmissionVisuals />
+                        </div>
+                        <div className="box-dash">
+                            <ProcessorVisuals />
+                        </div>
+                        <div className="box-dash">
+                            <LineChart />
+                        </div>
+                    </div>
+                    <div>
+                        <TableContainer component={Paper}>
+                            <Table size="small" aria-label="a dense table">
+                                <TableHead className={classes.tableHead}>
+                                    <TableRow>
+                                        <TableCell>Submissions</TableCell>
+                                        <TableCell align="right">Total Documents</TableCell>
+                                        {/* <TableCell align="right">Confidence Score</TableCell> */}
+                                        <TableCell align="right">Average Score</TableCell>
+                                        <TableCell align="right">Threshold</TableCell>
+
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.map((row) => (
+                                        <TableRow
+                                            key={row.name}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell component="th" scope="row">
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell align="right">{row.calories}</TableCell>
+                                            {/* <TableCell align="right">{row.fat}</TableCell> */}
+                                            <TableCell align="right">{row.carbs}</TableCell>
+                                            <TableCell align="right">{row.protein}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </div>
                     <div className="grid-container-bottom">
                         <div className="grid-item-card">
