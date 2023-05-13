@@ -24,6 +24,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Slider from '@mui/material/Slider'
 import UploadModal from '../../Components/Submission/UploadModal'
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
 import FLAG from '../../assets/flag.svg'
@@ -66,6 +67,7 @@ const dateFormat = 'YYYY/MM/DD'
 const SubmissionTemplate = (props) => {
     const { templateData, dispatch, goBack } = props
     const submission_id = templateData?.id
+    const threshold = templateData?.threshold
     const allFiles = useSelector((state) => state?.docReducer?.allDocuments?.[submission_id] || [])
     const [totalFiles, setTotalFiles] = useState(0)
     const [selectedFile, setSelectedFiles] = useState({})
@@ -198,8 +200,15 @@ const SubmissionTemplate = (props) => {
                     />
                 </Grid>
                 {/* <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
-                    <Button style={{ background: '#4285F4', color: '#fff', width: '130px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
-                    >Upload</Button>
+                    <div style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between' }}>
+                        <h4>Threshold</h4>
+                        <Slider
+                            value={threshold}
+                            aria-label='Default'
+                            valueLabelDisplay='auto'
+                            onChange={(e) => setThreshold(e?.target?.value)}
+                        />
+                    </div>
                 </Grid> */}
             </Grid>
 
@@ -254,7 +263,7 @@ const SubmissionTemplate = (props) => {
                                                                         {validateLength(convertTitle(v?.original_file_name), 30)}
                                                                     </Tooltip>
                                                                 </Link>
-                                                                {v?.is_completed === true && v?.average_confidence < 50 ? <img src={FLAG} className='file-flag' /> : null}
+                                                                {v?.is_completed === true && v?.min_confidence < threshold ? <img src={FLAG} className='file-flag' /> : null}
                                                             </TableCell>
                                                             <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress

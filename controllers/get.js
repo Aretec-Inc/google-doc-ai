@@ -113,6 +113,7 @@ const getFilesById = async (req, res) => {
 
         for (var i in documents) {
             documents[i].file_address = await getAuthUrl(documents?.[i]?.file_address, storage)
+            documents[i].min_confidence = _.round(_.min(documents[i].average_confidence) * 100)
             documents[i].average_confidence = _.round(_.mean(documents[i].average_confidence) * 100)
         }
 

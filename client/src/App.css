@@ -589,7 +589,6 @@ body {
 
 .modal-tiles {
     padding: 10px 0px;
-    margin-left: -15px;
 }
 
 .modal-tiles-main {
@@ -598,6 +597,7 @@ body {
     padding: 10px 0px;
     /* box-shadow: 1px 2px 2px #4a4a4a42; */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    max-width: 300px !important;
 }
 
 .modal-tiles-main h5 {

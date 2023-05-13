@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes, schema) => {
             aggregate_score: DataTypes.FLOAT,
             user_id: DataTypes.STRING,
             status: DataTypes.STRING,
+            threshold: DataTypes.INTEGER,
             created_at: {
                 type: DataTypes.DATE
             },

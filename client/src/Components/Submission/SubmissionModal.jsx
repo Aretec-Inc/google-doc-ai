@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepButton from '@mui/material/StepButton'
+import Slider from '@mui/material/Slider'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
@@ -33,6 +34,7 @@ const CreateSubmission = (props) => {
     const [uploadloading, setUploadLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
     const [submissionName, setSubmissionName] = useState(null)
+    const [threshold, setThreshold] = useState(50)
     const [defaultParser, setDefaultParser] = useState(allProcessors?.filter((v, i) => v?.displayName === 'Document AI')[0])
 
     const handleCancel = (e) => {
@@ -96,7 +98,8 @@ const CreateSubmission = (props) => {
         let obj = {
             processorId: processor?.id,
             processorName: processor?.displayName,
-            submissionName
+            submissionName,
+            threshold
         }
 
         setLoading(true)
@@ -213,7 +216,8 @@ const CreateSubmission = (props) => {
                     let obj = {
                         processorId: processor?.id,
                         processorName: processor?.displayName,
-                        submissionName
+                        submissionName,
+                        threshold
                     }
                     secureApi.post(POST.CREATE_SUBMISSION, obj)
                         .then((data) => {
@@ -285,14 +289,28 @@ const CreateSubmission = (props) => {
                     </div>
                     {activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
-                            <Input className='login-inp-field ant-radius' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
+                            <Grid container spacing={2}>
+                                <Grid item sm={6} xs={12}>
+                                    <h4>Submission Name</h4>
+                                    <Input className='login-inp-field ant-radius' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
+                                </Grid>
+                                <Grid item sm={6} xs={12}>
+                                    <h4>Threshold</h4>
+                                    <Slider
+                                        value={threshold}
+                                        aria-label='Default'
+                                        valueLabelDisplay='auto'
+                                        onChange={(e) => setThreshold(e?.target?.value)}
+                                    />
+                                </Grid>
+                            </Grid>
                             <div className='modal-content-data'>
                                 <h6>General</h6>
                                 <p>Ready to use out-of-the-box processors for general document goals.</p>
                             </div>
                             <div className='modal-tiles'>
-                                <div className='row'>
-                                    <div className='col-lg-4 col-md-5 col-sm-10 col-xs-12'>
+                                <Grid container>
+                                    <Grid item xl={4} lg={4} md={4} sm={12} xs={12}>
                                         <div className='modal-tiles-main'>
                                             <h5>{defaultParser?.displayName}</h5>
                                             <p>Extract form elements such as text and checkboxes</p>
@@ -300,8 +318,8 @@ const CreateSubmission = (props) => {
                                                 Select {defaultParser?.displayName} Processor
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </Grid>
+                                </Grid>
                             </div>
                             <div className='modal-content-data'>
                                 <h6>Model</h6>

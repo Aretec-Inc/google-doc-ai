@@ -127,7 +127,7 @@ const register = (req, res) => {
 
 const createSubmmission = async (req, res) => {
     try {
-        const { processorId, processorName, submissionName } = req.body
+        const { processorId, processorName, submissionName, threshold } = req.body
         const id = uuidv4()
 
         if (!processorId || !processorName || !submissionName) {
@@ -136,8 +136,8 @@ const createSubmmission = async (req, res) => {
 
         const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
 
-        let sqlQuery = `INSERT INTO ${schema}.submissions(id, processor_id, submission_name, processor_name, user_id, status, created_at)
-            VALUES ('${id}', ${validateData(processorId)}, ${validateData(submissionName)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', NOW());`
+        let sqlQuery = `INSERT INTO ${schema}.submissions(id, processor_id, submission_name, processor_name, user_id, status, threshold, created_at)
+            VALUES ('${id}', ${validateData(processorId)}, ${validateData(submissionName)}, ${validateData(processorName)}, ${validateData(user_id)}, 'Processing', ${threshold}, NOW());`
 
         // Run the query
         runQuery(postgresDB, sqlQuery)
