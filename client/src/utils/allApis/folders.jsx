@@ -1,4 +1,4 @@
-const host = `https://folder-api-2my7afm7yq-ue.a.run.app` || `http://localhost:8084`
+const host = `https://context-api-2my7afm7yq-ue.a.run.app` || `http://localhost:8084`
 // const host = `https://backend.neptunestech.com:8025`
 const api = `${host}/api`
 const folders_api = `${api}/folders`

@@ -1,10 +1,19 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { Tabs } from 'antd'
+import { Select, DatePicker, Input, Button, Modal } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { CiMenuKebab } from 'react-icons/ci'
+
+import { BsSearch } from 'react-icons/bs'
+import moment from 'moment'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -29,44 +38,209 @@ function TabPanel(props) {
 TabPanel.propTypes = {
     children: PropTypes.node,
     index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
+    value: PropTypes.number.isRequired
+}
 
-export default function Home(props) {
+const Option = []
+const { RangePicker } = DatePicker
+const dateFormat = 'YYYY/MM/DD'
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [tabActive, setTabActive] = useState('1');
-
+const Home = (props) => {
 
     useEffect(() => {
         console.log("HELLO")
     }, [])
 
-  
+    const [open, setOpen] = useState(false);
+    const showModal = () => {
+        setOpen(true);
+    };
+    const handleOk = (e) => {
+        console.log(e);
+        setOpen(false);
+    };
+    const handleCancel = (e) => {
+        console.log(e);
+        setOpen(false);
+    }
 
     return (
-        <div className='main_container'>
-            <p className='sub_cont_forms'></p>
-            <Box sx={{ width: '100%' }}>
-                <Tabs className='virgin-tab' defaultActiveKey='1'>
-                    <Tabs.TabPane tab="DEMOGRAPHIC DASHBOARD" key="1">
-                        <div className='applicant-div'>
-                          <h1>mkldnio </h1>
-                          </div>
-                    </Tabs.TabPane >
-                    <Tabs.TabPane tab="CASES DASHBOARD" key="2">
-                        <div className='submission-div'>
-                            {/* <iframe className='dashboard_iframe' src="https://datastudio.google.com/embed/u/0/reporting/5377631e-6a93-4bc6-a211-7179055f6785/page/YVd7C" frameBorder={0} allowFullScreen /> */}
+        <div className='template-screen'>
+            <div className='row'>
+                <div className='col-lg-2 pl-0'>
+                    <Select
+                        className='width subdropdes'
+                        showSearch
+                        // onChange={onChangeTrans}
+                        // onSearch={onSearch}
+                        placeholder='Filter'
+                        optionFilterProp='children'
+                        filterOption={(input, option) => option.children.includes(input)}
+                        filterSort={(optionA, optionB) =>
+                            optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                        }
+                    >
+                        <Option value='Not Identified'>Not Identified</Option>
+                        <Option value='Closed'>Closed</Option>
+                        <Option value='Communicated'>Communicated</Option>
+                    </Select>
+                </div>
+                <div className='col-lg-3'>
+                    <RangePicker
+                        // onChange={onChangeDate}
+                        className='date width'
+                        defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+                        format={dateFormat}
+                    />
+                </div>
+                <div className='col-lg-3'>
+                    <Input
+                        // onChange={getValue}
+                        className='date width'
+                        placeholder='Search by ID or File name'
+                        prefix={<BsSearch className='search-field-icon' />}
+                    />
+                </div>
+                <div className='col-lg-2'>
+
+                </div>
+                <div className='col-lg-2 pr-0'>
+                    <Button style={{ background: '#4285F4', color: '#fff', width: '100%' }} onClick={showModal}
+                        type='text' className='date width-sub height_57px'
+                    >Create Submission</Button>
+                    {/* ---------------------reate Submission modal Start--------------- */}
+                    <Modal
+                        title=""
+                        open={open}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        footer={null}
+                        type='navigation'
+                        // size='small'
+                        width={1000}
+                    >
+
+                        <div className='select-process'>
+                            <div className='modalname'>
+                                <h5>Select Processor</h5>
+                            </div>
+                            <div className='modal-content-sec'>
+                                <div className='modal-content-data'>
+                                    <h6>General</h6>
+                                    <p>Ready to use out-of-the-box processors for general document goals.</p>
+                                </div>
+                                <div className='modal-tiles'>
+                                    <div className='row'>
+                                        <div className='col-lg-3'>
+                                            <div className='modal-tiles-main'>
+                                                <h5>Form Parser</h5>
+                                                <p>Extract form elements such as text and checkboxes</p>
+                                                <div className='create-sub'>
+                                                    Create Submission
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='modal-content-data'>
+                                    <h6>Specialized </h6>
+                                    <p>Schematized processors for domain-specific documents.</p>
+                                    <div className='specialize-dropdown'>
+                                        <Select
+                                            className='width subdropdes'
+                                            showSearch
+                                            // onChange={onChangeTrans}
+                                            // onSearch={onSearch}
+                                            placeholder='Filter'
+                                            optionFilterProp='children'
+                                            filterOption={(input, option) => option.children.includes(input)}
+                                            filterSort={(optionA, optionB) =>
+                                                optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
+                                            }
+                                        >
+                                            <Option value='Not Identified'>Not Identified</Option>
+                                            <Option value='Closed'>Closed</Option>
+                                            <Option value='Communicated'>Communicated</Option>
+                                        </Select>
+                                    </div>
+                                    <button className='process-btn'>Proceed</button>
+                                </div>
+                            </div>
                         </div>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="SENTIMENT ANALYSIS" key="3">
-                        <div className='submission-div'>
-                            {/* <iframe className='dashboard_iframe' src="https://datastudio.google.com/embed/reporting/adf93041-428b-478e-b578-6872d9725b1b/page/xtS5C" frameborder={0} allowfullscreen /> */}
+                    </Modal>
+
+                </div>
+            </div>
+
+            <div className='display-flex home-div'>
+                <div className='submission-card'>
+                    <div className='submission-card-div'>
+                        <div className='submission-main-list'>
+                            <div className='submission-heading'>
+                                <p className='submission-title mg_lf_15px'>30 Templates</p>
+                                <CiMenuKebab className='menuicon' />
+                                {/* <button className='submission-btn' onClick={() => setShowCreateSubmission(true)}>Create Submission</button> */}
+                            </div>
+                            <div className='submission-table-main'>
+                                <TableContainer component={Paper} className='submission-table'>
+                                    <Table aria-label='simple table'>
+                                        <TableHead>
+                                            <TableRow className='submission-head'>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Name</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Submission ID</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Description</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Date</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Completion Date</TableCell>
+                                                <TableCell className='submission-table-cell submission-head-cell'>Uploaded By</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow
+                                                // key={v?.submission_id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            // onClick={() => { setSubID(v?.submission_id) }}
+                                            >
+                                                <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
+                                                    ddkcbj
+                                                </TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>ncdj</TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>cds</TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>cds</TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>vdvsd</TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>csd</TableCell>
+                                                <TableCell className='submission-table-cell submission-row-cell'>scsdcsdc</TableCell>
+                                            </TableRow>
+
+
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </div>
+                            <div className='submissions-foote'>
+                                <div className='display-flex'>
+                                    <div className='select-main'>
+                                        <div className='select-div'>
+                                            <select name='pages' className='submission-pagination'>
+                                                <option className='submission-pagination-option' value={5}>05</option>
+                                                <option className='submission-pagination-option' value={10}>10</option>
+                                                <option className='submission-pagination-option' value={20}>20</option>
+                                            </select>
+                                        </div>
+                                        <p className='per-page'>Per Page</p>
+                                    </div>
+                                    <div className='pages-list'>
+                                        <span className='page-list'>3</span>
+                                        <span className='page-list'>of 2</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </Tabs.TabPane>
-                </Tabs >
-            </Box >
-        </div >
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
+
+export default Home

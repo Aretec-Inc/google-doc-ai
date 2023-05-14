@@ -1,4 +1,6 @@
 import { message, notification } from 'antd'
+import momentTz from 'moment-timezone'
+
 const requiredMessage = (value) => `Please input your ${value}!`
 
 const inputPlace = (value) => `Input your ${value} Here...!`
@@ -43,35 +45,38 @@ const userObject = (result) => {
         last_name: profileObj.familyName
     }
 }
-const googleLogin = async (result, history, loginUser, dispatch) => {
-    const obj = userObject(result)
-    // return axios.post(ACCOUNT_CHECK_SOCIAL_PARAMS, obj)
-    //     .then((res) => {
-    //         const { data } = res
-    //         localStorage.setItem('accesstoken', data?.data?.access_token)
-    //         if (data?.success) {
-    //             dispatch(loginUser(data?.data))
-    //             successMessage(data?.message || 'Successfully Logged In!')
-    //             eventTrigger(actions.click, actionTypes.login, actionTables.user, data?.data?.id)
-    //             return setTimeout(() => {
-    //                 history.push('/')
-    //             }, 300)
-    //         }
-    //         else if (data?.pending) {
-    //             warningMessage(data?.message)
-    //         }
-    //         else {
-    //             errorMessage(data?.message)
-    //         }
-    //         return false
-    //     }).catch((err) => {
-    //         let erMsg = err?.response?.data?.message;
-    //         erMsg && errorMessage(erMsg);
-    //         console.log("google login error", err)
-    //     })
-}
 
 const updateId = (id) => id?.replace(/[^0-9]/g, '')?.slice(0, 10)
+
+const validateLength = (val, len = 15) => val.length > len ? `${val.slice(0, len)}...` : val
+
+const templatePrefix = (id) => `000${id}`?.slice(-4,)
+
+const disabledDate = (current) => {
+    let customDate = momentTz().format('YYYY-MM-DD')
+    return current && current > momentTz(customDate, 'YYYY-MM-DD')
+}
+
+const itemRender = (_, type, originalElement) => {
+    if (type === 'prev') {
+        return <a>Previous</a>
+    }
+    if (type === 'next') {
+        return <a>Next</a>
+    }
+    return originalElement
+}
+
+const callFinally = (setLoading) => {
+    try {
+        if (setLoading) {
+            setLoading(false)
+        }
+    }
+    catch (e) {
+
+    }
+}
 
 export {
     requiredMessage,
@@ -84,6 +89,10 @@ export {
     errorNotification,
     convertTitle,
     stringLimiter,
-    googleLogin,
-    updateId
+    templatePrefix,
+    updateId,
+    validateLength,
+    disabledDate,
+    itemRender,
+    callFinally
 }

@@ -38,7 +38,7 @@ const ValidateButton = ({ artifactData, style, refresh, loading, ...props }) => 
 
     const refreshData = () => {
 
-        let name = artifactData?.artifact_name
+        let name = artifactData?.file_name
         if (name) {
             setIsLoading(true)
 

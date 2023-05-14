@@ -1,62 +1,12 @@
 const router = require('express').Router()
-const { upload, updateCasePriority, updateIsOpen, getCaseDetails, getDocumentByAdjudication, getCasesByCaseStatus, getCasesByCategory, uploadSupportingDocs, uploadIncome, updateCaseNotes, uploadIdentity, uploadApplication,submitApplication,feedback ,addNotes} = require('../controllers/post')
-const path = require('path')
-var Multer = require('multer')
+const { createSubmmission, generateUploadSignedUrl, uploadDocuments, updateKeyPairs } = require('../controllers/post')
 
-function checkFileType(file, cb) {
-    const filetypes = /pdf/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: PDF Only!');
-    }
-}
+router.post('/create-submission', createSubmmission)
 
-var multer = Multer({
-    dest: 'uploads/',
-    fileFilter: function (_req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).array('files', 20);
+router.post('/get-upload-signed-url', generateUploadSignedUrl)
 
-var multerSuppDocs = Multer({
-    dest: 'uploads/',
-    fileFilter: function (_req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).single('file', 1);
+router.post('/upload-documents', uploadDocuments)
 
-var multerSuppDocsOneFile = Multer({
-    dest: 'uploads/',
-    fileFilter: function (_req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).single('file', 1);
-
-router.post('/upload', multer, upload)
-router.post('/uploadIncome', multer, uploadIncome)
-
-router.post('/uploadApplication', multerSuppDocsOneFile, uploadApplication)
-router.post('/upload-supp-doc', multerSuppDocs, uploadSupportingDocs)
-
-// router.post('/login', login)
-// router.post('/register', register)
-router.post('/updateCasePriority', updateCasePriority)
-router.post('/submitApplication', submitApplication)
-router.post('/updateIsOpen', updateIsOpen)
-router.post('/getCaseDetails', getCaseDetails)
-
-router.post('/getDocumentByAdjudication', getDocumentByAdjudication)
-
-router.post('/getCasesByCaseStatus', getCasesByCaseStatus)
-
-router.post('/getCasesByCategory', getCasesByCategory)
-
-router.post('/updateCaseNotes', updateCaseNotes)
-router.post('/uploadIdentity', multer, uploadIdentity)
-router.post('/feedback', feedback)
-router.post('/addNotes', addNotes)
+router.post('/update-key-pairs', updateKeyPairs)
 
 module.exports = router

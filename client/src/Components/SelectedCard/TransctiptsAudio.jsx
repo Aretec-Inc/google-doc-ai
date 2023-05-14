@@ -40,8 +40,8 @@ const TranscriptAudio = (props) => {
 
     const getData = () => {
         if (selectedCard) {
-            let artifact_name = selectedCard?.artifact_name
-            secureApi.get(`${ARTIFACT.GET.AUDIO_TRANSCRIPT}?artifact_name=${artifact_name}`)
+            let file_name = selectedCard?.file_name
+            secureApi.get(`${ARTIFACT.GET.AUDIO_TRANSCRIPT}?file_name=${file_name}`)
                 .then((data) => {
                     if (data?.success) {
                         setTransData(data?.data)
@@ -117,8 +117,8 @@ export default TranscriptAudio
 //         const { selectedCard } = this.props
 
 //         if (selectedCard) {
-//             let artifact_name = selectedCard?.artifact_name
-//             secureApi.get(`/api/artifact/audio_transcript?artifact_name=${artifact_name}`)
+//             let file_name = selectedCard?.file_name
+//             secureApi.get(`/api/artifact/audio_transcript?file_name=${file_name}`)
 //                 .then((data) => {
 //                     if (data.success) {
 //                         this.setState({ transData: data.data, loading: true })

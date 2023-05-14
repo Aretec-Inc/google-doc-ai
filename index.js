@@ -7,9 +7,7 @@ const cors = require('cors')
 const server = require('http').createServer(app)
 const { configureBucketCors } = require('./config/storage')
 
-
 const PORT = process.env.PORT || 8080
-
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json())

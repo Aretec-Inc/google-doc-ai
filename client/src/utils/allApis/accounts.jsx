@@ -1,4 +1,4 @@
-const host = `https://auth-service-2my7afm7yq-ue.a.run.app`
+const host = `https://context-api-2my7afm7yq-ue.a.run.app`
 // const host = `https://backend.neptunestech.com`
 // const gcpHost = `http://localhost:8080`
 // const awsHost = `http://localhost:8082`

@@ -4,18 +4,14 @@ import Tabs from './Tabs'
 import PropTypes from 'prop-types'
 import { errorMessage } from '../../utils/pdfHelpers'
 import IconButton from '@material-ui/core/IconButton'
-import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { Replay } from '@material-ui/icons'
-import { secureApiPDF } from '../../Config/api'
+import { secureApi } from '../../Config/api'
 import PDFContainer from './PDFContainer'
 import { CircularProgress, Tooltip } from '@material-ui/core'
-import TABLE from './Table'
 import { setArtifactData } from '../../Redux/actions/artifactActions'
 import { useDispatch } from 'react-redux'
-import Properties from './Properties'
-import { PDF_APIS } from '../../utils/apis'
+import { GET } from '../../utils/apis'
 
-const { GET: { GET_PDF_DATA, GET_CUSTOM_FIELDS_BY_ARTIFACT } } = PDF_APIS;
 
 const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
     const dispatch = useDispatch()
@@ -34,13 +30,10 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
 
     const [availableKeyPairs, setAvailableKeyPairs] = useState([])
     let form1Name = `form-22a.pdf`
-    const is_editable = !artifactData?.is_validate
-    let file_name = artifactData?.artifact_name || form1Name
+    let file_name = artifactData?.file_name || form1Name
     let file_address = artifactData?.file_address && artifactData?.file_address //|| updateUrl(form1)
     let form_name = artifactData?.form_name
     let redacted_file_address = artifactData?.redacted_file_address
-
-    console.log('artifactData', artifactData?.file_address)
 
     useEffect(() => {
         getData()
@@ -67,14 +60,13 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                 }
             })
 
-            if (data?.artifactData && typeof data?.artifactData == "object") {
+            if (data?.fileData && typeof data?.fileData == "object") {
 
-                let updatedArtifact = Object.assign(artifactData || {}, data?.artifactData)
+                let updatedArtifact = Object.assign(artifactData || {}, data?.fileData)
                 dispatch(setArtifactData(updatedArtifact))
             }
             if (key_prs) {
                 setKey_pairs(key_prs)
-                getAvailableKeyPairs(key_prs)
 
                 let dlpKP = Array.isArray(key_prs) && key_prs.length && key_prs.filter(d => d?.dlp_info_type && d?.dlp_match_likelihood)
 
@@ -87,62 +79,23 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
             }
         }
         else {
-            //code: "AI_FAILED"
             setLoading(false)
-            // if (data?.code == "AI_FAILED" && data?.message) errorMessage(data?.message)
-            let errMsg = data?.message;
-            // if (errMsg == "File still in process!") {
-            //     getData()
-            // }
-            // errMsg && errorMessage(errMsg);
         }
     }
 
     const getData = () => {
         if (file_name) {
             setLoading(true)
-            secureApiPDF.getPDF(`${GET_PDF_DATA}?file_name=${file_name}&form_name=${form_name}`)
+            secureApi.get(`${GET.PDF_DATA}?file_name=${file_name}&form_name=${form_name}`)
                 .then(onData)
                 .catch((err) => {
                     console.log(err)
                     let errMsg = err?.response?.data?.message
                     errMsg && errorMessage(errMsg)
-                    getAvailableKeyPairs()
                 })
-        }
-    }
-
-    const getAvailableKeyPairs = (keys) => {
-        if (!isTemplateView) {
-            let keyPairs = keys || key_pairs
-            secureApiPDF.getPDF(`${GET_CUSTOM_FIELDS_BY_ARTIFACT}?artifact_name=${artifactData?.artifact_name}`)
-                .then(data => {
-                    if (data?.success) {
-
-                        let d = data
-                        if (Array.isArray(d) && d?.length) {
-                            let alreadyAddedFieldNames = keyPairs.map(dd => [dd?.field_name, ...dd?.column_name ? [dd?.column_name] : []])?.flat?.()
-
-                            let filteredData = alreadyAddedFieldNames?.length ?
-                                d.filter(dd => alreadyAddedFieldNames?.indexOf(dd?.field_name) < 0)
-                                : d
-                            setAvailableKeyPairs(filteredData)
-                        }
-                    }
-                    else {
-                        let errMsg = data?.message;
-                        // errMsg && errorMessage(errMsg)
-                    }
+                .finally(() => {
+                    setLoading(false)
                 })
-                .catch(err => {
-                    console.log("API: ", GET_CUSTOM_FIELDS_BY_ARTIFACT, err)
-                    let errMsg = err?.response?.data?.message;
-                    errMsg && errorMessage(errMsg);
-                })
-                .finally(() => setLoading(false))
-        }
-        else {
-            setLoading(false)
         }
     }
 
@@ -150,7 +103,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
 
     const ConditionalComponent = (
         <div style={{ filter: enableShadow ? `drop-shadow(0px 0px 10px silver)` : 'unset', ...openInModal ? {} : { maxWidth } }}>
-            <div style={{ display: 'flex', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
+            <div style={{ display: 'none', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
                 <div style={{ width: '100%' }}>
                     <Tabs redacted_file_address={redacted_file_address} showKeyPairTab={hasFormFields} showTableTab={Boolean(key_pairs?.length)} showJSONTab={Boolean(json)} onChange={(e, newvalue) => setTabIndex(newvalue)} value={tabIndex} />
                 </div>
@@ -160,20 +113,6 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                     </Tooltip>
                 </IconButton>
             </div>
-
-            {tabIndex == 2 && (<Properties artifactData={artifactData} />)}
-
-            {Boolean(tabIndex == 3 || tabIndex == 4) && (
-
-                <TABLE
-                    artifactData={artifactData}
-                    isSchemaGenerated={isSchemaGenerated}
-                    isDLP={tabIndex == 4}
-                    is_editable={is_editable}
-                    refresh={getData}
-                    key_pairs={tabIndex == 4 ? dlpKeyPairs : key_pairs} />
-            )}
-
             {(Boolean(tabIndex == 0 || tabIndex == 1 || tabIndex == 5)) && (
                 <PDFContainer
                     isTemplateView={isTemplateView}

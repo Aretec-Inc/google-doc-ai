@@ -8,7 +8,7 @@ import { HomeOutlined, ApartmentOutlined, DatabaseOutlined, AntDesignOutlined, F
 import ViewQuiltIcon from '@material-ui/icons/ViewQuilt'
 import { Security } from '@material-ui/icons'
 import { AccountTree } from '@material-ui/icons'
-import { allPaths } from '../Config/paths'
+import allPaths from '../Config/paths'
 import { BIG_QUERY_APIS } from './apis'
 export const publicVisibility = 'Public'
 export const privateVisibility = 'Private'

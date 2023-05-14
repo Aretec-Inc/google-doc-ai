@@ -1,5 +1,5 @@
-// const host = `https://ai-flow-2my7afm7yq-ue.a.run.app`
-const host = `https://backend.neptunestech.com:8001`
+const host = `https://context-api-2my7afm7yq-ue.a.run.app`
+// const host = `https://backend.neptunestech.com:8001`
 const api = `${host}/api`
 const ai_flow_api = `${api}/ai_flow`;
 

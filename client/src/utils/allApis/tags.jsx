@@ -1,4 +1,4 @@
-const host = `https://tag-apis-2my7afm7yq-ue.a.run.app`
+const host = `https://context-apis-2my7afm7yq-ue.a.run.app`
 // const host = `https://backend.neptunestech.com:8050`
 const api = `${host}/api`
 

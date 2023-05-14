@@ -1,3 +1,29 @@
-.myHeaderIcons{
+.myHeaderIcons {
     margin: 0px 10px;
+}
+
+.new-doc {
+    font-size: 16px;
+    font-weight: 500;
+    color: #0057E7;
+}
+
+.filename-topheader {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.artifact-top {
+    display: flex;
+    padding: 15px 0px;
+    align-items: center;
+}
+
+.artifact-sub {
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    min-width: 250px;
+    max-width: 350px;
+    width: 80%;
 }

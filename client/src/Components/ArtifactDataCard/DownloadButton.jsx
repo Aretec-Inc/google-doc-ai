@@ -10,7 +10,7 @@ const DownloadButton = ({ selectedCard }) => {
 
         if (type == "redacted") {
             if (selectedCard?.redacted_file_address) {
-                saveAs(selectedCard?.redacted_file_address, `redacted-${selectedCard?.original_artifact_name}`)
+                saveAs(selectedCard?.redacted_file_address, `redacted-${selectedCard?.original_file_name}`)
             }
             else {
                 message.error({ content: "Redacted file link not found.", duration: 3 })
@@ -18,7 +18,7 @@ const DownloadButton = ({ selectedCard }) => {
 
         }
         else {
-            saveAs(selectedCard?.original_file_address || selectedCard?.file_address, selectedCard?.original_artifact_name)
+            saveAs(selectedCard?.original_file_address || selectedCard?.file_address, selectedCard?.original_file_name)
         }
     }
 

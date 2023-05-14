@@ -6,7 +6,6 @@ import { randomInteger, load_artifact_data_by_type, errorMessage } from '../../u
 import { fadeList, isPDF } from '../../utils/pdfConstants'
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index'
 import { Tabs } from 'antd'
-import Properties from '../PDF-HIGHLIGHTER/Properties'
 import './SelectedCardData.css'
 import HeaderTopBar from './HeaderTopBar'
 
@@ -17,7 +16,6 @@ class SelectedCardData extends React.Component {
     constructor(props) {
         super(props)
         const { freqWord, artifactData, selectedCard, adj } = this.props
-        console.log("PROPS", adj)
 
         this.state = {
             detailTabs: ['General', 'Insights', 'Transcripts', 'Similar', 'General', 'Insights', 'Transcripts', 'Similar'],
@@ -45,42 +43,10 @@ class SelectedCardData extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.loadData()
-        // this.refreshData()
-    }
-    loadData = () => {
-        let selectedCard = this?.props?.selectedCard || this?.props?.artifactData
-        if (selectedCard?.artifact_type !== 'csv' && selectedCard?.artifact_type !== 'xml') {
-            load_artifact_data_by_type(selectedCard)
-                .then((data) => {
-                    this.setState({
-                        selectedCard: data,
-                        artifact_id: selectedCard.id,
-                        loading: false
-                    })
-                    console.log('load Data Executed ', data)
-                    this.props.setArtifactData(data)
-                    if (!data?.success) {
-                        let errMsg = data?.message;
-                        errMsg && errorMessage(errMsg);
-                    }
-                    // console.log(d,'LIne 63')
-                })
-                .catch((err) => {
-                    console.log('e', err)
-                    let errMsg = err?.response?.data?.message;
-                    errMsg && errorMessage(errMsg);
-                    // if (e.code !== 'NO_PARAMS' && e?.message) errorMessage(e?.message);
-                    // this.setState({ loading: false })
-                })
-        }
-    }
-
     refreshData = () => {
         const { selectedCard } = this.props
 
-        let name = selectedCard?.artifact_name
+        let name = selectedCard?.file_name
         if (name) {
             this.setState({ isRefreshing: true })
 
@@ -139,19 +105,8 @@ class SelectedCardData extends React.Component {
             <div className='card-div' style={(!isPDF(artifact_type)) ? { filter: `drop-shadow(0px 0px 20px silver)` } : {}}>
                 <HeaderTopBar {...this.props} selectedCard={selectedCard || this.props.selectedCard} goBack={this.props.goBack} />
                 <div style={conditionalStyle}>
-                    {(alreadyHasTabs) ?
-                        (
-                            <Tabs style={{ width: '100%' }} defaultActiveKey='1' >
-                                <TabPane tab=' Overview' key='1'>
-                                    {allElements}
-                                </TabPane>
-                                <TabPane tab='Properties' key='2'>
-                                    <Properties artifactData={selectedCard || this.props.selectedCard} />
-                                </TabPane>
-                            </Tabs>
-                        ) : allElements}
+                    {alreadyHasTabs ? allElements : allElements}
                 </div>
-
             </div>
         )
     }

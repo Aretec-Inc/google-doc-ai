@@ -1,29 +1,14 @@
 const router = require('express').Router()
-const { getDocumentsBySubmissionId, getAllSubmissions, getAllDocuments, getBySubmissionId, getRecentDate, getAllApplicants, getFormsByApplicantName, getApplicantInformation, getAdjudicateStatus, getDashboardCaseCount, getCasesDetailByDocId, getSupportingDocsIncome, getSupportingDocsExpense, searchApplicant, getIncomeArtifact, getIncomeArtifactKeyPairs, getCaseStatusPriority, extractingEntities, getNotes,searchWithinApplicant ,getAllCompletedApplicants,getAllActiveApplicants,updateKeyPairsConfidence} = require('../controllers/get')
+const { getAllProcessors, getAllSubmmissions, getFilesById, getPdfData, getDashboardData } = require('../controllers/get')
 
-router.get('/getDocumentsBySubmissionId', getDocumentsBySubmissionId)
-router.post('/getAllSubmissions', getAllSubmissions)
-router.post('/getAllDocuments', getAllDocuments)
-router.get('/getBySubmissionId', getBySubmissionId)
-router.get('/getRecentDate', getRecentDate)
-router.get('/getAllApplicants', getAllApplicants)
-router.get('/getAllCompletedApplicants', getAllCompletedApplicants)
-router.get('/getAllActiveApplicants', getAllActiveApplicants)
-router.get('/getFormsByApplicantName', getFormsByApplicantName)
-router.get('/getApplicantInformation', getApplicantInformation)
-router.get('/getAdjudicateStatus', getAdjudicateStatus)
-router.get('/getDashboardCaseCount', getDashboardCaseCount)
-router.get('/getCasesDetailByDocId', getCasesDetailByDocId)
-router.get('/getSupportingDocsIncome', getSupportingDocsIncome)
-router.get('/getSupportingDocsExpense', getSupportingDocsExpense)
-router.post('/searchApplicant', searchApplicant)
-router.post('/searchWithinApplicant', searchWithinApplicant)
-router.get('/getIncomeArtifact', getIncomeArtifact)
-router.get('/getIncomeArtifactKeyPairs', getIncomeArtifactKeyPairs)
-router.get('/getCaseStatusPriority', getCaseStatusPriority)
-router.get('/extractingEntities', extractingEntities)
-router.post('/updateKeyPairsConfidence', updateKeyPairsConfidence)
+router.get('/get-all-processors', getAllProcessors)
 
-router.get('/getNotes', getNotes)
+router.post('/get-all-submissions', getAllSubmmissions)
+
+router.post('/get-files-by-id', getFilesById)
+
+router.get('/get-pdf-data', getPdfData)
+
+router.get('/get-dashboard-data', getDashboardData)
 
 module.exports = router

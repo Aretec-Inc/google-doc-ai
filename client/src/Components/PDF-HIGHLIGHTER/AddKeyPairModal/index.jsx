@@ -20,11 +20,10 @@ const AddFieldModal = ({ addedKeyPairs, setCropOptions, setAddedKeyPairs, onClos
     const availableKeyPairs = useMemo(() => availableKeyPair?.filter?.(d => addedKeyPairsName?.indexOf(d?.field_name) < 0), [availableKeyPair, addedKeyPairs])
 
     const [errors, setErrors] = useState({})
-    console.log("availableKeyPairs", availableKeyPairs)
 
     const uniqueAddedKeyPairs = useMemo(() => getUniqueArrayOfObjects(addedKeyPairs, "field_name"), [addedKeyPairs])
 
-    let artifact_name = artifactData?.artifact_name
+    let file_name = artifactData?.file_name
 
     const close = () => {
         if (typeof onClose == "function") onClose(false)
@@ -61,7 +60,7 @@ const AddFieldModal = ({ addedKeyPairs, setCropOptions, setAddedKeyPairs, onClos
             setErrors({})
             try {
                 setLoading(true)
-                let data = await secureApi.post(ADD_KEY_PAIRS, { artifact_name, keyPairs: uniqueAddedKeyPairs, userId })
+                let data = await secureApi.post(ADD_KEY_PAIRS, { file_name, keyPairs: uniqueAddedKeyPairs, userId })
                 let alreadyExisting = data?.existing || []
                 if (data?.message) data?.success ? successMessage(data?.message) : errorMessage(data?.message)
 

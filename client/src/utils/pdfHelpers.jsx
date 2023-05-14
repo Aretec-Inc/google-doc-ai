@@ -8,7 +8,7 @@ import { Popover } from 'antd'
 import { ACCOUNTS_APIS, WIDGET_APIS, PROJECTS_APIS, ARTIFACT, SEARCH_APIS, FOLDERS_APIS, PROJECT_FLOW_APIS, DOC_AI_APIS } from './apis'
 import { BOOKMARKS_APIS, AUDITS_APIS } from './apis'
 import { DASHBOARD_CHARTS } from './apis'
-import { allPaths } from '../Config/paths'
+import allPaths from '../Config/paths'
 const { GET: { FOLDERS_GET_BY_USER_PROJECT_ID } } = FOLDERS_APIS
 const { POST: { ACCOUNT_CHECK_SOCIAL_PARAMS, ACCOUNT_UPDATE_TOKEN }, GET: { ACCOUNT_GET_USER } } = ACCOUNTS_APIS
 const { GET: { PROJECTS_BY_USER_ID, PROJECTS_TEMPLATES, PROJECTS_GET_ALL_ADDITIONAL_PROPERTIES } } = PROJECTS_APIS
@@ -218,6 +218,7 @@ export const cleanFieldName = (name, dontTrim) => {
 }
 
 export const perc2color = (perc) => {
+    debugger
     let r, g, b = 0
     if (perc < 50) {
         r = 255
@@ -317,7 +318,7 @@ export const parseURL = (url) => url.replace(/\/\//g, "/")
 
 const returnDefaultData = (data) => {
     const withDefaultData = data.data?.filter((data) => {
-        let hasRequiredData = data?.item?.artifact_type && data?.item?.artifact_name && data?.item?.artifact_size && data?.item?.file_address && data?.item?.id
+        let hasRequiredData = data?.item?.artifact_type && data?.item?.file_name && data?.item?.artifact_size && data?.item?.file_address && data?.item?.id
         return hasRequiredData
     })
     return withDefaultData || []
@@ -581,12 +582,12 @@ export const load_artifact_data_by_type = (artifactData) => {
     return new Promise((resolve, reject) => {
 
         let artifact_type = artifactData?.artifact_type
-        let artifact_name = artifactData?.artifact_name
+        let file_name = artifactData?.file_name
         let artifactAPI = getAPIbyType(artifact_type)
 
         if (artifact_type) {
             if (artifactAPI) {
-                axios.get(`${artifactAPI}/${artifact_name}`)
+                axios.get(`${artifactAPI}/${file_name}`)
                     .then((data) => {
                         if (data?.success) {
                             if (Object.keys(data?.data).length !== 0 && (data?.data).constructor === Object) {
@@ -691,7 +692,7 @@ const validateLength = (val, len = 15) => val.length > len ? `${val.slice(0, len
 
 // const setActiveMenu = (path) => path === '/home' || path === '/recent-upload' || path === '/advance' ? 0 : path === '/template-dashboard' ? 1 : path === '/search' || path === '/filemanager' ? 2 : path === '/flowdesigner' ? 3 : path === '/workspace' ? 4 : path === '/datagraph' ? 5 : path === '/admin' || path === '/users' ? 6 : path === '/project-activities' ? 7 : path === '/project_workflow' ? 8 : path === '/flow-datablocks' ? 9 : path === '/web-archives' ? 10 : 11
 
-const setActiveMenu = (path) => path === allPaths?.home || path === allPaths?.recentUpload || path === allPaths?.ADVANCE ? allPaths?.home : path === allPaths?.project_dashboard ? allPaths?.project_dashboard : path === allPaths?.search? allPaths?.search : path === allPaths?.filemanager ? allPaths?.filemanager : path === allPaths?.flowdesignermain ? allPaths?.flowdesignermain : path === allPaths?.workspace ? allPaths?.workspace : path === allPaths?.neo4jmainscreen ? allPaths?.neo4jmainscreen : path === allPaths?.admin ? allPaths?.admin : path === allPaths?.users ? allPaths?.users : path === allPaths?.project_activities ? allPaths?.project_activities : path === allPaths?.project_workflow ? allPaths?.project_workflow : path === allPaths?.flow_data_blocks_flows ? allPaths?.flow_data_blocks_flows : path === allPaths?.webArchive ? allPaths?.webArchive : path === allPaths?.custom_models ? allPaths?.custom_models : path === allPaths?.project_settings ? allPaths?.project_settings : 11
+const setActiveMenu = (path) => path === allPaths?.home || path === allPaths?.recentUpload || path === allPaths?.ADVANCE ? allPaths?.home : path === allPaths?.project_dashboard ? allPaths?.project_dashboard : path === allPaths?.search ? allPaths?.search : path === allPaths?.filemanager ? allPaths?.filemanager : path === allPaths?.flowdesignermain ? allPaths?.flowdesignermain : path === allPaths?.workspace ? allPaths?.workspace : path === allPaths?.neo4jmainscreen ? allPaths?.neo4jmainscreen : path === allPaths?.admin ? allPaths?.admin : path === allPaths?.users ? allPaths?.users : path === allPaths?.project_activities ? allPaths?.project_activities : path === allPaths?.project_workflow ? allPaths?.project_workflow : path === allPaths?.flow_data_blocks_flows ? allPaths?.flow_data_blocks_flows : path === allPaths?.webArchive ? allPaths?.webArchive : path === allPaths?.custom_models ? allPaths?.custom_models : path === allPaths?.project_settings ? allPaths?.project_settings : 11
 
 
 

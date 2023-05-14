@@ -11,16 +11,15 @@ module.exports = {
         username: 'postgres',
         password: 'postgres',
         database: 'postgres',
-        // host: 'context-oltp.cmu904sgeqoe.us-east-1.rds.amazonaws.com',
         host: '35.185.46.62',
         dialect: 'postgres',
         port: 5432
     },
     production: {
-        username: 'postgres',
-        password: 'postgres',
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
         database: 'postgres',
-        host: process.env.HOST,
+        host: process.env.DB_HOST,
         dialect: 'postgres',
         port: 5432
     }
