@@ -38,6 +38,7 @@ const Dashboard = (props) => {
     const classes = useStyles();
     const [documents, setDocuments] = useState('')
     const [submissions, setSubmissions] = useState('')
+    const [accuracySubmission, setAccuracySubmission] = useState('')
 
     useEffect(() => {
         getDashboardData()
@@ -154,10 +155,11 @@ const Dashboard = (props) => {
 
         secureApi.get(`${GET.DASHBOARD_DATA}`)
             .then((data) => {
-                const { documents, submissions } = data
-                // console.log("DATA ==>", documents, submissions)
+                const { documents, submissions, accuracy } = data
+                console.log("DATA ==>", data)
                 setDocuments(documents)
                 setSubmissions(submissions)
+                setAccuracySubmission(accuracy)
                 // dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
             })
             .catch((err) => {
@@ -269,7 +271,7 @@ const Dashboard = (props) => {
                         </div>
                     </div>
                     <div className='col-lg-4'>
-                        <div className='dash-top-card'>
+                        {/* <div className='dash-top-card'>
                             <div className='card-chart'>
                                 <div className="left">
                                     <h2>95%</h2>
@@ -278,6 +280,12 @@ const Dashboard = (props) => {
                                 <div className="right">
                                     <Chart options={data1.options} series={data1.series} type="bar" height={120} />
                                 </div>
+                            </div>
+                        </div> */}
+                        <div className='dash-top-card'>
+                            <div className='dash-top-card-main'>
+                                <h1>Total Numbers</h1>
+                                <p>{submissions}</p>
                             </div>
                         </div>
                     </div>
@@ -380,7 +388,7 @@ const Dashboard = (props) => {
                     </div> */}
                     <div className="container-dash">
                         <div className="box-dash">
-                            <SubmissionVisuals />
+                            <SubmissionVisuals accuracySubmission={accuracySubmission} />
                         </div>
                         <div className="box-dash">
                             <ProcessorVisuals />
@@ -389,14 +397,13 @@ const Dashboard = (props) => {
                             <LineChart />
                         </div>
                     </div>
-                    <div>
+                    {/* <div>
                         <TableContainer component={Paper}>
                             <Table size="small" aria-label="a dense table">
                                 <TableHead className={classes.tableHead}>
                                     <TableRow>
                                         <TableCell>Submissions</TableCell>
                                         <TableCell align="right">Total Documents</TableCell>
-                                        {/* <TableCell align="right">Confidence Score</TableCell> */}
                                         <TableCell align="right">Average Score</TableCell>
                                         <TableCell align="right">Threshold</TableCell>
 
@@ -412,7 +419,6 @@ const Dashboard = (props) => {
                                                 {row.name}
                                             </TableCell>
                                             <TableCell align="right">{row.calories}</TableCell>
-                                            {/* <TableCell align="right">{row.fat}</TableCell> */}
                                             <TableCell align="right">{row.carbs}</TableCell>
                                             <TableCell align="right">{row.protein}</TableCell>
                                         </TableRow>
@@ -420,7 +426,7 @@ const Dashboard = (props) => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </div>
+                    </div> */}
                     <div className="grid-container-bottom">
                         <div className="grid-item-card">
                             Field Transcription Automation
