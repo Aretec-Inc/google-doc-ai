@@ -121,6 +121,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
 
                 const [result] = await docAiClient.processDocument(request);
                 document = result?.document;
+                console.log('result document', document?.entities?.map(v => v?.properties))
                 console.log('AI Process end.')
 
             }

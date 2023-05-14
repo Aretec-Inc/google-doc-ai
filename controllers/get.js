@@ -142,12 +142,27 @@ const getDashboardData = async (req, res) => {
 
         promises.push(runQuery(postgresDB, sqlQuery))
 
-        let [documents, submissions] = await Promise.allSettled(promises)
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs WHERE validated_field_value IS NOT NULL`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        let [documents, submissions, totalFields, totalFixes] = await Promise.allSettled(promises)
+
+        console.log('totalFields', totalFields, totalFixes)
+        totalFields = totalFields?.value[0]?.count
+        totalFixes = totalFixes?.value[0]?.count
+
+        let accuracy = 100 - ((totalFixes / totalFields) * 100)
 
         let obj = {
             success: true,
             documents: documents?.value[0]?.count,
-            submissions: submissions?.value[0]?.count
+            submissions: submissions?.value[0]?.count,
+            accuracy
         }
 
         apiResponse(res, 200, obj)
@@ -213,6 +228,38 @@ const getPdfData = async (req, res) => {
         res.send({ success: false, error: e, message: e?.message || "Something wen't wrong!" })
     }
 }
+
+const invoiceColumns = ['amount_paid_since_last_invoice', 'carrier', 'currency', 'currency_exchange_rate', 'delivery_date', 'due_date', 'freight_amount', 'invoice_date', 'invoice_id', 'line_item', 'line_item/amount', 'line_item/description', 'line_item/product_code', 'line_item/purchase_order', 'line_item/quantity', 'line_item/unit', 'line_item/unit_price', 'net_amount', 'payment_terms', 'purchase_order', 'receiver_address', 'receiver_email', 'receiver_name', 'receiver_phone', 'receiver_tax_id', 'receiver_website', 'remit_to_address', 'remit_to_name', 'ship_from_address', 'ship_from_name', 'ship_to_address', 'ship_to_name', 'supplier_address', 'supplier_email', 'supplier_iban', 'supplier_name', 'supplier_payment_ref', 'supplier_phone', 'supplier_registration', 'supplier_tax_id', 'supplier_website', 'total_amount', 'total_tax_amount', 'vat', 'vat/amount', 'vat/category_code', 'vat/tax_amount', 'vat/tax_rate']
+
+const exportData = async (req, res) => {
+    try {
+        let sqlQuery = `SELECT d.file_name, json_agg(s.*) AS key_value FROM google_doc_ai.documents d
+        LEFT JOIN google_doc_ai.schema_form_key_pairs s ON d.file_name = s.file_name
+        WHERE d.submission_id='45bf1ef8-8edc-4611-8829-9d09c988314b' AND s.field_name IN (${invoiceColumns?.map(v => ` '${v}'`)})
+        GROUP BY d.file_name;`
+
+        let allData = await runQuery(postgresDB, sqlQuery)
+
+        for (var v of allData) {
+            var key_value = v?.key_value
+            console.log('key_value', key_value?.map(v => v?.field_name))
+            console.log(v?.file_name)
+            // for (var k of key_value) {
+            //     console.log('k', k)
+            //     break
+            // }
+            // break
+        }
+
+        // apiResponse(res, 200, obj)
+    }
+    catch (e) {
+        console.log('e', e)
+        // return successFalse(res, e?.message || e)
+    }
+}
+
+// exportData()
 
 module.exports = {
     getAllProcessors,
