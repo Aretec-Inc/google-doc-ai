@@ -167,12 +167,28 @@ const getDashboardData = async (req, res) => {
 
         promises.push(runQuery(postgresDB, sqlQuery))
 
-        let [documents, submissions, totalFields, totalFixes, belowThreshold, aboveThreshold] = await Promise.allSettled(promises)
+        sqlQuery = `SELECT COUNT(*)::INTEGER,s.processor_name,s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold/100.0) GROUP BY s.processor_name ,s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER,s.processor_name,s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold/100.0) GROUP BY s.processor_name ,s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        let [documents, submissions, totalFields, totalFixes, belowThreshold, aboveThreshold, aboveThresholdModel, belowThresholdModel] = await Promise.allSettled(promises)
 
         totalFields = totalFields?.value[0]?.count
         totalFixes = totalFixes?.value[0]?.count
 
-        let accuracy = 100 - ((totalFixes / totalFields) * 100).toFixed(1)
+        let accuracy = 100 - ((totalFixes / totalFields) * 100)?.toFixed(1)
 
         // BELOW THRESHOLD
         // 100 - (Total fields below threshold / Total Fields * 100)
@@ -182,13 +198,44 @@ const getDashboardData = async (req, res) => {
         // Transcription Accuracy - Total fields transcribed above threshold
         let aboveThresholdValue = totalFields - aboveThreshold?.value[0]?.count
 
+        let aboveArr = []
+        aboveThresholdModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Accuracy'
+            }
+            return (
+                aboveArr?.push(obj)
+            )
+        })
+
+        let belowArr = []
+        belowThresholdModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Review'
+            }
+            return (
+                belowArr?.push(obj)
+            )
+        })
+
+
         let obj = {
             success: true,
             documents: documents?.value[0]?.count,
             submissions: submissions?.value[0]?.count,
             accuracy,
             belowThresholdValue,
-            aboveThresholdValue
+            aboveThresholdValue,
+            aboveArr,
+            belowArr,
+            aboveThresholdModel: aboveThresholdModel?.value,
+            belowThresholdModel: belowThresholdModel?.value
         }
 
         apiResponse(res, 200, obj)

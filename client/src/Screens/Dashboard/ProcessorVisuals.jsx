@@ -1,98 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Pie } from '@ant-design/plots';
+import { Bar } from '@ant-design/plots';
 
 
 
-const ProcessorVisuals = () => {
-    const data = [
-        {
-            type: 'Model-1',
-            value: 27,
-        },
-        {
-            type: 'Model-2',
-            value: 25,
-        },
-        {
-            type: 'Model-3',
-            value: 18,
-        },
-        {
-            type: 'Model-4',
-            value: 15,
-        },
-        {
-            type: 'Model-5',
-            value: 10,
-        },
-        {
-            type: 'Model-6',
-            value: 5,
-        },
-    ];
+
+
+// leftside model name
+
+
+const ProcessorVisuals = (props) => {
+    const { belowThresholdModelAcc, aboveThresholdModelAcc } = props
+    console.log("PROCESS==>", belowThresholdModelAcc, aboveThresholdModelAcc)
+    const data = [...aboveThresholdModelAcc, ...belowThresholdModelAcc]
     const config = {
-        appendPadding: 10,
         data,
-        angleField: 'value',
-        colorField: 'type',
-        radius: 1,
-        innerRadius: 0.6,
+        xField: 'count',
+        yField: 'processor_name',
+        seriesField: 'mode',
+        isPercent: true,
+        isStack: true,
+
+        /** 自定义颜色 */
+        color: ['#4285f4', '#fbbc05'],
         label: {
-            type: 'inner',
-            offset: '-50%',
-            content: '{value}',
+            position: 'middle',
+            content: (item) => {
+                return item?.count?.toFixed(2);
+            },
             style: {
-                textAlign: 'center',
-                fontSize: 14,
+                fill: '#fff',
             },
         },
-        interactions: [
-            {
-                type: 'element-selected',
-            },
-            {
-                type: 'element-active',
-            },
-        ],
-        statistic: {
-            title: false,
-            content: {
-                style: {
-                    whiteSpace: 'pre-wrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                },
-                // content: 'AntV\nG2Plot',
-            },
-        },
-        annotations: [
-            // {
-            //     type: 'image',
-            //     src: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
+    }
 
-            //     /** 位置 */
-            //     position: ['50%', '50%'],
-
-            //     /** 图形样式属性 */
-            //     style: {
-            //         width: 50,
-            //         height: 50,
-            //     },
-
-            //     /** x 方向的偏移量 */
-            //     offsetX: -25,
-
-            //     /** y 方向的偏移量 */
-            //     offsetY: 40,
-            // },
-        ],
-    };
 
 
     return (
-        <div className="border_left padding_6px">
+        <div className="padding_6px">
             <p className='submission-title mg_lf_15px'>Accuracy By Model(s)</p>
-            < Pie {...config} />
+            <Bar {...config} className="width90" />
         </div>
     )
 }
