@@ -43,9 +43,6 @@ const Dashboard = (props) => {
     const [belowThresholdModelAcc, setBelowThresholdModelAcc] = useState([])
     // const [accuracySubmission, setAccuracySubmission] = useState('')
 
-    console.log(belowThresholdModelAcc, aboveThresholdModelAcc)
-
-
     useEffect(() => {
         getDashboardData()
     }, [])

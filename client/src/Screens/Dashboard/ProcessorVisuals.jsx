@@ -10,7 +10,6 @@ import { Bar } from '@ant-design/plots';
 
 const ProcessorVisuals = (props) => {
     const { belowThresholdModelAcc, aboveThresholdModelAcc } = props
-    console.log("PROCESS==>", belowThresholdModelAcc, aboveThresholdModelAcc)
     const data = [...aboveThresholdModelAcc, ...belowThresholdModelAcc]
     const config = {
         data,
