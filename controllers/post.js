@@ -165,7 +165,7 @@ const createSubmmission = async (req, res) => {
 const generateUploadSignedUrl = async (req, res) => {
     try {
         let { fileOriginalName, contentType } = req.query
-        let Origin = process.env.NODE_ENV === 'production' ? `https://${process.env.ALLOWED_ORIGIN}` : 'http://localhost:3000'
+        let Origin = process.env.NODE_ENV === 'production' ? process.env.ALLOWED_ORIGIN : 'http://localhost:3000'
         let id = uuidv4()
 
         if (!fileOriginalName || !contentType) {

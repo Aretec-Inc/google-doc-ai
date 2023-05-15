@@ -267,6 +267,44 @@ const exportData = async (req, res) => {
     }
 }
 
+const exportDataToCSV = async (req, res) => {
+    try {
+        const { submission_id } = req?.query
+        
+        let sqlQuery = `SELECT d.file_name, e.all_fields, e.processor_name FROM google_doc_ai.documents d
+        LEFT JOIN google_doc_ai.export_table e ON d.file_name = e.file_name
+        WHERE d.submission_id='${submission_id}'`
+
+        let allData = await runQuery(postgresDB, sqlQuery)
+
+        let arrData = []
+
+        for (var v of allData) {
+            if (v?.all_fields?.line_item?.length) {
+                for (var l of v?.all_fields?.line_item) {
+                    let obj = { ...invoiceColumns, ...v?.all_fields }
+                    obj['line_item'] = { ...invoiceColumns?.line_item, ...l }
+                    arrData.push(obj)
+                }
+            }
+            else {
+                let obj = { ...invoiceColumns, ...v?.all_fields }
+                arrData.push(obj)
+            }
+        }
+
+        arrData = arrData?.map((v) => showTableBodyByColumn(v))
+
+        let newObj = { arrData, columns: showTableHeaderByColumn(invoiceColumns) }
+
+        apiResponse(res, 200, newObj)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
+
 module.exports = {
     getAllProcessors,
     getAllSubmmissions,

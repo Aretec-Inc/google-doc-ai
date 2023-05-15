@@ -3,7 +3,11 @@ const DLP = require('@google-cloud/dlp')
 const language = require('@google-cloud/language')
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3
 
-const service_key = JSON.parse(process.env.service_key || "{}")
+let service_key = JSON.parse(process.env.service_key || "{}")
+
+if (!Object.keys(service_key)?.length) {
+  service_key = require('../service_key.json')
+}
 
 const projectId = service_key?.project_id
 

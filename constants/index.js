@@ -36,13 +36,7 @@ exports.invoiceColumns = {
     supplier_tax_id: null,
     supplier_website: null,
     total_amount: null,
-    total_tax_amount: null,
-    vat: {
-        amount: null,
-        category_code: null,
-        tax_amount: null,
-        tax_rate: null
-    }
+    total_tax_amount: null
 }
 
 exports.invoiceColumns2 = {
