@@ -176,6 +176,32 @@ const calculateOffset = (pageNo = 1, pageSize = 10) => {
     return (pageNo - 1) * pageSize
 }
 
+const showTableHeaderByColumn = (columns) => {
+    let allColumns = Object.entries(columns)?.map(([k, v]) => {
+        if (typeof v === 'object' && v !== null) {
+            return Object.keys(v)?.map(l => `${k}_${l}`)
+        }
+        else {
+            return k
+        }
+    })
+
+    return allColumns?.flat()?.map(v => v?.replace(/_/g, ' '))
+}
+
+const showTableBodyByColumn = (columns) => {
+    let allColumns = Object.values(columns)?.map((v) => {
+        if (typeof v === 'object' && v !== null) {
+            return Object.values(v)
+        }
+        else {
+            return v
+        }
+    })
+
+    return allColumns?.flat()
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -189,5 +215,7 @@ module.exports = {
     getUniqueArrayOfObjects,
     getAuthUrl,
     isNull,
-    calculateOffset
+    calculateOffset,
+    showTableHeaderByColumn,
+    showTableBodyByColumn
 }

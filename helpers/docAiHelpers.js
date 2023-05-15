@@ -41,7 +41,7 @@ const getUniqueArrayOfObjects = (ary, objectPropertName) => {
     })
 }
 
-const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTesting, formKeyPairTableName }) => {
+const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTesting, formKeyPairTableName, processorName }) => {
 
     // const gcs_input_uri = 'gs://' + bucket_name + '/' + file_name
     return new Promise(async (resolve, reject) => {
@@ -121,9 +121,30 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
 
                 const [result] = await docAiClient.processDocument(request);
                 document = result?.document;
-                console.log('result document', document?.entities?.map(v => v?.properties))
+                let obj = {}
+                for (var e of document?.entities) {
+                    if (e?.properties?.length) {
+                        if (!obj[e?.type]) {
+                            obj[e?.type] = []
+                        }
+                        let objChild = {}
+                        for (var p of e?.properties) {
+                            console.log('****', p?.type?.split('/'))
+                            var field_name = p?.type?.split('/')?.slice(-1,)?.[0]
+                            objChild[field_name] = p?.mentionText
+                        }
+                        obj[e?.type]?.push(objChild)
+                    }
+                    else {
+                        obj[e?.type] = e?.mentionText
+                    }
+                }
+                console.log('result document', obj)
+                let id = uuidv4()
+                let sqlQuery = `INSERT INTO ${schema}.export_table (file_name, processor_name, processor_id, all_fields, created_at) VALUES ('${file_name}', '${processorName}', '${processorId}', '${JSON.stringify(obj)}'::jsonb, NOW());`
+                console.log('sqlQuery', sqlQuery)
+                await runQuery(postgresDB, sqlQuery)
                 console.log('AI Process end.')
-
             }
 
             // return document
@@ -291,7 +312,7 @@ const docAIv3 = async (obj) => {
 
     const location = !isFalsyValue(bodyLocation) ? bodyLocation : defaultLocation
     const processorId = !isFalsyValue(bodyProcessorId) ? bodyProcessorId : defaultProcessorId// Create processor in Cloud Console
-
+    const processorName = obj?.processorName
     const formKeyPairTableName = `${schema}.schema_form_key_pairs` // table to save keypairs data.
 
     var gcs_input_uri = obj?.gcs_input_uri
@@ -347,7 +368,7 @@ const docAIv3 = async (obj) => {
         //         })
         // }
 
-        let result = await docAI({ location, processorId, file_name, bucket_name, id, given_json, isTesting, formKeyPairTableName })
+        let result = await docAI({ location, processorId, file_name, bucket_name, id, given_json, isTesting, formKeyPairTableName, processorName })
 
         console.log('result', result)
 

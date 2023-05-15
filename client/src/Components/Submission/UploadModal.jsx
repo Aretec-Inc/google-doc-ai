@@ -123,6 +123,7 @@ const CreateSubmission = (props) => {
                     let newObj = {
                         submission_id: templateData?.id,
                         processorId: templateData?.processor_id,
+                        processorName: templateData?.processor_name,
                         files: fileList
                     }
 

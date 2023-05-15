@@ -146,7 +146,8 @@ const createSubmmission = async (req, res) => {
                     success: true,
                     message: 'Submission Created Successfully!',
                     id,
-                    processor_id: processorId
+                    processorId,
+                    processorName
                 }
                 return apiResponse(res, 201, obj)
             })
@@ -203,7 +204,7 @@ const uploadDocuments = async (req, res) => {
         const pendingPromises = []
         let errArr = []
         let allForms = []
-        let { submission_id, processorId, files } = req.body
+        let { submission_id, processorId, processorName, files } = req.body
 
         const user_id = '471729f9-d14d-4632-868f-16b7d19656ec'
         const user_email = 'waqas@aretecinc.com'
@@ -227,7 +228,8 @@ const uploadDocuments = async (req, res) => {
                 user_id,
                 user_email,
                 submission_id,
-                processorId
+                processorId,
+                processorName
             }
             is_completed = false
             allForms.push(postData)
