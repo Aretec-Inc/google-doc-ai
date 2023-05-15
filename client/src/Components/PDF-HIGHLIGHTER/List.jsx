@@ -74,7 +74,7 @@ const VirtualizedList = ({ height, isTemplateView, triggerAddKeyPair, setTrigger
                     let allIdsWithoutThis = selectedHighLights.filter(ids => ids !== id)
 
                     const setScrollsSetting = () => {
-                        setShouldScrollPDF(true)
+                        setShouldScrollPDF(false)
                         setShouldScrollSidebar(false)
                     }
 
