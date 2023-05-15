@@ -1,134 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { Scatter } from '@ant-design/plots';
+import { Pie } from '@ant-design/plots';
 
 
 
 const ProcessorVisuals = () => {
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        asyncFetch();
-    }, []);
-
-    const asyncFetch = () => {
-        fetch('https://gw.alipayobjects.com/os/bmw-prod/f950b2f1-038b-47c2-afcc-63001bc8d07c.json')
-            .then((response) => response.json())
-            .then((json) => setData(json))
-            .catch((error) => {
-                console.log('fetch data failed', error);
-            });
-    };
-    const processData = data.map((item) => {
-        item['Average annual wage'] = item['Average annual wage'] * 1;
-        item['probability'] = item['probability'] * 1;
-        item['numbEmployed'] = item['numbEmployed'] * 1;
-        return item;
-    });
-    const labels = ['Airline Pilots, Copilots and Flight Engineers', 'Benefits Managers'];
+    const data = [
+        {
+            type: 'Model-1',
+            value: 27,
+        },
+        {
+            type: 'Model-2',
+            value: 25,
+        },
+        {
+            type: 'Model-3',
+            value: 18,
+        },
+        {
+            type: 'Model-4',
+            value: 15,
+        },
+        {
+            type: 'Model-5',
+            value: 10,
+        },
+        {
+            type: 'Model-6',
+            value: 5,
+        },
+    ];
     const config = {
-        appendPadding: 30,
-        data: processData,
-        xField: 'probability',
-        yField: 'Average annual wage',
-        colorField: 'education',
-        size: [2, 16],
-        sizeField: 'numbEmployed',
-        shape: 'circle',
-        yAxis: {
-            nice: false,
-            min: -20000,
-            tickCount: 5,
-            position: 'right',
-            label: {
-                formatter: (value) => {
-                    return Math.floor(value / 1000) + 'K';
-                },
-            },
-            grid: {
-                line: {
-                    style: {
-                        stroke: '#eee',
-                    },
-                },
-            },
-            line: {
-                style: {
-                    stroke: '#aaa',
-                },
-            },
-        },
-        tooltip: {
-            fields: ['probability', 'Average annual wage', 'numbEmployed'],
-        },
-        legend: {
-            position: 'top',
-        },
-        xAxis: {
-            min: -0.04,
-            max: 1.04,
-            nice: false,
-            grid: {
-                line: {
-                    style: {
-                        stroke: '#eee',
-                    },
-                },
-            },
-            line: false,
-            label: false,
-        },
+        appendPadding: 10,
+        data,
+        angleField: 'value',
+        colorField: 'type',
+        radius: 1,
+        innerRadius: 0.6,
         label: {
-            formatter: (item) => {
-                return labels.includes(item['short occupation']) ? item['short occupation'] : '';
+            type: 'inner',
+            offset: '-50%',
+            content: '{value}',
+            style: {
+                textAlign: 'center',
+                fontSize: 14,
             },
-            offsetY: -10,
         },
-        annotations: [
+        interactions: [
             {
-                type: 'line',
-                start: [-0.04, 100000],
-                end: [1.04, 30000],
-                style: {
-                    stroke: '#aaa',
-                },
+                type: 'element-selected',
             },
             {
-                type: 'text',
-                position: ['1.03', 'max'],
-                content: 'Average annual wage',
-                style: {
-                    textAlign: 'right',
-                    fontWeight: '500',
-                    fill: 'rgb(92, 92, 92)',
-                },
-            },
-            {
-                type: 'text',
-                position: ['1.03', 'min'],
-                content: 'Most likely to \nbe automated ',
-                style: {
-                    textAlign: 'right',
-                    fontWeight: '500',
-                    fill: 'rgb(92, 92, 92)',
-                },
-            },
-            {
-                type: 'text',
-                position: ['-0.03', 'min'],
-                content: 'Least likely to \nbe automated ',
-                style: {
-                    textAlign: 'left',
-                    fontWeight: '500',
-                    fill: 'rgb(92, 92, 92)',
-                },
+                type: 'element-active',
             },
         ],
-    };
-    return (
+        statistic: {
+            title: false,
+            content: {
+                style: {
+                    whiteSpace: 'pre-wrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                },
+                // content: 'AntV\nG2Plot',
+            },
+        },
+        annotations: [
+            // {
+            //     type: 'image',
+            //     src: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
 
+            //     /** 位置 */
+            //     position: ['50%', '50%'],
+
+            //     /** 图形样式属性 */
+            //     style: {
+            //         width: 50,
+            //         height: 50,
+            //     },
+
+            //     /** x 方向的偏移量 */
+            //     offsetX: -25,
+
+            //     /** y 方向的偏移量 */
+            //     offsetY: 40,
+            // },
+        ],
+    };
+
+
+    return (
         <div className="border_left padding_6px">
-            <p className='submission-title mg_lf_15px'>Processing By Processor(s)</p>
-            <Scatter {...config} />
+            <p className='submission-title mg_lf_15px'>Accuracy By Model(s)</p>
+            < Pie {...config} />
         </div>
     )
 }

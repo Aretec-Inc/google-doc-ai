@@ -156,7 +156,7 @@ const getDashboardData = async (req, res) => {
         totalFields = totalFields?.value[0]?.count
         totalFixes = totalFixes?.value[0]?.count
 
-        let accuracy = 100 - ((totalFixes / totalFields) * 100)
+        let accuracy = 100 - ((totalFixes / totalFields) * 100).toFixed(1)
 
         let obj = {
             success: true,
