@@ -8,24 +8,25 @@ import { errorMessage } from '../../utils/helpers'
 const SubmissionVisuals = (props) => {
 
     const { accuracySubmission } = props
-
-    console.log('SUBMISSIONS ==>', accuracySubmission)
-
-
-
     const data = [
         {
-            type: 'Submissions',
+            type: 'Accuracy By Submissions',
             value: accuracySubmission,
-        }
+        },
+        {
+            type: 'Human Reviewed',
+            value: 100 - accuracySubmission,
+        },
     ];
     const config = {
+        legend: false,
         appendPadding: 10,
         data,
         angleField: 'value',
         colorField: 'type',
         radius: 1,
         innerRadius: 0.6,
+        color: ['#4285f4', '#fbbc05'],
         label: {
             type: 'inner',
             offset: '-50%',
@@ -34,6 +35,7 @@ const SubmissionVisuals = (props) => {
                 textAlign: 'center',
                 fontSize: 14,
             },
+            labelLine: false
         },
         interactions: [
             {
@@ -43,17 +45,17 @@ const SubmissionVisuals = (props) => {
                 type: 'element-active',
             },
         ],
-        // statistic: {
-        //     title: false,
-        //     content: {
-        //         style: {
-        //             whiteSpace: 'pre-wrap',
-        //             overflow: 'hidden',
-        //             textOverflow: 'ellipsis',
-        //         },
-        //         content: 'AntV\nG2Plot',
-        //     },
-        // },
+        statistic: {
+            title: false,
+            content: {
+                style: {
+                    whiteSpace: 'pre-wrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                },
+                content: `Accuracy\n${accuracySubmission}%`,
+            },
+        },
         // annotations: [
         //     {
         //         type: 'image',
@@ -79,9 +81,9 @@ const SubmissionVisuals = (props) => {
 
 
     return (
-        <div className="border_left padding_6px">
+        <div className="padding_6px">
             <p className='submission-title mg_lf_15px'>Accuracy By Submission(s)</p>
-            < Pie {...config} />
+            <Pie {...config} className="width90" />
         </div>
     )
 }
