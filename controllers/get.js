@@ -1,8 +1,9 @@
 const _ = require('lodash')
 const pdfparser = require('./pdf')
+const fastcsv = require('fast-csv')
 const { service_key, projectId, schema, postgresDB, storage } = require('../config')
 const { invoiceColumns } = require('../constants')
-const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset, showTableHeaderByColumn, showTableBodyByColumn } = require('../helpers')
+const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset, showTableHeaderByColumn, showTableBodyByColumn, convertTitle } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
@@ -317,8 +318,15 @@ const exportData = async (req, res) => {
         for (var v of allData) {
             if (v?.all_fields?.line_item?.length) {
                 for (var l of v?.all_fields?.line_item) {
-                    let obj = { ...invoiceColumns, ...v?.all_fields }
-                    obj['line_item'] = { ...invoiceColumns?.line_item, ...l }
+                    let obj = { ...invoiceColumns }
+                    for (var key in obj) {
+                        obj[key] = v?.all_fields[key]
+                    }
+
+                    obj['line_item'] = invoiceColumns.line_item
+                    for (var k in obj['line_item']) {
+                        obj['line_item'][k] = l[k]
+                    }
                     arrData.push(obj)
                 }
             }
@@ -330,7 +338,7 @@ const exportData = async (req, res) => {
 
         arrData = arrData?.map((v) => showTableBodyByColumn(v))
 
-        let newObj = { arrData, columns: showTableHeaderByColumn(invoiceColumns) }
+        let newObj = { arrData: arrData?.slice(0, 10), columns: showTableHeaderByColumn(invoiceColumns) }
 
         apiResponse(res, 200, newObj)
     }
@@ -343,7 +351,7 @@ const exportData = async (req, res) => {
 const exportDataToCSV = async (req, res) => {
     try {
         const { submission_id } = req?.query
-        
+
         let sqlQuery = `SELECT d.file_name, e.all_fields, e.processor_name FROM google_doc_ai.documents d
         LEFT JOIN google_doc_ai.export_table e ON d.file_name = e.file_name
         WHERE d.submission_id='${submission_id}'`
@@ -355,8 +363,15 @@ const exportDataToCSV = async (req, res) => {
         for (var v of allData) {
             if (v?.all_fields?.line_item?.length) {
                 for (var l of v?.all_fields?.line_item) {
-                    let obj = { ...invoiceColumns, ...v?.all_fields }
-                    obj['line_item'] = { ...invoiceColumns?.line_item, ...l }
+                    let obj = { ...invoiceColumns }
+                    for (var key in obj) {
+                        obj[key] = v?.all_fields[key]
+                    }
+
+                    obj['line_item'] = invoiceColumns.line_item
+                    for (var k in obj['line_item']) {
+                        obj['line_item'][k] = l[k]
+                    }
                     arrData.push(obj)
                 }
             }
@@ -367,10 +382,25 @@ const exportDataToCSV = async (req, res) => {
         }
 
         arrData = arrData?.map((v) => showTableBodyByColumn(v))
+        let columns = showTableHeaderByColumn(invoiceColumns)
 
-        let newObj = { arrData, columns: showTableHeaderByColumn(invoiceColumns) }
+        let csvStream = fastcsv.format({ headers: true })
+        res.setHeader('Content-disposition', 'attachment; filename=data.csv')
+        res.set('Content-Type', 'text/csv')
+        csvStream.pipe(res).on('end', function() {
+          res.end()
+        })
 
-        apiResponse(res, 200, newObj)
+        for (var v of arrData) {
+            let obj = {}
+            for (var i in v) {
+                obj[convertTitle(columns[i])] = v[i] || '-'
+            }
+
+            csvStream.write(obj)
+        }
+
+        csvStream.end()
     }
     catch (e) {
         console.log('e', e)
@@ -384,5 +414,6 @@ module.exports = {
     getFilesById,
     getPdfData,
     getDashboardData,
-    exportData
+    exportData,
+    exportDataToCSV
 }

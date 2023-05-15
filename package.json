@@ -18,6 +18,7 @@
     "child_process": "^1.0.2",
     "dotenv": "^16.0.2",
     "express": "^4.17.1",
+    "fast-csv": "^4.3.6",
     "fuse.js": "^6.6.2",
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.0",
@@ -37,6 +38,7 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon",
     "dev-cloud": "NODE_ENV=cloudDB nodemon",
+    "deploy-app": "npm install && node deployApp.js",
     "client": "npm start --prefix ./client && npm start --prefix client",
     "heroku-postbuild": "npm install --legacy-peer-deps --prefix client && npm run build --prefix client"
   }

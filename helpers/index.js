@@ -202,6 +202,11 @@ const showTableBodyByColumn = (columns) => {
     return allColumns?.flat()
 }
 
+const convertTitle = (val) => {
+    val = String(val)
+    return val.charAt(0).toUpperCase() + val.slice(1)
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -217,5 +222,6 @@ module.exports = {
     isNull,
     calculateOffset,
     showTableHeaderByColumn,
-    showTableBodyByColumn
+    showTableBodyByColumn,
+    convertTitle
 }

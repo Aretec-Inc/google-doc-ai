@@ -33,7 +33,7 @@ import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
 import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
-
+import axios from 'axios'
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -152,6 +152,22 @@ const SubmissionTemplate = (props) => {
         })
     }
 
+    const downloadCsv = () => {
+        axios.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`, {}, { responseType: 'blob' })
+            .then((data) => {
+                console.log('data', data)
+                setExportData([...data?.arrData])
+                setExportColumns([...data?.columns])
+            })
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message
+                errorMessage(errMsg)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
     return (
         showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedFile} /> : <div className='template-screen'>
             <div className='secondary_header_container'>
@@ -265,7 +281,10 @@ const SubmissionTemplate = (props) => {
                                     </Grid>
                                     <Grid item>
                                         <div className='exp-csv-btn'>
-                                            {viewTable ? <Button style={{ background: '#4285F4', color: '#fff', width: '120px' }} className='date width-sub height_57px'
+                                            {viewTable ? <Button
+                                                style={{ background: '#4285F4', color: '#fff', width: '120px' }}
+                                                className='date width-sub height_57px'
+                                                onClick={downloadCsv}
                                             >Export Csv</Button> : <Button
                                                 style={{ background: '#4285F4', color: '#fff', width: '120px' }}
                                                 className='date width-sub height_57px'
