@@ -151,18 +151,44 @@ const getDashboardData = async (req, res) => {
 
         promises.push(runQuery(postgresDB, sqlQuery))
 
-        let [documents, submissions, totalFields, totalFixes] = await Promise.allSettled(promises)
+        sqlQuery = `SELECT COUNT(*)::INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold/100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold/100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        let [documents, submissions, totalFields, totalFixes, belowThreshold, aboveThreshold] = await Promise.allSettled(promises)
 
         totalFields = totalFields?.value[0]?.count
         totalFixes = totalFixes?.value[0]?.count
 
         let accuracy = 100 - ((totalFixes / totalFields) * 100).toFixed(1)
 
+        // BELOW THRESHOLD
+        // 100 - (Total fields below threshold / Total Fields * 100)
+        let belowThresholdValue = 100 - ((belowThreshold?.value[0]?.count / totalFields) * 100)?.toFixed(1)
+
+        // ABOVE THRESHOLD
+        // Transcription Accuracy - Total fields transcribed above threshold
+        let aboveThresholdValue = totalFields - aboveThreshold?.value[0]?.count
+
         let obj = {
             success: true,
             documents: documents?.value[0]?.count,
             submissions: submissions?.value[0]?.count,
-            accuracy
+            accuracy,
+            belowThresholdValue,
+            aboveThresholdValue
         }
 
         apiResponse(res, 200, obj)
@@ -232,7 +258,7 @@ const getPdfData = async (req, res) => {
 const exportData = async (req, res) => {
     try {
         const { submission_id } = req?.query
-        
+
         let sqlQuery = `SELECT d.file_name, e.all_fields, e.processor_name FROM google_doc_ai.documents d
         LEFT JOIN google_doc_ai.export_table e ON d.file_name = e.file_name
         WHERE d.submission_id='${submission_id}'`

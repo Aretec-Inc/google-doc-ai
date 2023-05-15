@@ -39,6 +39,8 @@ const Dashboard = (props) => {
     const [documents, setDocuments] = useState('')
     const [submissions, setSubmissions] = useState('')
     const [accuracySubmission, setAccuracySubmission] = useState('')
+    const [totalNumbers, setTotalNumbers] = useState('')
+    // const [accuracySubmission, setAccuracySubmission] = useState('')
 
     useEffect(() => {
         getDashboardData()
@@ -155,11 +157,12 @@ const Dashboard = (props) => {
 
         secureApi.get(`${GET.DASHBOARD_DATA}`)
             .then((data) => {
-                const { documents, submissions, accuracy } = data
+                const { documents, submissions, accuracy, aboveThresholdValue, belowThresholdValue } = data
                 console.log("DATA ==>", data)
                 setDocuments(documents)
                 setSubmissions(submissions)
-                setAccuracySubmission(accuracy)
+                setAccuracySubmission(belowThresholdValue)
+                setTotalNumbers(aboveThresholdValue)
                 // dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
             })
             .catch((err) => {
@@ -285,7 +288,7 @@ const Dashboard = (props) => {
                         <div className='dash-top-card'>
                             <div className='dash-top-card-main'>
                                 <h1>Total Numbers</h1>
-                                <p>{submissions}</p>
+                                <p>{totalNumbers}</p>
                             </div>
                         </div>
                     </div>
