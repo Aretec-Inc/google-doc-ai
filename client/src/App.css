@@ -1165,7 +1165,11 @@ body {
     border-radius: 10px;
     margin: 20px;
     padding: 10px;
-        /* Add any styles you want for each column */
+    /* Add any styles you want for each column */
+}
+
+.css-17xcwyf {
+    box-shadow: none !important;
 }
 
 .width90 {

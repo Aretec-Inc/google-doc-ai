@@ -24,7 +24,7 @@ const ProcessorVisuals = (props) => {
         label: {
             position: 'middle',
             content: (item) => {
-                return item?.count?.toFixed(2);
+                return (item?.count?.toFixed(2) * 100 + '%');
             },
             style: {
                 fill: '#fff',
