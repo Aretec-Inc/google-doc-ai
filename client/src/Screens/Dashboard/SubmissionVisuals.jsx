@@ -1,45 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from '@ant-design/plots';
-import { Grid } from 'antd';
+import { secureApi } from '../../Config/api'
+import { GET } from '../../utils/apis'
+import { errorMessage } from '../../utils/helpers'
 
 
-const { useBreakpoint } = Grid;
+const SubmissionVisuals = (props) => {
 
-const SubmissionVisuals = () => {
-    const screens = useBreakpoint();
+    const { accuracySubmission } = props
     const data = [
         {
-            type: 'Processor-1',
-            value: 27,
+            type: 'Accuracy By Submissions',
+            value: accuracySubmission,
         },
         {
-            type: 'Processor-2',
-            value: 25,
-        },
-        {
-            type: 'Processor-3',
-            value: 18,
-        },
-        {
-            type: 'Processor-4',
-            value: 15,
-        },
-        {
-            type: 'Processor-5',
-            value: 10,
-        },
-        {
-            type: 'Processor-6',
-            value: 5,
+            type: 'Human Reviewed',
+            value: 100 - accuracySubmission,
         },
     ];
     const config = {
+        legend: false,
         appendPadding: 10,
         data,
         angleField: 'value',
         colorField: 'type',
         radius: 1,
         innerRadius: 0.6,
+        color: ['#4285f4', '#fbbc05'],
         label: {
             type: 'inner',
             offset: '-50%',
@@ -48,6 +35,7 @@ const SubmissionVisuals = () => {
                 textAlign: 'center',
                 fontSize: 14,
             },
+            labelLine: false
         },
         interactions: [
             {
@@ -65,37 +53,37 @@ const SubmissionVisuals = () => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 },
-                // content: 'AntV\nG2Plot',
+                content: `Accuracy\n${accuracySubmission}%`,
             },
         },
-        annotations: [
-            // {
-            //     type: 'image',
-            //     src: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
+        // annotations: [
+        //     {
+        //         type: 'image',
+        //         src: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
 
-            //     /** 位置 */
-            //     position: ['50%', '50%'],
+        //         /** 位置 */
+        //         position: ['50%', '50%'],
 
-            //     /** 图形样式属性 */
-            //     style: {
-            //         width: 50,
-            //         height: 50,
-            //     },
+        //         /** 图形样式属性 */
+        //         style: {
+        //             width: 50,
+        //             height: 50,
+        //         },
 
-            //     /** x 方向的偏移量 */
-            //     offsetX: -25,
+        //         /** x 方向的偏移量 */
+        //         offsetX: -25,
 
-            //     /** y 方向的偏移量 */
-            //     offsetY: 40,
-            // },
-        ],
+        //         /** y 方向的偏移量 */
+        //         offsetY: 40,
+        //     },
+        // ],
     };
 
 
     return (
         <div className="padding_6px">
-            <p className='submission-title mg_lf_15px'>Processing By Submission(s)</p>
-            < Pie {...config} />
+            <p className='submission-title mg_lf_15px'>Accuracy By Submission(s)</p>
+            <Pie {...config} className="width90" />
         </div>
     )
 }

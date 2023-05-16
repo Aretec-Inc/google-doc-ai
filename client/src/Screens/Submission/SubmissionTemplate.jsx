@@ -33,7 +33,7 @@ import { setDocuments } from '../../Redux/actions/docActions'
 import { secureApi } from '../../Config/api'
 import { GET } from '../../utils/apis'
 import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
-
+import axios from 'axios'
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -78,9 +78,13 @@ const SubmissionTemplate = (props) => {
     const [dateRange, setDateRange] = useState(null)
     const [pageSize, setPageSize] = useState(10)
     const [pageNo, setPageNo] = useState(1)
+    const [viewTable, setViewTable] = useState(false)
+    const [exportData, setExportData] = useState([])
+    const [exportColumns, setExportColumns] = useState([])
 
     useEffect(() => {
         getAllFiles()
+        getExportData()
     }, [open, fileName, dateRange, pageNo, pageSize])
 
     const getAllFiles = () => {
@@ -99,6 +103,21 @@ const SubmissionTemplate = (props) => {
             .then((data) => {
                 dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
                 setTotalFiles(data?.totalFiles || 0)
+            })
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message
+                errorMessage(errMsg)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
+
+    const getExportData = () => {
+        secureApi.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`)
+            .then((data) => {
+                setExportData([...data?.arrData])
+                setExportColumns([...data?.columns])
             })
             .catch((err) => {
                 let errMsg = err?.response?.data?.message
@@ -130,6 +149,26 @@ const SubmissionTemplate = (props) => {
             start: d[0].format('YYYY-MM-DD'),
             end: moment(d[1]).add(1, 'day').format('YYYY-MM-DD')
         })
+    }
+
+    const downloadCsv = () => {
+        axios.post(`${GET.EXPORT_DATA_CSV}?submission_id=${submission_id}`, {}, { responseType: 'blob' })
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'data.csv')
+                document.body.appendChild(link)
+                link.click()
+                link.parentNode.removeChild(link)
+            })
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message
+                errorMessage(errMsg)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     return (
@@ -234,29 +273,60 @@ const SubmissionTemplate = (props) => {
                                     <p className='submission-title mg_lf_15px'>{totalFiles || allFiles?.length} Documents</p>
                                     <div className='processor-data'>
                                         <p>Processor: {templateData?.processor_name}</p>
-                                        <CiMenuKebab className='menuicon' />
+                                        {/* <CiMenuKebab className='menuicon' /> */}
                                     </div>
                                 </div>
-                                <div className='exp-csv-btn'>
-                                    <Button style={{ background: '#4285F4', color: '#fff', width: '100px' }} className='date width-sub height_57px'
-                                    >Export Csv</Button>
-                                </div>
+                                <Grid container justifyContent={'space-between'}>
+                                    <Grid item>
+                                        {viewTable ? <div className='back-arrow' onClick={() => setViewTable(false)}>
+                                            <ArrowBackIcon />
+                                        </div> : null}
+                                    </Grid>
+                                    <Grid item>
+                                        <div className='exp-csv-btn'>
+                                            {viewTable ? <Button
+                                                style={{ background: '#4285F4', color: '#fff', width: '120px' }}
+                                                className='date width-sub height_57px'
+                                                onClick={downloadCsv}
+                                            >Export Csv</Button> : <Button
+                                                style={{ background: '#4285F4', color: '#fff', width: '120px' }}
+                                                className='date width-sub height_57px'
+                                                onClick={() => setViewTable(true)}
+                                            >View Table</Button>}
+                                        </div>
+                                    </Grid>
+                                </Grid>
                                 <div className='submission-table-main'>
                                     <TableContainer component={Paper} className='submission-table'>
                                         <Table
-                                            size="small" aria-label="a dense table"
-                                        // aria-label='simple table'
+                                            size='small' aria-label='a dense table'
                                         >
                                             <TableHead>
-                                                <TableRow className='submission-head'>
+                                                {viewTable ? <TableRow className='submission-head'>
+                                                    {exportColumns?.map((v, i) => {
+                                                        return (
+                                                            <TableCell key={i} className='submission-table-cell submission-head-cell'>{convertTitle(v)}</TableCell>
+                                                        )
+                                                    })}
+                                                </TableRow> : <TableRow className='submission-head'>
                                                     <TableCell className='submission-table-cell submission-head-cell'>File Name</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
-                                                </TableRow>
+                                                </TableRow>}
                                             </TableHead>
                                             <TableBody>
-                                                {allFiles?.map((v, i) => {
+                                                {viewTable ? exportData?.map((v, i) => {
+                                                    return <TableRow key={i}>
+                                                        {v?.map((y, j) => {
+                                                            return (
+                                                                <TableCell key={`${i}-${j}`} className='submission-table-cell submission-row-cell'>
+                                                                    {convertTitle(y || '-')}
+                                                                </TableCell>
+                                                            )
+                                                        })}
+                                                    </TableRow>
+                                                }) : allFiles?.map((v, i) => {
                                                     return (
                                                         <TableRow
                                                             key={i}

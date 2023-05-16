@@ -1,7 +1,9 @@
 const _ = require('lodash')
 const pdfparser = require('./pdf')
+const fastcsv = require('fast-csv')
 const { service_key, projectId, schema, postgresDB, storage } = require('../config')
-const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset } = require('../helpers')
+const { invoiceColumns } = require('../constants')
+const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset, showTableHeaderByColumn, showTableBodyByColumn, convertTitle } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
@@ -142,12 +144,99 @@ const getDashboardData = async (req, res) => {
 
         promises.push(runQuery(postgresDB, sqlQuery))
 
-        let [documents, submissions] = await Promise.allSettled(promises)
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs WHERE validated_field_value IS NOT NULL`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold/100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold/100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER,s.processor_name,s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold/100.0) GROUP BY s.processor_name ,s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*)::INTEGER,s.processor_name,s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold/100.0) GROUP BY s.processor_name ,s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        let [documents, submissions, totalFields, totalFixes, belowThreshold, aboveThreshold, aboveThresholdModel, belowThresholdModel] = await Promise.allSettled(promises)
+
+        totalFields = totalFields?.value[0]?.count
+        totalFixes = totalFixes?.value[0]?.count
+
+        let accuracy = 100 - ((totalFixes / totalFields) * 100)?.toFixed(1)
+
+        // BELOW THRESHOLD
+        // 100 - (Total fields below threshold / Total Fields * 100)
+        let belowThresholdValue = 100 - ((belowThreshold?.value[0]?.count / totalFields) * 100)?.toFixed(1)
+
+        // ABOVE THRESHOLD
+        // Transcription Accuracy - Total fields transcribed above threshold
+        let aboveThresholdValue = totalFields - aboveThreshold?.value[0]?.count
+
+        let aboveArr = []
+        aboveThresholdModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Accuracy'
+            }
+            return (
+                aboveArr?.push(obj)
+            )
+        })
+
+        let belowArr = []
+        belowThresholdModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Review'
+            }
+            return (
+                belowArr?.push(obj)
+            )
+        })
+
 
         let obj = {
             success: true,
             documents: documents?.value[0]?.count,
-            submissions: submissions?.value[0]?.count
+            submissions: submissions?.value[0]?.count,
+            accuracy,
+            belowThresholdValue,
+            aboveThresholdValue,
+            aboveArr,
+            belowArr,
+            aboveThresholdModel: aboveThresholdModel?.value,
+            belowThresholdModel: belowThresholdModel?.value
         }
 
         apiResponse(res, 200, obj)
@@ -214,10 +303,117 @@ const getPdfData = async (req, res) => {
     }
 }
 
+const exportData = async (req, res) => {
+    try {
+        const { submission_id } = req?.query
+
+        let sqlQuery = `SELECT d.file_name, e.all_fields, e.processor_name FROM google_doc_ai.documents d
+        LEFT JOIN google_doc_ai.export_table e ON d.file_name = e.file_name
+        WHERE d.submission_id='${submission_id}'`
+
+        let allData = await runQuery(postgresDB, sqlQuery)
+
+        let arrData = []
+
+        for (var v of allData) {
+            if (v?.all_fields?.line_item?.length) {
+                for (var l of v?.all_fields?.line_item) {
+                    let obj = { ...invoiceColumns }
+                    for (var key in obj) {
+                        obj[key] = v?.all_fields[key]
+                    }
+
+                    obj['line_item'] = invoiceColumns.line_item
+                    for (var k in obj['line_item']) {
+                        obj['line_item'][k] = l[k]
+                    }
+                    arrData.push(obj)
+                }
+            }
+            else {
+                let obj = { ...invoiceColumns, ...v?.all_fields }
+                arrData.push(obj)
+            }
+        }
+
+        arrData = arrData?.map((v) => showTableBodyByColumn(v))
+
+        let newObj = { arrData: arrData?.slice(0, 10), columns: showTableHeaderByColumn(invoiceColumns) }
+
+        apiResponse(res, 200, newObj)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
+
+const exportDataToCSV = async (req, res) => {
+    try {
+        const { submission_id } = req?.query
+
+        let sqlQuery = `SELECT d.file_name, e.all_fields, e.processor_name FROM google_doc_ai.documents d
+        LEFT JOIN google_doc_ai.export_table e ON d.file_name = e.file_name
+        WHERE d.submission_id='${submission_id}'`
+
+        let allData = await runQuery(postgresDB, sqlQuery)
+
+        let arrData = []
+
+        for (var v of allData) {
+            if (v?.all_fields?.line_item?.length) {
+                for (var l of v?.all_fields?.line_item) {
+                    let obj = { ...invoiceColumns }
+                    for (var key in obj) {
+                        obj[key] = v?.all_fields[key]
+                    }
+
+                    obj['line_item'] = invoiceColumns.line_item
+                    for (var k in obj['line_item']) {
+                        obj['line_item'][k] = l[k]
+                    }
+                    arrData.push(obj)
+                }
+            }
+            else {
+                let obj = { ...invoiceColumns, ...v?.all_fields }
+                arrData.push(obj)
+            }
+        }
+
+        arrData = arrData?.map((v) => showTableBodyByColumn(v))
+        let columns = showTableHeaderByColumn(invoiceColumns)
+
+        let csvStream = fastcsv.format({ headers: true })
+        res.setHeader('Content-disposition', 'attachment; filename=data.csv')
+        res.set('Content-Type', 'text/csv')
+        csvStream.pipe(res).on('end', function() {
+          res.end()
+        })
+
+        for (var v of arrData) {
+            let obj = {}
+            for (var i in v) {
+                obj[convertTitle(columns[i])] = v[i] || '-'
+            }
+
+            csvStream.write(obj)
+        }
+
+        csvStream.end()
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
+
 module.exports = {
     getAllProcessors,
     getAllSubmmissions,
     getFilesById,
     getPdfData,
-    getDashboardData
+    getDashboardData,
+    exportData,
+    exportDataToCSV
 }

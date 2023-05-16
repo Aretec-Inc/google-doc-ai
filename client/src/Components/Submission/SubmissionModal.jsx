@@ -224,7 +224,8 @@ const CreateSubmission = (props) => {
                             if (data?.success) {
                                 let newObj = {
                                     submission_id: data?.id,
-                                    processorId: data?.processor_id,
+                                    processorId: data?.processorId,
+                                    processorName: data?.processorName,
                                     files: fileList
                                 }
 

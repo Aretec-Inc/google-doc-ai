@@ -1,9 +1,11 @@
+require('dotenv').config()
+
 const { storage } = require('../config/gcpConfig')
 
-const bucketName = `doc_ai_form`
+const bucketName = process.env?.storage_bucket
 const maxAgeSeconds = 3600
 const method = ['GET', 'POST', 'PUT', 'DELETE']
-const origin = ['http://localhost:3000', 'http://localhost:3001', 'https://doc-ai-znp7f527ca-uc.a.run.app']
+const origin = ['http://localhost:3000', 'http://localhost:3001', process.env.ALLOWED_ORIGIN]
 
 const configureBucketCors = async () => {
     await storage.bucket(bucketName).setCorsConfiguration([
