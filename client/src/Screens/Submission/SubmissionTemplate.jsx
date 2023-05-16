@@ -116,7 +116,6 @@ const SubmissionTemplate = (props) => {
     const getExportData = () => {
         secureApi.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`)
             .then((data) => {
-                console.log('data', data)
                 setExportData([...data?.arrData])
                 setExportColumns([...data?.columns])
             })
@@ -153,11 +152,15 @@ const SubmissionTemplate = (props) => {
     }
 
     const downloadCsv = () => {
-        axios.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`, {}, { responseType: 'blob' })
-            .then((data) => {
-                console.log('data', data)
-                setExportData([...data?.arrData])
-                setExportColumns([...data?.columns])
+        axios.post(`${GET.EXPORT_DATA_CSV}?submission_id=${submission_id}`, {}, { responseType: 'blob' })
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'data.csv')
+                document.body.appendChild(link)
+                link.click()
+                link.parentNode.removeChild(link)
             })
             .catch((err) => {
                 let errMsg = err?.response?.data?.message
