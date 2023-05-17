@@ -6,7 +6,7 @@ const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v
 let service_key = JSON.parse(process.env.service_key || "{}")
 
 try {
-  if (require('../service_key.json')) {
+  if (process.env.NODE_ENV === 'production' && require('../service_key.json')) {
     service_key = require('../service_key.json')
   }
 }
