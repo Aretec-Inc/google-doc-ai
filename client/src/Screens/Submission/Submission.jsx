@@ -154,7 +154,7 @@ const Submission = (props) => {
                     </Button>
                 </div>
             </div>
-            <Divider />
+            {/* <Divider /> */}
             <br />
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>

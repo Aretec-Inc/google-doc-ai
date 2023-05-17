@@ -108,7 +108,7 @@ const Dashboard = (props) => {
                     </Button>
                 </div>
             </div>
-            <Divider />
+            {/* <Divider /> */}
             <br />
             <div className='dashboard-section'>
                 <div className='row'>

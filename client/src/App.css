@@ -1029,6 +1029,12 @@ body {
     }
 }
 
+@media (max-width: 600px) {
+    /* .left_sec_head {
+        flex-direction: column;
+    } */
+}
+
 @media (min-width: 800px) {
     .right_sec_head {
         display: none;
@@ -1060,6 +1066,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 2;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .left_sec_head {
