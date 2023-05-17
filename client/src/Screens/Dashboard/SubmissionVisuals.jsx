@@ -15,7 +15,7 @@ const SubmissionVisuals = (props) => {
         },
         {
             type: 'Human Reviewed',
-            value: 100 - accuracySubmission,
+            value: 100.0 - accuracySubmission,
         },
     ];
     const config = {
