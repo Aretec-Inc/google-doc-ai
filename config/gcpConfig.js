@@ -5,11 +5,13 @@ const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v
 
 let service_key = JSON.parse(process.env.service_key || "{}")
 
-if (!Object.keys(service_key)?.length) {
+if (require('../service_key.json')) {
   service_key = require('../service_key.json')
 }
 
 const projectId = service_key?.project_id
+
+console.log('projectId', projectId)
 
 // Instantiates a client
 
