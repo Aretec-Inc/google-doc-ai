@@ -8,6 +8,7 @@ import { errorMessage } from '../../utils/helpers'
 const SubmissionVisuals = (props) => {
 
     const { accuracySubmission } = props
+    // let remaining = (100.0 - accuracySubmission).toFixed(1)
     const data = [
         {
             type: 'Accuracy By Submissions',
@@ -53,7 +54,7 @@ const SubmissionVisuals = (props) => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 },
-                content: `Accuracy\n${accuracySubmission}%`,
+                content: `Accuracy\n${accuracySubmission ? accuracySubmission : 100}%`,
             },
         },
         // annotations: [
