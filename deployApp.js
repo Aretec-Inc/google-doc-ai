@@ -9,7 +9,7 @@ const projectId = service_key?.project_id
 
 const deployApp = () => {
   try {
-    exec(`gcloud auth activate-service-account --key-file=./service_key.json && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com`, async (error, stdout, stderr) => {
+    exec(`gcloud auth activate-service-account --key-file=./service_key.json && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com && gcloud services enable contentwarehouse.googleapis.com`, async (error, stdout, stderr) => {
       console.log('stdout: svc', stdout, error)
 
       try {
