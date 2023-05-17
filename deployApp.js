@@ -77,7 +77,7 @@ const deployApp = () => {
             })
 
             exec(`gcloud builds submit --tag ${imageUrl} --timeout=9000 --machine-type=n1-highcpu-32`, (error, stdout, stderr) => {
-              exec(`gcloud run deploy ${appName} --image=${imageUrl}:latest --set-env-vars "^@^ALLOWED_ORIGIN=https://doc-ai-znp7f527ca-uc.a.run.app@DB_USER=postgres@DB_PASSWORD=postgres@DB_HOST=${privateIp}@storage_bucket=${bucketName}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
+              exec(`gcloud services enable run.googleapis.com && gcloud run deploy ${appName} --image=${imageUrl}:latest --set-env-vars "^@^ALLOWED_ORIGIN=https://doc-ai-znp7f527ca-uc.a.run.app@DB_USER=postgres@DB_PASSWORD=postgres@DB_HOST=${privateIp}@storage_bucket=${bucketName}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
 
 
                 console.log('stdout***', stdout?.split(' ')?.filter(v => v)?.[1]?.split('\r\n')[0])
