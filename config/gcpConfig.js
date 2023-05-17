@@ -5,8 +5,13 @@ const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v
 
 let service_key = JSON.parse(process.env.service_key || "{}")
 
-if (require('../service_key.json')) {
-  service_key = require('../service_key.json')
+try {
+  if (require('../service_key.json')) {
+    service_key = require('../service_key.json')
+  }
+}
+catch (e) {
+  console.log('service_key not found!')
 }
 
 const projectId = service_key?.project_id
