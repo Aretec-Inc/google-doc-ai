@@ -108,7 +108,7 @@ const Dashboard = (props) => {
                     </Button>
                 </div>
             </div>
-            <Divider />
+            {/* <Divider /> */}
             <br />
             <div className='dashboard-section'>
                 <div className='row'>
@@ -131,7 +131,7 @@ const Dashboard = (props) => {
                     <div className='col-lg-4'>
                         <div className='dash-top-card'>
                             <div className='dash-top-card-main'>
-                                <h1>Transcription Accuracy</h1>
+                                <h1>Fields Transcribed</h1>
                                 <p>{totalNumbers}</p>
                             </div>
                         </div>

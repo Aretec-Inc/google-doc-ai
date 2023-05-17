@@ -212,7 +212,7 @@ const SubmissionTemplate = (props) => {
                     </Button>
                 </div>
             </div>
-            <Divider />
+            {/* <Divider /> */}
             <br />
             <Grid container spacing={1} justifyContent={'space-between'}>
                 <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
