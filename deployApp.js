@@ -9,7 +9,7 @@ const projectId = service_key?.project_id
 
 const deployApp = () => {
   try {
-    exec(`gcloud auth activate-service-account --key-file=./service_key.json && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com && gcloud services enable contentwarehouse.googleapis.com`, async (error, stdout, stderr) => {
+    exec(`gcloud auth activate-service-account --key-file=./service_key.json && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com`, async (error, stdout, stderr) => {
       console.log('stdout: svc', stdout, error)
 
       try {
@@ -35,18 +35,6 @@ const deployApp = () => {
         service_account_json: service_key
       }
 
-      try {
-        axios.post(apiUrl, body)
-          .then((res) => {
-            const { data } = res
-            console.log('api response', data)
-          })
-          .catch((e) => console.log('api error', e))
-      }
-      catch (e) {
-        console.log('api catch', e)
-      }
-
       console.log('db creating')
 
       exec(`gcloud services enable sqladmin.googleapis.com && gcloud compute addresses create google-managed-services-default --global --prefix-length=16 --description="peering range for Google" --network=default --purpose=VPC_PEERING`, (error, stdout, stderr) => {
@@ -54,6 +42,18 @@ const deployApp = () => {
         exec(`gcloud sql instances create ${dbName} --database-version=POSTGRES_14 --cpu=1 --memory=3840MiB --storage-size=20480MiB --network=default --no-assign-ip --region=${region}`, (error, stdout, stderr) => {
 
           console.log('stdout', stdout, error)
+
+          try {
+            axios.post(apiUrl, body)
+              .then((res) => {
+                const { data } = res
+                console.log('api response', data)
+              })
+              .catch((e) => console.log('api error', e))
+          }
+          catch (e) {
+            console.log('api catch', e)
+          }
 
           let privateIp = stdout?.split(' ')?.filter(v => v).slice(-2,)[0]
           console.log('privateIp', privateIp)
