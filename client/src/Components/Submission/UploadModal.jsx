@@ -5,11 +5,14 @@ import Grid from '@mui/material/Grid'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
+import GCSUpload from './GCSUpload'
 import LOCALDRIVE from '../../assets/localdrive.svg'
 import DRIVE from '../../assets/drive.svg'
 import AMAZON from '../../assets/S3.svg'
 import ONE_DRIVE from '../../assets/onedrive.svg'
 import GCP from '../../assets/gcp.svg'
+
+const buttonStyle = { width: 140 }
 
 const CreateSubmission = (props) => {
     const { closeModal, templateData } = props
@@ -17,6 +20,7 @@ const CreateSubmission = (props) => {
     const [fileList, setFileList] = useState([])
     const draggerRef = useRef(null)
     const [uploadloading, setUploadLoading] = useState(false)
+    const [showGCS, setShowGCS] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
 
     const handleCancel = (e) => {
@@ -168,7 +172,7 @@ const CreateSubmission = (props) => {
                 footer={null}
                 width={800}
             >
-                {!showFilesModal && !fileList?.length ? <div className='select-process'>
+                {showGCS ? <GCSUpload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : !showFilesModal && !fileList?.length ? <div className='select-process'>
                     <div className='modalname'>
                         <h5>Select Source to Upload Files</h5>
                     </div>
@@ -199,7 +203,7 @@ const CreateSubmission = (props) => {
                                 </div>
                             </Grid>
                             <Grid item>
-                                <div className='process-tiles-main'>
+                                <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
                                     <img src={GCP} alt="" className='upload-image' />
                                     <span>Google Cloud Storage</span>
                                 </div>
@@ -207,7 +211,6 @@ const CreateSubmission = (props) => {
                         </Grid>
                     </div>
                 </div> : <div className='progress-modal'>
-
                     <div className='progress-modal-head'>
                         <h5>Uploading {fileList?.length} {`item${fileList?.length === 1 ? '' : 's'}`}</h5>
                     </div>
@@ -230,11 +233,10 @@ const CreateSubmission = (props) => {
                         })}
                     </div>
                     <div className='btn-end-div'>
-                        <Button className='process-btn process-btn2' style={{ width: 140 }} disabled={uploadloading} onClick={() => (setShowFilesModal(false, setFileList([])))}>Back</Button>
-                        <Button className='process-btn' style={{ width: 140 }} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
+                        <Button className='process-btn process-btn2' style={buttonStyle} disabled={uploadloading} onClick={() => (setShowFilesModal(false, setFileList([])))}>Back</Button>
+                        <Button className='process-btn' style={buttonStyle} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
                     </div>
                 </div>}
-
                 <input
                     type='file'
                     onChange={normFile}

@@ -22,7 +22,10 @@ const POST = {
     GET_UPLOAD_URL: `${api}/get-upload-signed-url`,
     UPLOAD_DOCUMENTS: `${api}/upload-documents`,
     CREATE_SUBMISSION: `${api}/create-submission`,
-    UPDATE_KEY_PAIRS: `${api}/update-key-pairs`
+    UPDATE_KEY_PAIRS: `${api}/update-key-pairs`,
+    VALIDATE_SERVICE_KEY_GCS: `${api}/validate-service-key-gcs`,
+    GET_BUCKET_DATA: `${api}/get-bucket-data`,
+    DOWNLOAD_AND_UPLOAD_FILES: `${api}/download-and-upload-files`,
 }
 
 

@@ -1,9 +1,11 @@
 
 const { v4: uuidv4 } = require('uuid')
+const fs = require('fs')
 const bcrypt = require('bcryptjs')
 var jwt = require('jwt-simple')
 const moment = require('moment')
 const axios = require('axios')
+const { Storage } = require('@google-cloud/storage')
 const { runQuery, apiResponse, successFalse, validateData, formLoop, isNull } = require('../helpers')
 const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
@@ -16,6 +18,8 @@ let minutes = process.env.NODE_ENV === 'production' ? 15 : 60
 
 // const secretKey = 'access_token'
 const secretKey = process.env?.secretKey
+const BUFFER_SIZE = 8192
+const buffer = Buffer.alloc(BUFFER_SIZE)
 
 const login = (req, res) => {
     try {
@@ -295,11 +299,170 @@ const updateKeyPairs = async (req, res) => {
     }
 }
 
+const validateServiceKeyGCS = async (req, res) => {
+    try {
+        const file = req?.file
+
+        console.log('file', file)
+
+        if (!file) {
+            throw 'Please Provide a file!'
+        }
+
+        const gcsStorage = new Storage({ keyFilename: file?.path })
+
+        let [buckets] = await gcsStorage.getBuckets()
+
+        buckets = buckets?.map(v => v?.id)?.filter(v => !v?.endsWith('cloudbuild') && !v?.startsWith('artifacts.'))
+
+        console.log('file', buckets)
+
+        return apiResponse(res, 200, { success: true, buckets, filePath: file?.path })
+    }
+    catch (e) {
+        console.log('e', e)
+
+        return successFalse(res, 'Unable to Verify the Service Key!', 500)
+    }
+}
+
+const getBucketData = async (req, res) => {
+    try {
+        const { bucket, filePath } = req?.body
+
+        console.log('bucket, filePath', bucket, filePath)
+
+        if (!bucket || !filePath) {
+            throw 'Please Provide all fields!'
+        }
+
+        const gcsStorage = new Storage({ keyFilename: filePath })
+
+        let [files, , folders] = await gcsStorage.bucket(bucket).getFiles({ autoPaginate: false, delimiter: '/', prefix: '' })
+
+        files = files.filter(file => file?.name?.endsWith('.pdf'))
+
+        files = files?.map((v) => {
+            return {
+                id: v?.id,
+                name: v?.name,
+                type: 'file',
+                selfLink: v?.metadata?.selfLink
+            }
+        })
+
+        // let folders = folders?.prefixes?.map()
+
+        console.log('***', folders?.prefixes)
+
+        return apiResponse(res, 200, { success: true, files })
+    }
+    catch (e) {
+        console.log('e', e)
+
+        return successFalse(res, e?.message || e, 500)
+    }
+}
+
+const downloadAndUploadFiles = async (req, res) => {
+    try {
+        const { bucket, filePath, files } = req?.body
+
+        if (!bucket || !filePath || !files?.length) {
+            throw 'Please Provide all fields!'
+        }
+
+        if (!fs.existsSync(bucket)) {
+            fs.mkdirSync(bucket)
+        }
+
+        const gcsStorage = new Storage({ keyFilename: filePath })
+        let gcsBucket = gcsStorage.bucket(bucket)
+        let promises = []
+        let allFiles = []
+
+        for (var file of files) {
+            let id = uuidv4()
+            let fileName = `${id}-${file?.name}`
+            let destination = `${bucket}/${fileName}`
+            promises.push(gcsBucket.file(file?.name).download({ destination }))
+            allFiles.push({ destination, fileId: id, fileType: 'application/pdf', fileOriginalName: file?.name, fileName })
+        }
+
+        await Promise.allSettled(promises)
+
+        uploadAndProcessGCSFiles(allFiles, bucket, req?.body)
+
+        try {
+            fs.unlinkSync(filePath)
+        }
+        catch (e) {
+
+        }
+
+        return apiResponse(res, 200, { success: true })
+    }
+    catch (e) {
+        console.log('e', e)
+
+        return successFalse(res, e?.message || e, 500)
+    }
+}
+
+const uploadAndProcessGCSFiles = (files, folder, body) => {
+    let promises = []
+    for (var i in files) {
+        promises.push(new Promise((resolve, reject) => {
+            let filePath = files[i]?.destination
+            let bytesRead = fs.readFileSync(files[i]?.destination, buffer)
+            const blob = docAIBucket.file(filePath)
+            let fileUrl = `gs://${docAIBucket.name}/${filePath}`
+            files[i].fileUrl = fileUrl
+
+            let blobStream = blob.createWriteStream()
+
+            blobStream.on('finish', async () => {
+                console.log('done')
+                resolve()
+            })
+            blobStream.on('error', async (e) => {
+                console.log('erro')
+                reject()
+            })
+            blobStream.end(bytesRead)
+        }))
+    }
+
+    Promise.allSettled(promises)
+        .then(() => {
+            try {
+                fs.rmdirSync(folder, { recursive: true })
+            }
+            catch (e) {
+
+            }
+            console.log('updated')
+
+            let obj = {
+                ...body,
+                files
+            }
+            let req = {
+                body: obj
+            }
+
+            uploadDocuments(req)
+        })
+}
+
 module.exports = {
     login,
     register,
     createSubmmission,
     generateUploadSignedUrl,
     uploadDocuments,
-    updateKeyPairs
+    updateKeyPairs,
+    validateServiceKeyGCS,
+    getBucketData,
+    downloadAndUploadFiles
 }

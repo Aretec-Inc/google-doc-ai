@@ -39,6 +39,28 @@ exports.invoiceColumns = {
     total_tax_amount: null
 }
 
+exports.expenseColumns = {
+    credit_card_last_four_digits: null,
+    currency: null,
+    end_date: null,
+    net_amount: null,
+    payment_type: null,
+    purchase_time: null,
+    receipt_date: null,
+    start_date: null,
+    supplier_address: null,
+    supplier_city: null,
+    supplier_name: null,
+    tip_amount: null,
+    total_amount: null,
+    total_tax_amount: null,
+    line_item: {
+        amount: null,
+        description: null,
+        product_code: null
+    }
+}
+
 exports.invoiceColumns2 = {
     amount_paid_since_last_invoice: null,
     carrier: null,

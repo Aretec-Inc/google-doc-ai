@@ -649,6 +649,15 @@ body {
 
 .process-btn2 {
     margin-right: 10px;
+    background: #4285F4;
+    color: #fff;
+}
+
+.process-btn3 {
+    background: #4285F4;
+    color: #fff;
+    border-radius: 4px;
+    padding: 5px 15px;
 }
 
 .process-tiles {
@@ -919,6 +928,12 @@ body {
     cursor: pointer;
 }
 
+.back-arrow2 {
+    margin-right: 20px;
+    margin-top: -10px;
+    cursor: pointer;
+}
+
 .upload-image {
     height: 120px;
 }
@@ -1022,6 +1037,100 @@ body {
     width: 20px;
     margin-top: -1px;
 }
+
+/* Context CSS */
+
+.home-main-div {
+    margin: auto 30px;
+}
+
+.dragger-parent {
+    border: 2px dashed #4285F4;
+    border-radius: 15px;
+}
+
+.home-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0ee;
+    width: calc(100% - 24px);
+    padding: 20px 30px;
+    border-radius: 5px;
+    transition: all 500ms ease;
+    margin: 12px;
+    height: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.dragger-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    padding: 5px;
+    margin-bottom: -30px;
+}
+
+.upload-icon {
+    font-size: 70px;
+    font-weight: 100 !important;
+    color: #4285F4 !important;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+
+.div-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.inside-box-heading {
+    font-size: 24px;
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    transition: 500ms;
+    margin-bottom: 10px;
+}
+
+.inside-box-text {
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 12px;
+}
+
+.file-types {
+    text-align: center;
+    word-wrap: break-word;
+    margin-top: -10px;
+    font-size: 12px;
+}
+
+.upload-home-btn {
+    margin-top: -6px;
+    margin-bottom: 25px;
+    width: 300px;
+    height: 38px !important;
+    transition: 500ms;
+    background: #4285F4;
+    color: #fff;
+}
+
+.form-input {
+    border-radius: 4px !important;
+}
+
+.file-display-div {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 12px 10px;
+}
+
+/* End */
 
 @media (max-width: 768px) {
     .config-grid-container {
