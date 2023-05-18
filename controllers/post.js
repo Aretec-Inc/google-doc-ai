@@ -395,9 +395,10 @@ const downloadAndUploadFiles = async (req, res) => {
 
         try {
             fs.unlinkSync(filePath)
+            console.log('service key deleted')
         }
         catch (e) {
-
+            console.log('err', e)
         }
 
         return apiResponse(res, 200, { success: true })

@@ -10,6 +10,7 @@ import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import { useSelector } from 'react-redux'
+import GCSUpload from './GCSUpload'
 import LOCALDRIVE from '../../assets/localdrive.svg'
 import DRIVE from '../../assets/drive.svg'
 import AMAZON from '../../assets/S3.svg'
@@ -23,6 +24,7 @@ const steps = ['Processor', 'Sources']
 const CreateSubmission = (props) => {
     const { closeModal } = props
     const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
+    const [defaultParser, setDefaultParser] = useState(allProcessors?.filter((v, i) => v?.displayName === 'Document AI')[0])
     const [processor, setProcessor] = useState(null)
     const [activeStep, setActiveStep] = useState(0)
     const [selectedModel, setSelectedModel] = useState(null)
@@ -35,7 +37,7 @@ const CreateSubmission = (props) => {
     const [buttonText, setButtonText] = useState('Upload')
     const [submissionName, setSubmissionName] = useState(null)
     const [threshold, setThreshold] = useState(50)
-    const [defaultParser, setDefaultParser] = useState(allProcessors?.filter((v, i) => v?.displayName === 'Document AI')[0])
+    const [showGCS, setShowGCS] = useState(false)
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''
@@ -278,7 +280,7 @@ const CreateSubmission = (props) => {
             >
                 <Spin spinning={loading}>
                     <div className='stepper-head'>
-                        <Stepper nonLinear activeStep={activeStep} hidden={showFilesModal}>
+                        <Stepper nonLinear activeStep={activeStep} hidden={showFilesModal || showGCS}>
                             {steps.map((label, index) => (
                                 <Step key={label} completed={completed[index]}>
                                     <StepButton color='inherit' onClick={handleStep(index)}>
@@ -288,7 +290,7 @@ const CreateSubmission = (props) => {
                             ))}
                         </Stepper>
                     </div>
-                    {activeStep === 0 ? <div className='select-process'>
+                    {showGCS ? <GCSUpload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
                             <Grid container spacing={2}>
                                 <Grid item sm={6} xs={12}>
@@ -377,7 +379,7 @@ const CreateSubmission = (props) => {
                                     </div>
                                 </Grid>
                                 <Grid item>
-                                    <div className='process-tiles-main'>
+                                    <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
                                         <img src={GCP} alt="" className='upload-image' />
                                         <span>Google Cloud Storage</span>
                                     </div>

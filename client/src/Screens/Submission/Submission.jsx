@@ -218,7 +218,7 @@ const Submission = (props) => {
                                                     <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
+                                                    {/* <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell> */}
                                                     <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
                                                 </TableRow>
@@ -239,11 +239,11 @@ const Submission = (props) => {
                                                             </TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>
+                                                            {/* <TableCell className='submission-table-cell submission-row-cell'>
                                                                 <Progress
                                                                     percent={v?.average_confidence}
                                                                 />
-                                                            </TableCell>
+                                                            </TableCell> */}
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
                                                         </TableRow>

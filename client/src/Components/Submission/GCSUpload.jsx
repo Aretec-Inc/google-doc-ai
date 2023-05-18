@@ -11,7 +11,7 @@ import { errorMessage, warningMessage, successMessage, validateLength, convertTi
 const buttonStyle = { width: 140 }
 
 const GCSUpload = (props) => {
-    const { goBack, templateData, handleCancel } = props
+    const { goBack, templateData, handleCancel, threshold, submissionName } = props
     const [loading, setLoading] = useState(false)
     const [serviceKey, setServiceKey] = useState(null)
     const [buckets, setBuckets] = useState([])
@@ -70,16 +70,7 @@ const GCSUpload = (props) => {
             })
     }
 
-    const uploadFiles = () => {
-        let allSelectedFiles = files?.filter((v) => selectedFiles[v?.id])
-        let obj = {
-            bucket,
-            filePath,
-            files: allSelectedFiles,
-            submission_id: templateData?.id,
-            processorId: templateData?.processor_id,
-            processorName: templateData?.processor_name,
-        }
+    const uploadFiles = (obj) => {
         secureApi.post(POST?.DOWNLOAD_AND_UPLOAD_FILES, obj)
             .then((data) => {
                 if (data?.success) {
@@ -94,6 +85,53 @@ const GCSUpload = (props) => {
                 let errMsg = err?.response?.data?.message || err?.message
                 errorMessage(errMsg)
             })
+            .finally(() => setLoading(false))
+    }
+
+    const createAndUploadFiles = () => {
+        setLoading(true)
+        let allSelectedFiles = files?.filter((v) => selectedFiles[v?.id])
+
+        if (templateData?.isNew) {
+            let objData = {
+                processorId: templateData?.id,
+                processorName: templateData?.displayName,
+                submissionName,
+                threshold
+            }
+            secureApi.post(POST.CREATE_SUBMISSION, objData)
+                .then((data) => {
+                    if (data?.success) {
+                        let obj = {
+                            bucket,
+                            filePath,
+                            files: allSelectedFiles,
+                            submission_id: data?.id,
+                            processorId: data?.processorId,
+                            processorName: data?.processorName
+                        }
+                        uploadFiles(obj)
+                    }
+                    else {
+                        errorMessage()
+                    }
+                })
+                .catch((err) => {
+                    errorMessage(err?.response?.data?.message)
+                })
+                .finally(() => setLoading(false))
+        }
+        else {
+            let obj = {
+                bucket,
+                filePath,
+                files: allSelectedFiles,
+                submission_id: templateData?.id,
+                processorId: templateData?.processor_id,
+                processorName: templateData?.processor_name,
+            }
+            uploadFiles(obj)
+        }
     }
 
     return (
@@ -119,7 +157,7 @@ const GCSUpload = (props) => {
                         )}
                     />
                     <div className='btn-end-div'>
-                        <Button className='process-btn' style={buttonStyle} type='primary' loading={loading} onClick={uploadFiles}>Upload</Button>
+                        <Button className='process-btn' style={buttonStyle} type='primary' loading={loading} onClick={createAndUploadFiles}>Upload</Button>
                     </div>
                 </Grid> : !buckets?.length ? <Grid item xs={12}>
                     <div className='home-main-div' style={{ flex: 2, marginTop: 20, transition: 'all 500ms ease', height: 400 }}>
@@ -189,7 +227,9 @@ const GCSUpload = (props) => {
 GCSUpload.propTypes = {
     goBack: PropTypes.func.isRequired,
     templateData: PropTypes.object.isRequired,
-    handleCancel: PropTypes.func.isRequired
+    handleCancel: PropTypes.func.isRequired,
+    threshold: PropTypes.number,
+    submissionName: PropTypes.string
 }
 
 export default GCSUpload

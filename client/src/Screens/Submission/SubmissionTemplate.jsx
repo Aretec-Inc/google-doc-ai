@@ -310,7 +310,7 @@ const SubmissionTemplate = (props) => {
                                                     })}
                                                 </TableRow> : <TableRow className='submission-head'>
                                                     <TableCell className='submission-table-cell submission-head-cell'>File Name</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell>
+                                                    {/* <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell> */}
                                                     <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
                                                     <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
                                                 </TableRow>}
@@ -335,16 +335,16 @@ const SubmissionTemplate = (props) => {
                                                             <TableCell className='submission-table-cell submission-row-cell'>
                                                                 <Link onClick={() => showPDFDocument(v)}>
                                                                     <Tooltip placement='top' title={convertTitle(v?.original_file_name)}>
-                                                                        {validateLength(convertTitle(v?.original_file_name), 30)}
+                                                                        {validateLength(convertTitle(v?.original_file_name), 50)}
                                                                     </Tooltip>
                                                                 </Link>
                                                                 {v?.is_completed === true && v?.min_confidence < threshold ? <img src={FLAG} className='file-flag' /> : null}
                                                             </TableCell>
-                                                            <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
+                                                            {/* <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
                                                                 <Progress
                                                                     percent={v?.average_confidence}
                                                                 />
-                                                            </TableCell>
+                                                            </TableCell> */}
                                                             <TableCell className='submission-table-cell submission-row-cell'>{v?.is_completed === true ? 'Completed' : 'Processing'}</TableCell>
                                                             <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
                                                         </TableRow>
