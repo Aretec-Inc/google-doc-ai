@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { Button, Select, List, Checkbox, Input } from 'antd'
 import PropTypes from 'prop-types'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { PlusOutlined } from '@ant-design/icons'
 import Grid from '@mui/material/Grid'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import { awsRegions } from '../../utils/constants'
-import { errorMessage, warningMessage, successMessage, validateLength, convertTitle } from '../../utils/helpers'
+import { errorMessage, successMessage, convertTitle, warningMessage } from '../../utils/helpers'
 
 const { Option } = Select
 
@@ -16,40 +15,32 @@ const buttonStyle = { width: 140 }
 const S3Upload = (props) => {
     const { goBack, templateData, handleCancel, threshold, submissionName } = props
     const [loading, setLoading] = useState(false)
-    const [serviceKey, setServiceKey] = useState(null)
-    const [buckets, setBuckets] = useState([])
-    const [bucket, setBucket] = useState(null)
-    const [filePath, setFilePath] = useState(null)
     const [files, setFiles] = useState([])
     const [selectedFiles, setSelectedFiles] = useState({})
     const [formData, setFormData] = useState({
-        accessKey: 'AKIAXDRCP5EDAECGYDVI',
-        secretKey: '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',
-        bucketName: 'doc-ai-test'
+        accessKey: '',
+        secretKey: '',
+        bucketName: '',
+        region: 'us-east1'
     })
-    const draggerRef = useRef(null)
-
-    const normServiceKey = (e) => {
-        let type = 'application/json'
-        let file = e?.target?.files?.[0]
-
-        if (!file || file?.type !== type) {
-            return warningMessage('Please Upload a Valid File!')
-        }
-
-        setServiceKey(file)
-    }
 
     const getBucketData = () => {
+        if (!formData?.accessKey || !formData?.secretKey || !formData?.bucketName) {
+            return warningMessage('Please Provide All Values')
+        }
+
+        setLoading(true)
 
         secureApi.post(POST?.GET_S3_BUCKET_DATA, formData)
             .then((data) => {
                 console.log('data', data)
                 setFiles(data?.files || [])
             })
-            .catch(error => {
-                console.log('ERROR', error)
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message || err?.message
+                errorMessage(errMsg)
             })
+            .finally(() => setLoading(false))
     }
 
     const uploadFiles = (obj) => {
@@ -71,8 +62,13 @@ const S3Upload = (props) => {
     }
 
     const createAndUploadFiles = () => {
-        setLoading(true)
         let allSelectedFiles = files?.filter((v) => selectedFiles[v?.id])
+
+        if (!allSelectedFiles?.length) {
+            return warningMessage('Please Select File to Upload!')
+        }
+
+        setLoading(true)
 
         if (templateData?.isNew) {
             let objData = {
@@ -114,14 +110,14 @@ const S3Upload = (props) => {
 
     const handleChange = (event) => {
         const { name, value } = event.target
-        // setFormData((prevData) => ({
-        //     ...prevData,
-        //     [name]: value
-        // }))
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }))
     }
 
     return (
-        <div style={{ minHeight: 400 }}>
+        <div style={{ minHeight: 300 }}>
             <div className='back-arrow2' onClick={goBack}>
                 <ArrowBackIcon />
             </div>
@@ -143,6 +139,7 @@ const S3Upload = (props) => {
                         )}
                     />
                     <div className='btn-end-div'>
+                        <Button className='process-btn process-btn2' style={buttonStyle} type='default' disabled={loading} onClick={() => setFiles([])}>Back</Button>
                         <Button className='process-btn' style={buttonStyle} type='primary' loading={loading} onClick={createAndUploadFiles}>Upload</Button>
                     </div>
                 </Grid> : <Grid item xs={12}>
@@ -150,20 +147,41 @@ const S3Upload = (props) => {
                         <p>Please enter AWS credentials with read/write permission to S3.</p>
                         <Grid container spacing={2}>
                             <Grid item sm={6} xs={12}>
-                                <Input className='login-inp-field ant-radius' name='accessKey' placeholder='AWS Access Key' onChange={(e) => handleCancel(e?.target?.value)} />
+                                <Input
+                                    className='login-inp-field ant-radius'
+                                    name='accessKey'
+                                    placeholder='AWS Access Key'
+                                    onChange={handleChange}
+                                    defaultValue={formData?.accessKey}
+                                />
                             </Grid>
                             <Grid item sm={6} xs={12}>
-                                <Input className='login-inp-field ant-radius' name='secretKey' placeholder='AWS Secret Key' onChange={(e) => handleCancel(e?.target?.value)} />
+                                <Input
+                                    className='login-inp-field ant-radius'
+                                    name='secretKey'
+                                    placeholder='AWS Secret Key'
+                                    onChange={handleChange}
+                                    defaultValue={formData?.secretKey}
+                                />
                             </Grid>
                             <Grid item sm={6} xs={12}>
-                                <Input className='login-inp-field ant-radius' name='bucketName' placeholder='S3 Bucket Name' onChange={(e) => handleCancel(e?.target?.value)} />
+                                <Input
+                                    clas
+                                    sName='login-inp-field ant-radius'
+                                    name='bucketName'
+                                    placeholder='S3 Bucket Name'
+                                    onChange={handleChange}
+                                    defaultValue={formData?.bucketName}
+                                />
                             </Grid>
                             <Grid item sm={6} xs={12}>
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
+                                    defaultValue={formData?.region}
                                     placeholder='Your AWS Region'
                                     optionFilterProp='children'
+                                    onChange={(e) => setFormData({ ...formData, region: e })}
                                     filterOption={(input, option) =>
                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
@@ -175,7 +193,7 @@ const S3Upload = (props) => {
                                 </Select>
                             </Grid>
                             <Grid xs={12} style={{ marginLeft: 16 }}>
-                                <Button className='process-btn' block type='primary' loading={loading} onClick={getBucketData}>Submit</Button>
+                                <Button className='process-btn' block type='primary' disabled={!formData?.accessKey || !formData?.secretKey || !formData?.bucketName} loading={loading} onClick={getBucketData}>Submit</Button>
                             </Grid>
                         </Grid>
                     </div>

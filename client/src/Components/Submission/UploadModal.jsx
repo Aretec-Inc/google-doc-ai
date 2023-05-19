@@ -22,7 +22,7 @@ const CreateSubmission = (props) => {
     const draggerRef = useRef(null)
     const [uploadloading, setUploadLoading] = useState(false)
     const [showGCS, setShowGCS] = useState(false)
-    const [showS3, setShowS3] = useState(true)
+    const [showS3, setShowS3] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
 
     const handleCancel = (e) => {
@@ -174,7 +174,7 @@ const CreateSubmission = (props) => {
                 footer={null}
                 width={800}
             >
-                {showS3 ? <S3Upload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : showGCS ? <GCSUpload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : !showFilesModal && !fileList?.length ? <div className='select-process'>
+                {showS3 ? <S3Upload templateData={templateData} goBack={() => setShowS3(false)} handleCancel={handleCancel} /> : showGCS ? <GCSUpload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : !showFilesModal && !fileList?.length ? <div className='select-process'>
                     <div className='modalname'>
                         <h5>Select Source to Upload Files</h5>
                     </div>
@@ -187,7 +187,7 @@ const CreateSubmission = (props) => {
                                 </div>
                             </Grid>
                             <Grid item>
-                                <div className='process-tiles-main'>
+                                <div className='process-tiles-main' onClick={() => setShowS3(true)}>
                                     <img src={AMAZON} alt="" className='upload-image' />
                                     <span>Amazon</span>
                                 </div>

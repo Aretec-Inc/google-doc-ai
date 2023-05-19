@@ -89,8 +89,13 @@ const GCSUpload = (props) => {
     }
 
     const createAndUploadFiles = () => {
-        setLoading(true)
         let allSelectedFiles = files?.filter((v) => selectedFiles[v?.id])
+
+        if (!allSelectedFiles?.length) {
+            return warningMessage('Please Select File to Upload!')
+        }
+
+        setLoading(true)
 
         if (templateData?.isNew) {
             let objData = {

@@ -11,6 +11,7 @@ import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import { useSelector } from 'react-redux'
 import GCSUpload from './GCSUpload'
+import S3Upload from './S3Upload'
 import LOCALDRIVE from '../../assets/localdrive.svg'
 import DRIVE from '../../assets/drive.svg'
 import AMAZON from '../../assets/S3.svg'
@@ -38,6 +39,7 @@ const CreateSubmission = (props) => {
     const [submissionName, setSubmissionName] = useState(null)
     const [threshold, setThreshold] = useState(50)
     const [showGCS, setShowGCS] = useState(false)
+    const [showS3, setShowS3] = useState(false)
 
     const handleCancel = (e) => {
         draggerRef.current.value = ''
@@ -290,7 +292,7 @@ const CreateSubmission = (props) => {
                             ))}
                         </Stepper>
                     </div>
-                    {showGCS ? <GCSUpload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : activeStep === 0 ? <div className='select-process'>
+                    {showS3 ? <S3Upload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : showGCS ? <GCSUpload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
                             <Grid container spacing={2}>
                                 <Grid item sm={6} xs={12}>
@@ -361,7 +363,7 @@ const CreateSubmission = (props) => {
                                     </div>
                                 </Grid>
                                 <Grid item>
-                                    <div className='process-tiles-main'>
+                                    <div className='process-tiles-main' onClick={() => setShowS3(true)}>
                                         <img src={AMAZON} alt="" className='upload-image' />
                                         <span>Amazon</span>
                                     </div>
