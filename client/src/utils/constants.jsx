@@ -43,6 +43,28 @@ const actionTables = {
 
 const infoTypes = ["[ADVERTISING_ID]", "[AGE]", "[CREDIT_CARD_NUMBER]", "[CREDIT_CARD_TRACK_NUMBER]", "[DATE]", "[DATE_OF_BIRTH]", "[DOMAIN_NAME]", "[EMAIL_ADDRESS]", "[ETHNIC_GROUP]", "[FEMALE_NAME]", "[FIRST_NAME]", "[GENDER]", "[GENERIC_ID]", "[IBAN_CODE]", "[HTTP_COOKIE]", "[ICCID_NUMBER]", "[ICD9_CODE]", "[ICD10_CODE]", "[IMEI_HARDWARE_ID]", "[IMSI_ID]", "[IP_ADDRESS]", "[LAST_NAME]", "[LOCATION]", "[LOCATION_COORDINATES]", "[MAC_ADDRESS]", "[MAC_ADDRESS_LOCAL]", "[MALE_NAME]", "[MEDICAL_TERM]", "[ORGANIZATION_NAME]", "[PASSPORT]", "[PERSON_NAME]", "[PHONE_NUMBER]", "[STREET_ADDRESS]", "[SWIFT_CODE]", "[STORAGE_SIGNED_POLICY_DOCUMENT]", "[STORAGE_SIGNED_URL]", "[TIME]", "[URL]", "[VEHICLE_IDENTIFICATION_NUMBER]"]
 
+const awsRegions = [
+    'eu-north-1',
+    'ap-south-1',
+    'eu-west-3',
+    'eu-west-2',
+    'eu-west-1',
+    'ap-northeast-3',
+    'ap-northeast-2',
+    'me-south-1',
+    'ap-northeast-1',
+    'sa-east-1',
+    'ca-central-1',
+    'ap-east-1',
+    'ap-southeast-1',
+    'ap-southeast-2',
+    'eu-central-1',
+    'us-east-1',
+    'us-east-2',
+    'us-west-1',
+    'us-west-2'
+]
+
 export {
     bgColor,
     drawerRoutes,
@@ -51,6 +73,7 @@ export {
     actionTables,
     actionTypes,
     googleClientId,
-    manager
+    manager,
+    awsRegions
 }
 

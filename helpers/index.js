@@ -1,5 +1,6 @@
 const fs = require('fs')
 const moment = require('moment')
+const axios = require('axios')
 const codes = require('./codes.json')
 const { projectId, docAiClient } = require('../config/gcpConfig')
 
@@ -207,6 +208,24 @@ const convertTitle = (val) => {
     return val.charAt(0).toUpperCase() + val.slice(1)
 }
 
+const downloadPublicFile = async (url, path) => {
+    console.log('url, path', url, path)
+    const response = await axios({
+        method: 'GET',
+        url: url,
+        responseType: 'stream'
+    })
+
+    const writer = fs.createWriteStream(path)
+
+    response.data.pipe(writer)
+
+    return new Promise((resolve, reject) => {
+        writer.on('finish', resolve)
+        writer.on('error', reject)
+    })
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -223,5 +242,6 @@ module.exports = {
     calculateOffset,
     showTableHeaderByColumn,
     showTableBodyByColumn,
-    convertTitle
+    convertTitle,
+    downloadPublicFile
 }

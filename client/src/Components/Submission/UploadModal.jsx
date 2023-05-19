@@ -6,6 +6,7 @@ import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import GCSUpload from './GCSUpload'
+import S3Upload from './S3Upload'
 import LOCALDRIVE from '../../assets/localdrive.svg'
 import DRIVE from '../../assets/drive.svg'
 import AMAZON from '../../assets/S3.svg'
@@ -21,6 +22,7 @@ const CreateSubmission = (props) => {
     const draggerRef = useRef(null)
     const [uploadloading, setUploadLoading] = useState(false)
     const [showGCS, setShowGCS] = useState(false)
+    const [showS3, setShowS3] = useState(true)
     const [buttonText, setButtonText] = useState('Upload')
 
     const handleCancel = (e) => {
@@ -172,7 +174,7 @@ const CreateSubmission = (props) => {
                 footer={null}
                 width={800}
             >
-                {showGCS ? <GCSUpload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : !showFilesModal && !fileList?.length ? <div className='select-process'>
+                {showS3 ? <S3Upload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : showGCS ? <GCSUpload templateData={templateData} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : !showFilesModal && !fileList?.length ? <div className='select-process'>
                     <div className='modalname'>
                         <h5>Select Source to Upload Files</h5>
                     </div>

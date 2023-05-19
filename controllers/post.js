@@ -1,12 +1,13 @@
 
 const { v4: uuidv4 } = require('uuid')
 const fs = require('fs')
+const aws = require('aws-sdk')
 const bcrypt = require('bcryptjs')
 var jwt = require('jwt-simple')
 const moment = require('moment')
 const axios = require('axios')
 const { Storage } = require('@google-cloud/storage')
-const { runQuery, apiResponse, successFalse, validateData, formLoop, isNull } = require('../helpers')
+const { runQuery, apiResponse, successFalse, validateData, formLoop, isNull, downloadPublicFile } = require('../helpers')
 const registerSecret = 'verify'
 const { postgresDB, storage, schema } = require('../config')
 const pdfKeyPair = require('../helpers/pdf_keyPair')
@@ -392,7 +393,7 @@ const downloadAndUploadFiles = async (req, res) => {
         await Promise.allSettled(promises)
             .then(() => {
                 console.log('download done')
-                uploadAndProcessGCSFiles(allFiles, bucket, req?.body)
+                uploadAndProcessFiles(allFiles, bucket, req?.body)
 
                 try {
                     fs.unlinkSync(filePath)
@@ -413,7 +414,7 @@ const downloadAndUploadFiles = async (req, res) => {
     }
 }
 
-const uploadAndProcessGCSFiles = (files, folder, body) => {
+const uploadAndProcessFiles = (files, folder, body) => {
     let promises = []
     for (var i in files) {
         promises.push(new Promise((resolve, reject) => {
@@ -459,6 +460,111 @@ const uploadAndProcessGCSFiles = (files, folder, body) => {
         })
 }
 
+const getS3BucketData = async (req, res) => {
+    try {
+        let { accessKey, secretKey, bucketName, region } = req?.body
+        accessKey = accessKey?.replace(' ', '+')
+        secretKey = secretKey?.replace(' ', '+')
+
+        let s3 = new aws.S3({
+            accessKeyId: accessKey,
+            secretAccessKey: secretKey,
+            region: region || 'us-east-1'
+        })
+
+        const listParams = {
+            Bucket: bucketName,
+        }
+
+        s3.listObjectsV2(listParams, async function (err, data) {
+            if (err) {
+                console.log('err', err)
+                return successFalse(res, err?.message)
+            }
+            const fileObjArr = []
+            let promises = []
+            data.Contents = data?.Contents?.filter(v => v?.Key?.endsWith('.pdf'))
+            for (const [index, fileObj] of (data?.Contents)?.entries()) {
+                promises.push(
+                    new Promise((resolve, reject) => {
+                        if (fileObj?.Size > 0) {
+                            let params = { Bucket: bucketName, Key: fileObj.Key }
+                            s3.getSignedUrl('getObject', params, (err, url) => {
+                                fileObj.url = url
+                                resolve(fileObjArr.push(fileObj))
+                            })
+                        }
+                        else {
+                            resolve(fileObjArr.push({ ...fileObj }))
+                        }
+                    })
+                )
+            }
+            await Promise.all(promises).then(() => {
+                let files = fileObjArr?.map((v) => {
+                    return {
+                        id: v?.ETag,
+                        name: v?.Key?.replace(/\//g, '-'),
+                        size: v?.Size,
+                        fileUrl: v?.url
+                    }
+                })
+                let obj = {
+                    success: true,
+                    files,
+                    message: 'Successfully Get!'
+                }
+                return apiResponse(res, 200, obj)
+            })
+        })
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message)
+    }
+}
+
+const downloadAndUploadS3Files = async (req, res) => {
+    try {
+        const { files } = req?.body
+
+        let folder = `s3-${uuidv4()}`
+
+        if (!files?.length) {
+            throw 'Please Provide all fields!'
+        }
+
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder)
+        }
+
+        let promises = []
+        let allFiles = []
+
+        for (var file of files) {
+            let id = uuidv4()
+            let name = file?.name?.replace(/\//g, '-')
+            let fileName = `${id}-${name}`
+            let destination = `${folder}/${fileName}`
+            promises.push(downloadPublicFile(file?.fileUrl, destination))
+            allFiles.push({ destination, fileId: id, fileType: 'application/pdf', fileOriginalName: name, fileName, size: file?.size })
+        }
+
+        await Promise.allSettled(promises)
+            .then(() => {
+                console.log('download done')
+                uploadAndProcessFiles(allFiles, folder, req?.body)
+            })
+
+        return apiResponse(res, 200, { success: true })
+    }
+    catch (e) {
+        console.log('e ****', e)
+
+        return successFalse(res, e?.message || e, 500)
+    }
+}
+
 module.exports = {
     login,
     register,
@@ -468,5 +574,7 @@ module.exports = {
     updateKeyPairs,
     validateServiceKeyGCS,
     getBucketData,
-    downloadAndUploadFiles
+    downloadAndUploadFiles,
+    getS3BucketData,
+    downloadAndUploadS3Files
 }

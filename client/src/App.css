@@ -660,6 +660,12 @@ body {
     padding: 5px 15px;
 }
 
+.process-btn4 {
+    border-radius: 4px;
+    padding: 5px 15px;
+    margin-top: 25px;
+}
+
 .process-tiles {
     padding-bottom: 40px;
     padding-top: 20px;
@@ -1128,6 +1134,16 @@ body {
     display: flex;
     justify-content: space-between;
     margin: 20px 12px 10px;
+}
+
+/* End */
+
+/* S3 */
+
+.s3-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* End */

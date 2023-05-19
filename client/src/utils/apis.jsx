@@ -26,6 +26,8 @@ const POST = {
     VALIDATE_SERVICE_KEY_GCS: `${api}/validate-service-key-gcs`,
     GET_BUCKET_DATA: `${api}/get-bucket-data`,
     DOWNLOAD_AND_UPLOAD_FILES: `${api}/download-and-upload-files`,
+    GET_S3_BUCKET_DATA: `${api}/get-s3-bucket-data`,
+    DOWNLOAD_AND_UPLOAD_S3_FILES: `${api}/download-and-upload-s3-files`
 }
 
 
