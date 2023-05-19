@@ -390,16 +390,19 @@ const downloadAndUploadFiles = async (req, res) => {
         }
 
         await Promise.allSettled(promises)
+            .then(() => {
+                console.log('download done')
+                uploadAndProcessGCSFiles(allFiles, bucket, req?.body)
 
-        uploadAndProcessGCSFiles(allFiles, bucket, req?.body)
+                try {
+                    fs.unlinkSync(filePath)
+                    console.log('service key deleted')
+                }
+                catch (e) {
+                    console.log('err', e)
+                }
+            })
 
-        try {
-            fs.unlinkSync(filePath)
-            console.log('service key deleted')
-        }
-        catch (e) {
-            console.log('err', e)
-        }
 
         return apiResponse(res, 200, { success: true })
     }
