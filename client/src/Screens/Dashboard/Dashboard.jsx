@@ -1,28 +1,14 @@
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Tabs, Select, DatePicker, Divider } from 'antd'
-import moment from 'moment'
-import PropTypes from 'prop-types'
-import ReactApexChart from 'react-apexcharts';
-import Chart from "react-apexcharts";
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import DASHBOARD_ICON from '../../assets/icons/secondary_head_icons/dashblack.svg'
-import { secureApi } from '../../Config/api'
-import { GET } from '../../utils/apis'
-import { errorMessage } from '../../utils/helpers'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import SubmissionVisuals from './SubmissionVisuals';
+import { Button, DatePicker, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { secureApi } from '../../Config/api';
+import DASHBOARD_ICON from '../../assets/icons/secondary_head_icons/dashblack.svg';
+import { GET, POST } from '../../utils/apis';
+import { errorMessage } from '../../utils/helpers';
 import ProcessorVisuals from './ProcessorVisuals';
-import LineChart from './LineChart';
+import SubmissionVisuals from './SubmissionVisuals';
+import ConfidenceModel from './ConfidenceModel';
+import ConfidenceSubmission from './ConfidenceSubmission';
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -38,29 +24,38 @@ const Dashboard = (props) => {
     const [documents, setDocuments] = useState('')
     const [submissions, setSubmissions] = useState('')
     const [accuracySubmission, setAccuracySubmission] = useState('')
+    const [overAllConfidence, setOverAllConfidence] = useState('')
     const [totalNumbers, setTotalNumbers] = useState('')
     const [aboveThresholdModelAcc, setAboveThresholdModelAcc] = useState([])
     const [belowThresholdModelAcc, setBelowThresholdModelAcc] = useState([])
+    const [confidenceModel, setConfidenceModel] = useState([])
+    const [confidences, setAllConfidences] = useState([])
+    const [submissionsList, setSubmissionsList] = useState([])
+    const [submissionFilter, setSubmissionFilter] = useState('')
+    const [confidenceFilter, setConfidenceFilter] = useState('')
     // const [accuracySubmission, setAccuracySubmission] = useState('')
 
     useEffect(() => {
         getDashboardData()
-    }, [])
+        getSubmissionsAndConfidence()
+    }, [submissionFilter, confidenceFilter])
 
     const getDashboardData = () => {
         // if (!documents?.length) {
         //     setLoading(true)
         // }
 
-        secureApi.get(`${GET.DASHBOARD_DATA}`)
+        secureApi.post(`${POST.DASHBOARD_DATA}`, { submission: submissionFilter, confidence: confidenceFilter })
             .then((data) => {
-                const { documents, submissions, accuracy, aboveThresholdValue, belowThresholdValue, aboveThresholdModel, belowThresholdModel,aboveArr,belowArr } = data
+                const { documents, submissions, accuracy, aboveThresholdValue, belowThresholdValue, totalFixes, aboveThresholdModel, belowThresholdModel, aboveArr, belowArr, accBySubmission, overAllConfidence, confidenceByModelFinalSchema } = data
                 setDocuments(documents)
                 setSubmissions(submissions)
-                setAccuracySubmission(belowThresholdValue)
-                setTotalNumbers(aboveThresholdValue)
+                setOverAllConfidence(overAllConfidence)
+                setAccuracySubmission(accBySubmission)
+                setTotalNumbers(totalFixes)
                 setBelowThresholdModelAcc(belowArr)
                 setAboveThresholdModelAcc(aboveArr)
+                setConfidenceModel(confidenceByModelFinalSchema)
                 // dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
             })
             .catch((err) => {
@@ -72,7 +67,21 @@ const Dashboard = (props) => {
             })
     }
 
-
+    const getSubmissionsAndConfidence = () => {
+        secureApi.get(`${GET.GET_SUB_AND_CONF}`)
+            .then((data) => {
+                const { confidence, submissions } = data
+                setAllConfidences(confidence)
+                setSubmissionsList(submissions)
+            })
+            .catch((err) => {
+                let errMsg = err?.response?.data?.message
+                errorMessage(errMsg)
+            })
+            .finally(() => {
+                // setLoading(false)
+            })
+    }
 
 
     return (
@@ -198,26 +207,49 @@ const Dashboard = (props) => {
                     </div> */}
                     <div class="container-mid">
                         <div class="column-mid">
-                            <SubmissionVisuals accuracySubmission={accuracySubmission} />
+                            <SubmissionVisuals submissionsList={submissionsList} accuracySubmission={accuracySubmission} setSubmissionFilter={setSubmissionFilter} />
                         </div>
                         <div class="column-mid">
                             <ProcessorVisuals aboveThresholdModelAcc={aboveThresholdModelAcc} belowThresholdModelAcc={belowThresholdModelAcc} />
                         </div>
                     </div>
+                    <div class="container-mid">
+                        <div class="column-mid">
+                            <ConfidenceSubmission confidences={confidences} setConfidenceFilter={setConfidenceFilter} overAllConfidence={overAllConfidence} />
+                        </div>
+                        <div class="column-mid">
+                            <ConfidenceModel confidenceModel={confidenceModel} aboveThresholdModelAcc={aboveThresholdModelAcc} belowThresholdModelAcc={belowThresholdModelAcc} />
+                        </div>
+                    </div>
+                    {/* Transcription Accuracy = Total Fields - How many Fields were changed (Shown as a number)
+
+                    Accuracy By Submission = # of fields changed / the total number of fields (Shown as a percentage in Doughnut Chart)
+
+                    Accuracy by Model(s) = # of fields changed / the total number of fields grouped by Model (Shown as a percentage in Horizontal Bar Chart)
+
+                    Confidence Score by Submission = Aggregates of Confidence Score we receive from all models (Shown as a percentage in Doughnut Chart)
+
+                    Confidence Score by Model = Aggregates of Confidence Score we receive from models grouped by models. (Shown as a percentage in Horizontal Bar Chart) */}
                     <div className="grid-container-bottom">
                         <div className="grid-item-card">
-                            Field Transcription Automation
-                            <h2>98.9</h2>
+                            <b>Fields Transcribed:</b>
+                            <br />
+                            Total Fields - How many Fields were changed (Shown as a number)
                         </div>
                         <div className="grid-item-card">
-                            Table Transcription Automation
-                            <h2>100%</h2></div>
+                            <b> Accuracy By Submission:</b>
+                            <br />
+                            # of fields changed / the total number of fields (Shown as a percentage in Doughnut Chart)
+                        </div>
                         <div className="grid-item-card">
-                            Machine Field Automation
-                            <h2>2282</h2></div>
+                            <b> Accuracy by Model(s):</b><br /># of fields changed / the total number of fields grouped by Model (Shown as a percentage in Horizontal Bar Chart)
+                        </div>
                         <div className="grid-item-card">
-                            Machine Table Transcription
-                            <h2>2262</h2></div>
+                            <b>Confidence Score by Submission:</b><br /> Aggregates of Confidence Score we receive from all models (Shown as a percentage in Doughnut Chart)
+                        </div>
+                        <div className="grid-item-card">
+                            <b>Confidence Score by Model:</b><br />Aggregates of Confidence Score we receive from models grouped by models. (Shown as a percentage in Horizontal Bar Chart)
+                        </div>
                     </div>
                 </div>
             </div>

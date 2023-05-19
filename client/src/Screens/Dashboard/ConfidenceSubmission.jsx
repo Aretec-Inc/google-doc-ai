@@ -6,14 +6,14 @@ import { errorMessage } from '../../utils/helpers'
 import { Select } from 'antd';
 
 
-const SubmissionVisuals = (props) => {
+const ConfidenceSubmission = (props) => {
 
-    const { accuracySubmission, setSubmissionFilter, submissionsList } = props
-    // let remaining = (100.0 - accuracySubmission).toFixed(1)
+    const { overAllConfidence, confidences, setConfidenceFilter } = props
+    // let remaining = (100.0 - overAllConfidence).toFixed(1)
 
     const onChange = (value) => {
         console.log(`selected ${value}`);
-        setSubmissionFilter(value)
+        setConfidenceFilter(value)
     };
     const onSearch = (value) => {
         console.log('search:', value);
@@ -21,12 +21,12 @@ const SubmissionVisuals = (props) => {
 
     const data = [
         {
-            type: 'Accuracy By Submissions',
-            value: 100.0 - accuracySubmission,
+            type: 'Confidence By Submissions',
+            value: overAllConfidence,
         },
         {
             type: 'Human Reviewed',
-            value: accuracySubmission,
+            value: (100.0 - overAllConfidence),
         },
     ];
     const config = {
@@ -67,7 +67,7 @@ const SubmissionVisuals = (props) => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 },
-                content: `Accuracy\n${accuracySubmission ? (100.0 - accuracySubmission) : 100}%`,
+                content: `Confidence\n${overAllConfidence ? overAllConfidence?.toFixed(2) : 100}%`,
             },
         },
         // annotations: [
@@ -97,23 +97,23 @@ const SubmissionVisuals = (props) => {
     return (
         <div className="padding_6px">
             <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p className='submission-title mg_lf_15px'>Accuracy by Submission(s)</p>
+                <p className='submission-title mg_lf_15px'>Confidence Score by Submission(s)</p>
                 <Select
                     showSearch
-                    placeholder="Select Submission"
+                    placeholder="Select Confidence"
                     optionFilterProp="children"
                     onChange={onChange}
                     onSearch={onSearch}
                     filterOption={(input, option) =>
                         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                     }
-                    options={submissionsList}
+                    options={confidences}
                 />
             </span>
-            <sub>Accuracy by Submission is a metric used to evaluate the precision and correctness of results or predictions submitted for assessment or evaluation.</sub>
+            <sub>Confidence Score by Submission is a metric used to assess the level of certainty or confidence associated with a submitted outcome or prediction. It provides a numerical value that indicates the degree of confidence of the results.</sub>
             <Pie {...config} className="width90" />
         </div>
     )
 }
 
-export default SubmissionVisuals
+export default ConfidenceSubmission

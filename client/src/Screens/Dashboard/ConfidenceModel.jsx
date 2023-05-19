@@ -8,9 +8,9 @@ import { Bar } from '@ant-design/plots';
 // leftside model name
 
 
-const ProcessorVisuals = (props) => {
-    const { belowThresholdModelAcc, aboveThresholdModelAcc } = props
-    const data = [...aboveThresholdModelAcc, ...belowThresholdModelAcc]
+const ConfidenceModel = (props) => {
+    const { belowThresholdModelAcc, aboveThresholdModelAcc, confidenceModel } = props
+    const data = [...confidenceModel]
     const config = {
         data,
         xField: 'count',
@@ -36,11 +36,13 @@ const ProcessorVisuals = (props) => {
 
     return (
         <div className="padding_6px">
-            <p className='submission-title mg_lf_15px'>Accuracy by Model(s)</p>
-            <sub>Accuracy by Models refers to the measure of precision and correctness in the processing capabilities of Models/Processors. </sub>
+            <p className='submission-title mg_lf_15px'>Confidence Score by Model(s)</p>
+            <sub>
+                Confidence Score by Model refers to a metric that quantifies the level of confidence or certainty exhibited by a model/processor in its classifications. It provides a numerical value indicating the model's degree of confidence in its own performance.
+            </sub>
             <Bar {...config} className="width90" />
         </div>
     )
 }
 
-export default ProcessorVisuals
+export default ConfidenceModel

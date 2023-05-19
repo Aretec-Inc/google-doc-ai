@@ -15,7 +15,8 @@ const GET = {
     PDF_DATA: `${api}/get-pdf-data`,
     DASHBOARD_DATA: `${api}/get-dashboard-data`,
     EXPORT_DATA: `${api}/get-export-data`,
-    EXPORT_DATA_CSV: `${api}/export-data-csv`
+    EXPORT_DATA_CSV: `${api}/export-data-csv`,
+    GET_SUB_AND_CONF: `${api}/get-submissions-and-confidence`
 }
 
 const POST = {
@@ -26,6 +27,7 @@ const POST = {
     VALIDATE_SERVICE_KEY_GCS: `${api}/validate-service-key-gcs`,
     GET_BUCKET_DATA: `${api}/get-bucket-data`,
     DOWNLOAD_AND_UPLOAD_FILES: `${api}/download-and-upload-files`,
+    DASHBOARD_DATA: `${api}/get-dashboard-data`,
 }
 
 

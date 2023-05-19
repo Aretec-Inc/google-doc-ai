@@ -456,6 +456,206 @@ const uploadAndProcessGCSFiles = (files, folder, body) => {
         })
 }
 
+const getDashboardData = async (req, res) => {
+    const { submission, confidence } = req?.body
+    console.log("POST ==>", submission, confidence)
+    try {
+        let promises = []
+        let sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.documents`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.submissions `
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        if (submission) {
+            sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs AS u
+            LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+            LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+            WHERE s.submission_name = '${submission}'`
+        } else {
+            sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs`
+        }
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        if (submission) {
+            sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs AS u
+            LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+            LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+            WHERE s.submission_name = '${submission}' AND validated_field_value IS NOT NULL`
+        } else {
+            sqlQuery = `SELECT CAST(COUNT(*) AS INT) AS count FROM ${schema}.schema_form_key_pairs  WHERE validated_field_value IS NOT NULL`
+        }
+
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*):: INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold / 100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*):: INTEGER
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold / 100.0)`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*):: INTEGER, s.processor_name, s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) > (s.threshold / 100.0) GROUP BY s.processor_name, s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*):: INTEGER, s.processor_name, s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE CAST(u.confidence AS float) < (s.threshold / 100.0) GROUP BY s.processor_name, s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+        // ************ NEW QUERIES *******************
+        sqlQuery = `SELECT COUNT(*):: INTEGER, s.processor_name, s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE validated_field_value IS NOT NULL GROUP BY s.processor_name, s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        sqlQuery = `SELECT COUNT(*):: INTEGER, s.processor_name, s.submission_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        WHERE validated_field_value IS NULL GROUP BY s.processor_name, s.submission_name`
+
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        // Confidence Score by Submission = Aggregates of Confidence Score we receive from all models (Shown as a percentage in Doughnut Chart)
+        if (confidence) {
+            sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count FROM ${schema}.schema_form_key_pairs where confidence = '${confidence}'`
+        }
+        else{
+            sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count FROM ${schema}.schema_form_key_pairs`
+        }
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        // Confidence Score by Model = Aggregates of Confidence Score we receive from models grouped by models. (Shown as a percentage in Horizontal Bar Chart)
+
+        sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count, s.processor_name
+        FROM ${schema}.schema_form_key_pairs AS u
+        LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+        LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+        GROUP BY s.processor_name`
+        promises.push(runQuery(postgresDB, sqlQuery))
+
+        // ************ NEW QUERIES END*******************
+
+        let [documents, submissions, totalFields, totalFixes, belowThreshold, aboveThreshold, aboveThresholdModel, belowThresholdModel, totalFieldChangeGroupByModel, totalFieldsGroupByModel, overAllConfidence, confByModel] = await Promise.allSettled(promises)
+
+        totalFields = totalFields?.value[0]?.count
+        totalFixes = totalFixes?.value[0]?.count
+        // Accuracy By Submission = # of fields changed / the total number of fields (Shown as a percentage in Doughnut Chart)
+        let accBySubmission = (totalFixes / totalFields) * 100
+
+
+
+
+
+        let accuracy = 100 - ((totalFixes / totalFields) * 100)?.toFixed(1)
+
+        // BELOW THRESHOLD
+        // 100 - (Total fields below threshold / Total Fields * 100)
+        let belowThresholdValue = 100 - ((belowThreshold?.value[0]?.count / totalFields) * 100)?.toFixed(1)
+
+        // ABOVE THRESHOLD
+        // Transcription Accuracy - Total fields transcribed above threshold
+        // let aboveThresholdValue = totalFields - aboveThreshold?.value[0]?.count
+        let aboveThresholdValue = totalFields - aboveThreshold?.value[0]?.count
+
+        let aboveArr = []
+        totalFieldsGroupByModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Accuracy'
+            }
+            return (
+                aboveArr?.push(obj)
+            )
+        })
+
+        let belowArr = []
+        totalFieldChangeGroupByModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                submission_name: v?.submission_name,
+                mode: 'Model Review'
+            }
+            return (
+                belowArr?.push(obj)
+            )
+        })
+
+        let confidenceByModelFinalSchema = []
+        confByModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: v?.count,
+                mode: 'Model Accuracy'
+            }
+            return (
+                confidenceByModelFinalSchema?.push(obj)
+            )
+        })
+
+        confByModel?.value?.map((v, i) => {
+            let obj = {
+                processor_name: v?.processor_name,
+                count: 100 - v?.count,
+                mode: 'Model Review'
+            }
+            return (
+                confidenceByModelFinalSchema?.push(obj)
+            )
+        })
+
+
+        let obj = {
+            success: true,
+            documents: documents?.value[0]?.count,
+            submissions: submissions?.value[0]?.count,
+            overAllConfidence: overAllConfidence?.value[0]?.count,
+            accuracy,
+            belowThresholdValue,
+            aboveThresholdValue,
+            aboveArr,
+            belowArr,
+            totalFixes,
+            accBySubmission,
+            confidenceByModelFinalSchema,
+            aboveThresholdModel: aboveThresholdModel?.value,
+            belowThresholdModel: belowThresholdModel?.value
+        }
+
+        apiResponse(res, 200, obj)
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message || e)
+    }
+}
 module.exports = {
     login,
     register,
@@ -465,5 +665,6 @@ module.exports = {
     updateKeyPairs,
     validateServiceKeyGCS,
     getBucketData,
-    downloadAndUploadFiles
+    downloadAndUploadFiles,
+    getDashboardData
 }
