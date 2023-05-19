@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Multer = require('multer')
-const { createSubmmission, generateUploadSignedUrl, uploadDocuments, updateKeyPairs, validateServiceKeyGCS, getBucketData, downloadAndUploadFiles } = require('../controllers/post')
+const { createSubmmission, generateUploadSignedUrl, uploadDocuments, updateKeyPairs, validateServiceKeyGCS, getBucketData, downloadAndUploadFiles, getDashboardData } = require('../controllers/post')
 
 const multer = Multer({
     dest: 'uploads/'
@@ -19,5 +19,8 @@ router.post('/validate-service-key-gcs', multer.single('file'), validateServiceK
 router.post('/get-bucket-data', getBucketData)
 
 router.post('/download-and-upload-files', downloadAndUploadFiles)
+
+router.post('/get-dashboard-data', getDashboardData)
+
 
 module.exports = router

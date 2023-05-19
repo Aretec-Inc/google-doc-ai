@@ -8,9 +8,9 @@ import { Bar } from '@ant-design/plots';
 // leftside model name
 
 
-const ProcessorVisuals = (props) => {
-    const { belowThresholdModelAcc, aboveThresholdModelAcc } = props
-    const data = [...aboveThresholdModelAcc, ...belowThresholdModelAcc]
+const ConfidenceModel = (props) => {
+    const { belowThresholdModelAcc, aboveThresholdModelAcc, confidenceModel } = props
+    const data = [...confidenceModel]
     const config = {
         data,
         xField: 'count',
@@ -36,11 +36,11 @@ const ProcessorVisuals = (props) => {
 
     return (
         <div className="padding_6px">
-            <p className='submission-title mg_lf_15px'>Accuracy by Model(s)</p>
-            <sub>Accuracy by Model(s) = # of fields changed / the total number of fields grouped by Model.</sub>
+            <p className='submission-title mg_lf_15px'>Confidence Score by Model(s)</p>
+            <sub>Confidence Score by Model = Aggregates of Confidence Score we receive from models grouped by models.</sub>
             <Bar {...config} className="width90" />
         </div>
     )
 }
 
-export default ProcessorVisuals
+export default ConfidenceModel
