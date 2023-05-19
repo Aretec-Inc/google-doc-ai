@@ -15,7 +15,8 @@ const GET = {
     PDF_DATA: `${api}/get-pdf-data`,
     DASHBOARD_DATA: `${api}/get-dashboard-data`,
     EXPORT_DATA: `${api}/get-export-data`,
-    EXPORT_DATA_CSV: `${api}/export-data-csv`
+    EXPORT_DATA_CSV: `${api}/export-data-csv`,
+    GET_SUB_AND_CONF: `${api}/get-submissions-and-confidence`
 }
 
 const POST = {
@@ -27,7 +28,8 @@ const POST = {
     GET_BUCKET_DATA: `${api}/get-bucket-data`,
     DOWNLOAD_AND_UPLOAD_FILES: `${api}/download-and-upload-files`,
     GET_S3_BUCKET_DATA: `${api}/get-s3-bucket-data`,
-    DOWNLOAD_AND_UPLOAD_S3_FILES: `${api}/download-and-upload-s3-files`
+    DOWNLOAD_AND_UPLOAD_S3_FILES: `${api}/download-and-upload-s3-files`,
+    DASHBOARD_DATA: `${api}/get-dashboard-data`
 }
 
 
