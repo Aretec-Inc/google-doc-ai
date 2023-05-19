@@ -100,7 +100,7 @@ const ConfidenceSubmission = (props) => {
                 <p className='submission-title mg_lf_15px'>Confidence Score by Submission(s)</p>
                 <Select
                     showSearch
-                    placeholder="Select Confidence"
+                    placeholder="Select Submission"
                     optionFilterProp="children"
                     onChange={onChange}
                     onSearch={onSearch}
@@ -110,7 +110,7 @@ const ConfidenceSubmission = (props) => {
                     options={confidences}
                 />
             </span>
-            <sub>Confidence Score by Submission is a metric used to assess the level of certainty or confidence associated with a submitted outcome or prediction. It provides a numerical value that indicates the degree of confidence of the results.</sub>
+            <sub>Confidence Score by Submission = Aggregates of Confidence Score we receive from all models.</sub>
             <Pie {...config} className="width90" />
         </div>
     )

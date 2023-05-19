@@ -110,7 +110,7 @@ const SubmissionVisuals = (props) => {
                     options={submissionsList}
                 />
             </span>
-            <sub>Accuracy by Submission is a metric used to evaluate the precision and correctness of results or predictions submitted for assessment or evaluation.</sub>
+            <sub>Accuracy By Submission = # of fields changed / the total number of fields.</sub>
             <Pie {...config} className="width90" />
         </div>
     )

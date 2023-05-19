@@ -37,7 +37,7 @@ const ProcessorVisuals = (props) => {
     return (
         <div className="padding_6px">
             <p className='submission-title mg_lf_15px'>Accuracy by Model(s)</p>
-            <sub>Accuracy by Models refers to the measure of precision and correctness in the processing capabilities of Models/Processors. </sub>
+            <sub>Accuracy by Model(s) = # of fields changed / the total number of fields grouped by Model.</sub>
             <Bar {...config} className="width90" />
         </div>
     )

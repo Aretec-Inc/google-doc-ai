@@ -545,9 +545,12 @@ const getDashboardData = async (req, res) => {
 
         // Confidence Score by Submission = Aggregates of Confidence Score we receive from all models (Shown as a percentage in Doughnut Chart)
         if (confidence) {
-            sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count FROM ${schema}.schema_form_key_pairs where confidence = '${confidence}'`
+            sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count FROM ${schema}.schema_form_key_pairs AS u
+            LEFT JOIN ${schema}.documents AS d ON d.file_name = u.file_name
+            LEFT JOIN ${schema}.submissions AS s ON s.id = d.submission_id
+            WHERE s.submission_name = '${confidence}'`
         }
-        else{
+        else {
             sqlQuery = `SELECT AVG(CAST(confidence AS float)) * 100.0 AS count FROM ${schema}.schema_form_key_pairs`
         }
         promises.push(runQuery(postgresDB, sqlQuery))

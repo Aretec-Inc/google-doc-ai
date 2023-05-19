@@ -71,8 +71,8 @@ const Dashboard = (props) => {
         secureApi.get(`${GET.GET_SUB_AND_CONF}`)
             .then((data) => {
                 const { confidence, submissions } = data
-                setAllConfidences(confidence)
                 setSubmissionsList(submissions)
+                setAllConfidences(submissions)
             })
             .catch((err) => {
                 let errMsg = err?.response?.data?.message
@@ -142,6 +142,8 @@ const Dashboard = (props) => {
                             <div className='dash-top-card-main'>
                                 <h1>Fields Transcribed</h1>
                                 <p>{totalNumbers}</p>
+                                <br />
+                                <sub>Transcription Accuracy = Total Fields - How many Fields were changed.</sub>
                             </div>
                         </div>
                     </div>
@@ -230,7 +232,7 @@ const Dashboard = (props) => {
                     Confidence Score by Submission = Aggregates of Confidence Score we receive from all models (Shown as a percentage in Doughnut Chart)
 
                     Confidence Score by Model = Aggregates of Confidence Score we receive from models grouped by models. (Shown as a percentage in Horizontal Bar Chart) */}
-                    <div className="grid-container-bottom">
+                    {/* <div className="grid-container-bottom">
                         <div className="grid-item-card">
                             <b>Fields Transcribed:</b>
                             <br />
@@ -250,7 +252,7 @@ const Dashboard = (props) => {
                         <div className="grid-item-card">
                             <b>Confidence Score by Model:</b><br />Aggregates of Confidence Score we receive from models grouped by models. (Shown as a percentage in Horizontal Bar Chart)
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

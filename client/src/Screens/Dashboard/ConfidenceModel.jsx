@@ -37,9 +37,7 @@ const ConfidenceModel = (props) => {
     return (
         <div className="padding_6px">
             <p className='submission-title mg_lf_15px'>Confidence Score by Model(s)</p>
-            <sub>
-                Confidence Score by Model refers to a metric that quantifies the level of confidence or certainty exhibited by a model/processor in its classifications. It provides a numerical value indicating the model's degree of confidence in its own performance.
-            </sub>
+            <sub>Confidence Score by Model = Aggregates of Confidence Score we receive from models grouped by models.</sub>
             <Bar {...config} className="width90" />
         </div>
     )
