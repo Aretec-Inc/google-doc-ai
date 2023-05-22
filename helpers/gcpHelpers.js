@@ -33,33 +33,43 @@ const formLoop = async (arr) => {
 
     console.log('arr', arr?.length)
 
-    let myPromises = arr.map(v => {
+    for(var v of arr) {
         v.gcs_input_uri = v?.fileUrl
 
-        return docAIv3(v)
-    })
-
-    console.log('myPromises', myPromises)
-
-    let response = await Promise.allSettled(myPromises)
-
-    let secondPromise = []
-
-    for (var v of response) {
-        opt = v?.value?.data
-
-        if (!opt?.success) {
-            console.log('second try', opt)
-            // secondPromise.push(Promise.resolve(axios.post(opt?.template_id ?
-            //     `https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching` :
-            //     `https://context-api-2my7afm7yq-ue.a.run.app/api/offline_doc_ai`,
-            //     opt?.body
-            // )))
-            // secondPromise.push(Promise.resolve(axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, opt?.body)))
-        }
+        console.log('start', v?.fileId)
+        await docAIv3(v)
+        console.log('end', v?.fileId)
     }
 
-    console.log('after Loop***', response)
+    console.log('after loop')
+
+    // let myPromises = arr.map(v => {
+    //     v.gcs_input_uri = v?.fileUrl
+
+    //     return docAIv3(v)
+    // })
+
+    // console.log('myPromises', myPromises)
+
+    // let response = await Promise.allSettled(myPromises)
+
+    // let secondPromise = []
+
+    // for (var v of response) {
+    //     opt = v?.value?.data
+
+    //     if (!opt?.success) {
+    //         console.log('second try', opt)
+    //         // secondPromise.push(Promise.resolve(axios.post(opt?.template_id ?
+    //         //     `https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching` :
+    //         //     `https://context-api-2my7afm7yq-ue.a.run.app/api/offline_doc_ai`,
+    //         //     opt?.body
+    //         // )))
+    //         // secondPromise.push(Promise.resolve(axios.post(`https://context-api-2my7afm7yq-ue.a.run.app/api/form_matching`, opt?.body)))
+    //     }
+    // }
+
+    // console.log('after Loop***', response)
 
     // await Promise.allSettled(secondPromise)
     //     .then((r) => console.log('r', r))
