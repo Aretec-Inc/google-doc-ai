@@ -16,8 +16,6 @@ catch (e) {
 
 const projectId = service_key?.project_id
 
-console.log('projectId', projectId)
-
 // Instantiates a client
 
 const storage = new Storage({ projectId, credentials: service_key })

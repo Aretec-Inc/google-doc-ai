@@ -30,9 +30,9 @@ catch (e) {
 
 }
 
-app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.json({ limit: '1000mb' }))
 app.use(bodyParser.urlencoded({
-  limit: '50mb',
+  limit: '1000mb',
   extended: true,
   parameterLimit: 50000
 }))
