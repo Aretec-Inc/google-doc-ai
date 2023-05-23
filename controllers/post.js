@@ -769,41 +769,41 @@ const getDashboardData = async (req, res) => {
     }
 }
 
-const addDummyData = async () => {
-    let path = `data/health`
+// const addDummyData = async () => {
+//     let path = `data/health`
 
-    let sqlQuery = `SELECT id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_validate, md5, is_deleted, is_verified, is_completed, number_of_attempts, error, original_file_address, created_at, updated_at
-	FROM google_doc_ai.documents WHERE submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
+//     let sqlQuery = `SELECT id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_validate, md5, is_deleted, is_verified, is_completed, number_of_attempts, error, original_file_address, created_at, updated_at
+// 	FROM google_doc_ai.documents WHERE submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
 
-    try {
-        const data = await runQuery(postgresDB, sqlQuery)
-        fs.writeFileSync(`${path}/data.json`, JSON.stringify(data, null, 2))
-        console.log('Data written to file')
-    }
-    catch (err) {
-        console.error(err)
-    }
+//     try {
+//         const data = await runQuery(postgresDB, sqlQuery)
+//         fs.writeFileSync(`${path}/data.json`, JSON.stringify(data, null, 2))
+//         console.log('Data written to file')
+//     }
+//     catch (err) {
+//         console.error(err)
+//     }
 
-    sqlQuery = `SELECT s.file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, updated_by, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, s.id, type, field_name_confidence, field_value_confidence, dlp_info_type, dlp_match_likelihood, nullable, data_types, column_name, width, height, w, h, name_width, name_height, value_width, value_height
-	FROM google_doc_ai.schema_form_key_pairs s
-	LEFT JOIN google_doc_ai.documents d ON d.file_name = s.file_name
-	WHERE d.submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
+//     sqlQuery = `SELECT s.file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, updated_by, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, s.id, type, field_name_confidence, field_value_confidence, dlp_info_type, dlp_match_likelihood, nullable, data_types, column_name, width, height, w, h, name_width, name_height, value_width, value_height
+// 	FROM google_doc_ai.schema_form_key_pairs s
+// 	LEFT JOIN google_doc_ai.documents d ON d.file_name = s.file_name
+// 	WHERE d.submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
 
-    try {
-        const data = await runQuery(postgresDB, sqlQuery)
-        fs.writeFileSync(`${path}/key_form.json`, JSON.stringify(data, null, 2))
-        console.log('Data written to file')
-    }
-    catch (err) {
-        console.error(err)
-    }
-}
+//     try {
+//         const data = await runQuery(postgresDB, sqlQuery)
+//         fs.writeFileSync(`${path}/key_form.json`, JSON.stringify(data, null, 2))
+//         console.log('Data written to file')
+//     }
+//     catch (err) {
+//         console.error(err)
+//     }
+// }
 
-addDummyData()
+// addDummyData()
 
 // const downloadPdfs = async () => {
-//     const invoices = require('../data/expenses/data.json')
-//     let path = `data/expenses/files`
+//     const invoices = require('../data/health/data.json')
+//     let path = `data/health/files`
 
 //     for (var v of invoices) {
 //         let authUrl = await getAuthUrl(v?.file_address, storage)
