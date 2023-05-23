@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize')
 const addModels = require('../models')
 const config = require('./config')
 
-const schema = `google_doc_ai`
+const schema = `google_doc_ai2`
 
 const init = (cloudConfig = config) => {
     console.log('cloudConfig', process.env.NODE_ENV)
@@ -11,7 +11,7 @@ const init = (cloudConfig = config) => {
 
         console.log('connecting...')
         db.authenticate()
-        db.sync({ alter: true })
+        // db.sync({ alter: true })
 
         console.log('Connection has been established successfully...')
 

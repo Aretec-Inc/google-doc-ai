@@ -6,6 +6,7 @@ const path = require('path')
 const cors = require('cors')
 const server = require('http').createServer(app)
 const { configureBucketCors } = require('./config/storage')
+const { addDefaultData } = require('./helpers')
 
 const PORT = process.env.PORT || 8080
 
@@ -41,6 +42,7 @@ app.use(express.json())
 
 server.listen(PORT, () => {
   console.log(`Server up and running on ${PORT}`)
+  addDefaultData()
   if (process.env.NODE_ENV === 'production') {
     configureBucketCors()
   }

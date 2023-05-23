@@ -1,8 +1,11 @@
 const fs = require('fs')
 const moment = require('moment')
 const axios = require('axios')
+const path = require('path')
 const codes = require('./codes.json')
-const { projectId, docAiClient } = require('../config/gcpConfig')
+const { postgresDB, service_key, projectId, docAiClient, schema } = require('../config')
+const { runQuery } = require('./postgresQueries')
+const { getDocumentAIProcessorsList } = require('./gcpHelpers')
 
 const checkDocumentQuality = async (filePath) => {
     let processorId = '19fe7c3bad567f9b'
@@ -226,6 +229,81 @@ const downloadPublicFile = async (url, path) => {
     })
 }
 
+const addDataInDatabase = async (k, submission, model) => {
+    try {
+        let folderPath = path.resolve(__dirname, '../data', k)
+        let filesPath = path.resolve(folderPath, 'files')
+        let filesList = fs.readdirSync(filesPath)
+        let documentData = require(path.resolve(folderPath, 'data.json'))
+        let schemaData = require(path.resolve(folderPath, 'key_form.json'))
+
+        let allPromises = []
+
+        let sqlQuery = `INSERT INTO ${schema}.submissions(
+            id, submission_name, processor_id, processor_name, user_id, threshold, created_at, is_deleted)
+            VALUES (${validateData(submission?.id)}, 'Default ${convertTitle(k)}', ${validateData(model?.id)}, ${validateData(model?.displayName)}, ${validateData(submission?.id)}, ${20}, NOW(), ${false});`
+
+        try {
+            await runQuery(postgresDB, sqlQuery)
+            for (var d of documentData) {
+                sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${d?.id}', '${d?.submission_id}', '${d?.file_name}', ${validateData(d?.user_id)}, '${d?.file_type}', '${d?.file_address}', '${d?.original_file_name}', '${d?.file_size}', ${d?.is_completed}, ${validateData(d?.original_file_address)}, NOW(), NOW())`
+
+                allPromises.push(runQuery(postgresDB, sqlQuery))
+            }
+
+            for (var s of schemaData) {
+                sqlQuery = `INSERT INTO ${schema}.schema_form_key_pairs(file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES('${s?.file_name}', '${s?.field_name}', '${s?.field_value}', '${s?.time_stamp}', '${s?.validated_field_name}', '${s?.validated_field_value}', ${s?.confidence}, '${s?.file_size}', ${s?.key_x1}, ${s?.key_x2}, ${s?.key_y1}, ${s?.key_y2}, ${s?.value_x1}, ${s?.value_x2}, ${s?.value_y1}, ${s?.value_y2}, ${s?.page_number}, '${s?.id}', '${s?.type}', ${s?.field_name_confidence}, ${s?.field_value_confidence}, '${s?.column_name}')`
+
+                allPromises.push(runQuery(postgresDB, sqlQuery))
+            }
+
+            Promise.all(allPromises)
+                .then((result) => {
+                    console.log('res', result)
+                })
+                .catch((e) => {
+                    console.log('e', e)
+                })
+        }
+        catch (e) {
+            console.log('Alreaedy Added')
+        }
+
+
+
+        // for (var f of filesList) {
+        //     console.log('f', f)
+        // }
+    }
+    catch (e) {
+        console.log('e', k, e?.message || e)
+    }
+}
+
+const addDefaultData = async () => {
+    const submissions = {
+        expenses: {
+            id: '9603b87d-3c8d-4d2b-aebf-976f77ad735b',
+            name: 'expense model'
+        },
+        health: {
+            id: '6a5f730f-bd49-4f34-84d0-a4a668020375',
+            name: 'health benefit model'
+        },
+        invoices: {
+            id: '8bad8a6f-732f-42a4-97a3-0febc7093351',
+            name: 'invoice model'
+        }
+    }
+
+    let allProcessors = await getDocumentAIProcessorsList(service_key, projectId)
+
+    for (var [k, v] of Object?.entries(submissions)) {
+        let model = allProcessors?.filter(v => v?.displayName?.toLowerCase() === submissions?.[k]?.name?.toLowerCase())?.[0]
+        addDataInDatabase(k, v, model)
+    }
+}
+
 module.exports = {
     ...require('./gcpHelpers'),
     ...require('./postgresQueries'),
@@ -243,5 +321,6 @@ module.exports = {
     showTableHeaderByColumn,
     showTableBodyByColumn,
     convertTitle,
-    downloadPublicFile
+    downloadPublicFile,
+    addDefaultData
 }
