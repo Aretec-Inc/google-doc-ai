@@ -769,34 +769,62 @@ const getDashboardData = async (req, res) => {
     }
 }
 
-// const addDummyData = async () => {
-//     let path = `data/health`
-
-//     let sqlQuery = `SELECT id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_validate, md5, is_deleted, is_verified, is_completed, number_of_attempts, error, original_file_address, created_at, updated_at
-// 	FROM google_doc_ai.documents WHERE submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
-
+// const saveData = async (sqlQuery, filePath) => {
 //     try {
 //         const data = await runQuery(postgresDB, sqlQuery)
-//         fs.writeFileSync(`${path}/data.json`, JSON.stringify(data, null, 2))
+//         fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 //         console.log('Data written to file')
 //     }
 //     catch (err) {
 //         console.error(err)
 //     }
+// }
+
+// const addDummyData = async () => {
+//     let path = `data/expenses`
+
+//     let sqlQuery = `SELECT id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_validate, md5, is_deleted, is_verified, is_completed, number_of_attempts, error, original_file_address, created_at, updated_at
+// 	FROM google_doc_ai.documents WHERE submission_id='9603b87d-3c8d-4d2b-aebf-976f77ad735b';`
+
+//     let filePath = `${path}/data.json`
+
+//     saveData(sqlQuery, filePath)
 
 //     sqlQuery = `SELECT s.file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, updated_by, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, s.id, type, field_name_confidence, field_value_confidence, dlp_info_type, dlp_match_likelihood, nullable, data_types, column_name, width, height, w, h, name_width, name_height, value_width, value_height
 // 	FROM google_doc_ai.schema_form_key_pairs s
 // 	LEFT JOIN google_doc_ai.documents d ON d.file_name = s.file_name
-// 	WHERE d.submission_id='6a5f730f-bd49-4f34-84d0-a4a668020375';`
+// 	WHERE d.submission_id='9603b87d-3c8d-4d2b-aebf-976f77ad735b';`
 
-//     try {
-//         const data = await runQuery(postgresDB, sqlQuery)
-//         fs.writeFileSync(`${path}/key_form.json`, JSON.stringify(data, null, 2))
-//         console.log('Data written to file')
-//     }
-//     catch (err) {
-//         console.error(err)
-//     }
+//     filePath = `${path}/key_form.json`
+
+//     saveData(sqlQuery, filePath)
+
+//     sqlQuery = `SELECT e.file_name, processor_name, processor_id, all_fields, e.created_at
+// 	FROM google_doc_ai.export_table e
+// 	LEFT JOIN google_doc_ai.documents d ON d.file_name = e.file_name
+// 	WHERE d.submission_id='9603b87d-3c8d-4d2b-aebf-976f77ad735b';`
+
+//     filePath = `${path}/export_table.json`
+
+//     saveData(sqlQuery, filePath)
+
+//     sqlQuery = `SELECT p.file_name, pages_count, entities_count, text, schema_id
+// 	FROM google_doc_ai.pdf_documents p
+// 	LEFT JOIN google_doc_ai.documents d ON d.file_name = p.file_name
+// 	WHERE d.submission_id='9603b87d-3c8d-4d2b-aebf-976f77ad735b';`
+
+//     filePath = `${path}/pdf_documents.json`
+
+//     saveData(sqlQuery, filePath)
+
+//     sqlQuery = `SELECT p.id, p.file_name, dimensions, "pageNumber", paragraphs
+// 	FROM google_doc_ai.pdf_pages p
+// 	LEFT JOIN google_doc_ai.documents d ON d.file_name = p.file_name
+// 	WHERE d.submission_id='9603b87d-3c8d-4d2b-aebf-976f77ad735b';`
+
+//     filePath = `${path}/pdf_pages.json`
+
+//     saveData(sqlQuery, filePath)
 // }
 
 // addDummyData()

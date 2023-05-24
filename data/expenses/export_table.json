@@ -1,0 +1,2858 @@
+[
+  {
+    "file_name": "5a71cb36-debe-4427-983e-b0d2effa61ff-1.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "3.32",
+          "description": "Books and Literature"
+        },
+        {
+          "amount": "81.54",
+          "description": "Care Sports and Fitness Books"
+        },
+        {
+          "amount": "47.75",
+          "description": "Clothing\nGarden Beauty and"
+        },
+        {
+          "amount": "47.67",
+          "description": "Fashion Home and Garden Beauty"
+        }
+      ],
+      "net_amount": "45.81-",
+      "receipt_date": "Oct 10, 2022\n",
+      "total_amount": "Nov 7, 20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:44:47.941Z"
+  },
+  {
+    "file_name": "76a49a60-70eb-462e-93ea-4bd9371ad97e-5.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "85.91",
+          "description": "Wellness Toys"
+        },
+        {
+          "amount": "32.02"
+        },
+        {
+          "amount": "83.80"
+        },
+        {
+          "amount": "69.09"
+        },
+        {
+          "amount": "95.95"
+        }
+      ],
+      "net_amount": "28.66-",
+      "receipt_date": "Apr 25, 2023\n",
+      "total_amount": "7, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:05.445Z"
+  },
+  {
+    "file_name": "17c14fcd-c282-4b64-a926-4004b581e895-2.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "40.82",
+          "description": "and Fitness Books and Literature"
+        },
+        {
+          "amount": "56.12",
+          "description": "Games Automotive"
+        },
+        {
+          "amount": "69.25",
+          "description": "Literature Health and Wellness"
+        },
+        {
+          "amount": "51.56",
+          "description": "Automotive and\nand Wellness Toys and"
+        }
+      ],
+      "net_amount": "10.18-",
+      "receipt_date": "May 1, 2023\n",
+      "total_amount": "Oct 21, -20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:44:52.484Z"
+  },
+  {
+    "file_name": "9b2fb77a-7f0d-4f34-b4cd-2f66f28ed77f-3.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "54.26",
+          "description": "Games Automotive and\nLiterature Health and\nSports and"
+        },
+        {
+          "amount": "23.19",
+          "description": "and\nCare Sports and Fitness"
+        }
+      ],
+      "net_amount": "27.22-",
+      "receipt_date": "May 7, 2023\n",
+      "total_amount": "12.66\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:44:57.210Z"
+  },
+  {
+    "file_name": "3d348ef9-faa5-415d-98a7-02c26f07fd4e-6.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "51.10",
+          "description": "Health"
+        },
+        {
+          "amount": "86.25",
+          "description": "Games Automotive"
+        },
+        {
+          "amount": "3.63",
+          "description": "Care Sports and Fitness"
+        },
+        {
+          "amount": "51.44",
+          "description": "Health and"
+        },
+        {
+          "amount": "25.18",
+          "description": "Vehicles Food and"
+        }
+      ],
+      "net_amount": "11.59-",
+      "receipt_date": "Mar 11, 2023\n",
+      "total_amount": "Dec 16,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:10.011Z"
+  },
+  {
+    "file_name": "b02cd0fb-b981-4d20-86d0-ed3e6e0b32c5-4.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "24.24",
+          "description": "and Fashion Home and"
+        },
+        {
+          "description": "personal car = $0."
+        },
+        {
+          "amount": "54.00",
+          "description": "Food and Beverages\nGarden\nFitness Books and Literature"
+        }
+      ],
+      "net_amount": "46.01-",
+      "receipt_date": "Aug 3, 2022\n",
+      "total_amount": "Feb 20,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:00.995Z"
+  },
+  {
+    "file_name": "b381f0fa-21c2-4545-ac6a-e836703f972a-7.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "90.71",
+          "description": "Toys and Games\nLiterature Health\nCare Sports"
+        },
+        {
+          "amount": "25.06",
+          "description": "Sports and"
+        },
+        {
+          "amount": "89.17",
+          "description": "Literature Health and Wellness Toys"
+        }
+      ],
+      "net_amount": "31.44-",
+      "receipt_date": "Dec 12, 2022\n",
+      "total_amount": "8, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:14.287Z"
+  },
+  {
+    "file_name": "31cc4c88-4289-49a8-8bdf-12f3bbb03fa1-10.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "83.19",
+          "description": "Care Sports and Fitness"
+        },
+        {
+          "amount": "62.69"
+        },
+        {
+          "amount": "17.04"
+        },
+        {
+          "amount": "9.24"
+        },
+        {
+          "amount": "54.51"
+        }
+      ],
+      "net_amount": "4.66",
+      "receipt_date": "Mar 12, 2023\n",
+      "total_amount": "Mar 22,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:28.139Z"
+  },
+  {
+    "file_name": "da06b199-1a90-43da-bcad-147af869180f-11.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "2.71",
+          "description": "and Personal Care Sports"
+        },
+        {
+          "amount": "77.92",
+          "description": "and Personal"
+        },
+        {
+          "amount": "63.93",
+          "description": "Personal Care Sports"
+        },
+        {
+          "amount": "18.86",
+          "description": "Clothing and\nand"
+        }
+      ],
+      "net_amount": "20.06-",
+      "receipt_date": "May 8, 2023\n",
+      "total_amount": "Dec 27,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:32.735Z"
+  },
+  {
+    "file_name": "b7d12b88-850d-43c3-a180-6488c104cd6e-13.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "95.69",
+          "description": "ridiculus mus. Aenean"
+        },
+        {
+          "amount": "53.53",
+          "description": "Personal Care Sports and"
+        },
+        {
+          "amount": "2.41",
+          "description": "Vehicles Food and"
+        },
+        {
+          "amount": "48.75"
+        },
+        {
+          "amount": "10.32"
+        }
+      ],
+      "net_amount": "43.63-",
+      "receipt_date": "Oct 21, 2022\n",
+      "total_amount": "43.63-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:41.038Z"
+  },
+  {
+    "file_name": "b7bd486d-2de4-46d4-9011-3f762a5d684a-16.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "93.10",
+          "description": "Automotive and Vehicles Food"
+        },
+        {
+          "amount": "1.42",
+          "description": "nunc sit amet metus. Aliquam\nsed libero. Proin"
+        },
+        {
+          "amount": "50.67",
+          "description": "and Garden Beauty and Personal\nFitness"
+        }
+      ],
+      "net_amount": "32.46-",
+      "receipt_date": "Mar 27, 2023\n",
+      "total_amount": "Feb 13,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:54.087Z"
+  },
+  {
+    "file_name": "b0063e57-d084-4b1f-927d-8029c663d92c-20.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "52.72",
+          "description": "Books"
+        },
+        {
+          "amount": "72.97",
+          "description": "Automotive and Vehicles\nand\nClothing and"
+        },
+        {
+          "amount": "64.28"
+        }
+      ],
+      "net_amount": "43.29-",
+      "receipt_date": "Mar 7, 2022\n",
+      "total_amount": "43.29-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:10.754Z"
+  },
+  {
+    "file_name": "ef93869a-f822-4b2b-9d0c-a035545c46d5-22.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "23.46",
+          "description": "magna a"
+        },
+        {
+          "amount": "86.33",
+          "description": "ornare tortor"
+        },
+        {
+          "amount": "57.24",
+          "description": "ut mi. Duis"
+        },
+        {
+          "amount": "38.80"
+        },
+        {
+          "amount": "74.57"
+        }
+      ],
+      "net_amount": "15.48-",
+      "receipt_date": "Feb 12, 2023\n",
+      "total_amount": "15.48-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:13.669Z"
+  },
+  {
+    "file_name": "1423740a-5502-484c-9c9a-4d13038ce1c4-23.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "38.77",
+          "description": "Games Automotive and"
+        },
+        {
+          "amount": "92.11",
+          "description": "Home and Garden"
+        },
+        {
+          "amount": "56.17",
+          "description": "Health and Wellness Toys"
+        },
+        {
+          "description": "Note: Mileage reimbursement for personal car = $0.XX/mile"
+        }
+      ],
+      "net_amount": "28.24-",
+      "receipt_date": "Mar 19, 2023\n",
+      "total_amount": "92.11\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:18.006Z"
+  },
+  {
+    "file_name": "506f0a46-eac9-4576-9825-287ab4f30c86-8.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "13.63",
+          "description": "and Wellness Toys"
+        },
+        {
+          "amount": "20.30",
+          "description": "Automotive\nand Wellness Toys and Games"
+        },
+        {
+          "amount": "86.18",
+          "description": "Automotive and Vehicles Food\nGarden"
+        }
+      ],
+      "net_amount": "46.24-",
+      "receipt_date": "Mar 18, 2023\n",
+      "total_amount": "Oct 4, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:18.861Z"
+  },
+  {
+    "file_name": "a772c0d0-6401-448f-ac66-a2ada5bc6923-24.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "36.46",
+          "description": "Games Automotive and"
+        },
+        {
+          "amount": "21.55",
+          "description": "Automotive and Vehicles Food"
+        },
+        {
+          "amount": "23.59",
+          "description": "risus. Nunc"
+        },
+        {
+          "amount": "6.81",
+          "description": "dis parturient montes,"
+        }
+      ],
+      "net_amount": "7.60",
+      "receipt_date": "Jan 21, 2023\n",
+      "total_amount": "7.60 ",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:22.299Z"
+  },
+  {
+    "file_name": "6741a7a5-551c-4dd1-8308-d1db59b0adca-9.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "32.36",
+          "description": "Automotive\nToys and Games Automotive and\nand\nWellness Toys"
+        },
+        {
+          "amount": "76.90",
+          "description": "Electronics Clothing and"
+        }
+      ],
+      "net_amount": "26.08-",
+      "receipt_date": "Nov 19, 2022\n",
+      "total_amount": "26.08-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:23.465Z"
+  },
+  {
+    "file_name": "970ac1e2-9215-42fa-a1cb-e12e19bf062f-25.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "29.75",
+          "description": "Vehicles\nGarden"
+        },
+        {
+          "amount": "54.51",
+          "description": "Books"
+        },
+        {
+          "amount": "8.17",
+          "description": "and\nand Beverages"
+        }
+      ],
+      "net_amount": "4.98",
+      "receipt_date": "May 16, 2023\n",
+      "total_amount": "29.75\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:26.571Z"
+  },
+  {
+    "file_name": "9c5a4f17-8657-4cfd-9c98-24ab49304cf8-26.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "37.45",
+          "description": "and Vehicles Food"
+        },
+        {
+          "amount": "1.66",
+          "description": "nisi"
+        },
+        {
+          "amount": "92.41",
+          "description": "Literature Health"
+        },
+        {
+          "amount": "50.93",
+          "description": "Health and Wellness"
+        }
+      ],
+      "net_amount": "13.30-",
+      "receipt_date": "Mar 6, 2023\n",
+      "total_amount": "Jan 4, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:31.124Z"
+  },
+  {
+    "file_name": "3e5e8e07-14c6-4192-a0a8-7d4669ae1811-27.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "57.20",
+          "description": "Home and Garden Beauty"
+        },
+        {
+          "amount": "80.96",
+          "description": "Home and Garden Beauty"
+        },
+        {
+          "amount": "70.71",
+          "description": "vel nisl. Quisque"
+        },
+        {
+          "amount": "27.61",
+          "description": "erat nonummy ultricies ornare,"
+        },
+        {
+          "amount": "7.22",
+          "description": "Clothing and"
+        }
+      ],
+      "net_amount": "20.13-",
+      "receipt_date": "Jan 6, 2023\n",
+      "total_amount": "Apr 15, -20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:35.103Z"
+  },
+  {
+    "file_name": "0d3f1bba-86c2-45d8-8cb5-8db86ba8692b-12.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "70.27",
+          "description": "Home and Garden Beauty"
+        }
+      ],
+      "net_amount": "32.09-",
+      "receipt_date": "Aug 3, 2022\n",
+      "total_amount": "Nov 17,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:36.685Z"
+  },
+  {
+    "file_name": "b4308938-89a4-4f1d-90e1-d1b0acd10d7d-28.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "42.48",
+          "description": "and Garden Beauty and Personal"
+        },
+        {
+          "amount": "24.78",
+          "description": "and Games Automotive"
+        },
+        {
+          "amount": "65.61",
+          "description": "and Fitness Books and Literature"
+        }
+      ],
+      "net_amount": "43.63-",
+      "receipt_date": "Jan 30, 2023\n",
+      "total_amount": "Dec 22,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:39.819Z"
+  },
+  {
+    "file_name": "03f8f088-374f-49b8-b76c-9064d3f8d420-29.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "66.24",
+          "description": "Automotive and Vehicles\nFashion Home and\nFashion\nGames Automotive and Vehicles\nand"
+        }
+      ],
+      "net_amount": "4.66",
+      "receipt_date": "Apr 19, 2023\n",
+      "total_amount": "Apr 5, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:44.402Z"
+  },
+  {
+    "file_name": "70977c1a-bb77-4143-8eb0-c711b375d286-14.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "37.83",
+          "description": "and Personal\nand Literature"
+        },
+        {
+          "amount": "91.63",
+          "description": "Books"
+        },
+        {
+          "amount": "23.90",
+          "description": "and Games Automotive and\nFashion Home and Garden"
+        }
+      ],
+      "net_amount": "15.53-",
+      "receipt_date": "Nov 27, 2022\n",
+      "total_amount": "84.85\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:45.022Z"
+  },
+  {
+    "file_name": "202c90c7-e9a8-4e94-afd7-302c2433a61d-30.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "53.90",
+          "description": "Toys and Games\nLiterature Health"
+        },
+        {
+          "amount": "81.45",
+          "description": "Vehicles Food\nBooks and\nFitness Books"
+        }
+      ],
+      "net_amount": "49.62-",
+      "receipt_date": "Jan 22, 2023\n",
+      "total_amount": "Dec 18,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:48.498Z"
+  },
+  {
+    "file_name": "c22c85ed-a920-4fc6-89c7-8754b20d5c7d-31.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "59.01",
+          "description": "sit amet"
+        },
+        {
+          "amount": "39.79",
+          "description": "dictum augue"
+        },
+        {
+          "amount": "38.89",
+          "description": "Quisque ornare"
+        },
+        {
+          "amount": "79.40",
+          "description": "sit amet, faucibus"
+        },
+        {
+          "amount": "13.69"
+        }
+      ],
+      "net_amount": "27.42-",
+      "receipt_date": "Sep 14, 2022\n",
+      "total_amount": "Aug 27",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:52.727Z"
+  },
+  {
+    "file_name": "3b50bcc1-0ac9-4f1a-a556-db6a7f9b1509-32.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "43.48",
+          "description": "Beauty and Personal"
+        },
+        {
+          "amount": "43.67",
+          "description": "nisl"
+        },
+        {
+          "amount": "66.65",
+          "description": "primis in faucibus"
+        },
+        {
+          "amount": "8.31"
+        },
+        {
+          "amount": "94.97"
+        }
+      ],
+      "net_amount": "18.69-",
+      "receipt_date": "Nov 12, 2022\n",
+      "total_amount": "18.69-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:57.015Z"
+  },
+  {
+    "file_name": "7d9f2695-ad3f-4edf-b732-f476a769c078-17.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "36.92",
+          "description": "Toys and Games\nClothing and Fashion Home and\nWellness Toys and\nand Garden Beauty\nand Garden Beauty and"
+        }
+      ],
+      "net_amount": "9.02",
+      "receipt_date": "Dec 23, 2022\n",
+      "total_amount": "Oct 19, -20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:58.205Z"
+  },
+  {
+    "file_name": "6e681ef7-f23a-4936-b22f-c706ba4b31aa-33.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "89.36",
+          "description": "Games Automotive and Vehicles\nand Vehicles\nand Fitness Books and Literature"
+        },
+        {
+          "amount": "37.19",
+          "description": "Games Automotive and"
+        },
+        {
+          "amount": "82.59"
+        }
+      ],
+      "net_amount": "12.12-",
+      "receipt_date": "May 20, 2023\n",
+      "total_amount": "Jan 3, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:00.564Z"
+  },
+  {
+    "file_name": "a6c11836-523e-422b-8c68-a44c3edb15df-18.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "78.83",
+          "description": "Sports and Fitness"
+        },
+        {
+          "amount": "29.43",
+          "description": "nibh. Aliquam"
+        },
+        {
+          "amount": "68.83",
+          "description": "Nam consequat dolor"
+        },
+        {
+          "amount": "76.22",
+          "description": "and Literature Health"
+        },
+        {
+          "amount": "54.55",
+          "description": "Personal Care Sports and Fitness"
+        }
+      ],
+      "net_amount": "46.31-",
+      "receipt_date": "Feb 28, 2023\n",
+      "total_amount": "68.83\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:02.246Z"
+  },
+  {
+    "file_name": "a039b54a-1278-46c6-9b49-aebf96a0b0a5-34.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "6.33",
+          "description": "and Wellness"
+        },
+        {
+          "amount": "93.64",
+          "description": "Literature Health and Wellness\nand Literature Health and\nand Fitness Books and Literature\nand Fashion Home and"
+        }
+      ],
+      "net_amount": "31.67-",
+      "receipt_date": "Aug 12, 2021\n",
+      "total_amount": "Dec 24,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:04.561Z"
+  },
+  {
+    "file_name": "ab260746-4376-403e-b99e-8f975cca88ae-19.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "42.90",
+          "description": "Literature Health and Wellness\nand Literature Health\nand Literature"
+        },
+        {
+          "amount": "83.47",
+          "description": "pede blandit"
+        },
+        {
+          "amount": "61.02",
+          "description": "Care Sports and Fitness Books"
+        }
+      ],
+      "net_amount": "33.05-",
+      "receipt_date": "Apr 27, 2023\n",
+      "total_amount": "Apr 24, -20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:06.940Z"
+  },
+  {
+    "file_name": "15df0eaf-9dd8-4a67-a71f-4bd692558ed4-35.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "49.65",
+          "description": "Fashion Home and\nGarden Beauty and Personal Care"
+        },
+        {
+          "amount": "57.33",
+          "description": "Health and\nand Literature"
+        },
+        {
+          "amount": "56.08"
+        }
+      ],
+      "net_amount": "3.08",
+      "receipt_date": "Jun 11, 2022\n",
+      "total_amount": "72.09\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:08.291Z"
+  },
+  {
+    "file_name": "ad3189b4-a36f-4463-bfb8-da8a934ecdc4-37.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "3.96",
+          "description": "and Games\nand Personal Care Sports"
+        },
+        {
+          "amount": "99.12",
+          "description": "Beauty and\nElectronics Clothing and\nFitness Books and Literature Health"
+        }
+      ],
+      "net_amount": "19.66-",
+      "receipt_date": "Jul 7, 2022\n",
+      "total_amount": "Dec 13,-2",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:16.863Z"
+  },
+  {
+    "file_name": "73eb4e2a-2a8e-42e8-9c95-38bd6059e689-39.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "62.05",
+          "description": "and Wellness Toys and"
+        },
+        {
+          "amount": "16.56",
+          "description": "Clothing and Fashion Home"
+        },
+        {
+          "amount": "97.30",
+          "description": "Literature Health and"
+        },
+        {
+          "amount": "65.46",
+          "description": "Clothing and Fashion Home"
+        },
+        {
+          "amount": "5.76",
+          "description": "Books and Literature Health and"
+        }
+      ],
+      "net_amount": "48.02-",
+      "receipt_date": "May 18, 2023\n",
+      "total_amount": "62.05\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:23.950Z"
+  },
+  {
+    "file_name": "745013fa-c984-4447-a383-4d1bf2da1cbd-40.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "3.86",
+          "description": "and Garden Beauty and\nand Games Automotive and\nGarden Beauty and Personal"
+        },
+        {
+          "amount": "65.12",
+          "description": "Sports and Fitness Books"
+        }
+      ],
+      "net_amount": "31.33-",
+      "receipt_date": "Sep 1, 2022\n",
+      "total_amount": "Aug 2, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:28.036Z"
+  },
+  {
+    "file_name": "c6fef5c3-11a7-4adf-87ef-6995ec06fd11-21.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "7.64",
+          "description": "eget, dictum"
+        },
+        {
+          "amount": "86.74",
+          "description": "risus, at"
+        },
+        {
+          "amount": "73.51"
+        },
+        {
+          "amount": "15.23"
+        },
+        {
+          "amount": "85.02"
+        }
+      ],
+      "net_amount": "1.23",
+      "receipt_date": "Mar 27, 2023\n",
+      "total_amount": "Jan 15,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:09.066Z"
+  },
+  {
+    "file_name": "2d849386-4ca4-4efe-a03b-f0766035cb01-41.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "52.09",
+          "description": "and Fitness Books and Literature\nFashion Home\nand Literature Health and\nand Games Automotive and"
+        },
+        {
+          "amount": "23.04",
+          "description": "Health and Wellness Toys"
+        }
+      ],
+      "net_amount": "33.01-",
+      "receipt_date": "Mar 18, 2023\n",
+      "total_amount": "Apr 10, -",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:30.495Z"
+  },
+  {
+    "file_name": "1992f821-9ebb-4db2-b423-8f9d24dd5325-42.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "42.64",
+          "description": "Sports and\nand Fitness Books and Literature"
+        },
+        {
+          "amount": "89.79",
+          "description": "and Vehicles Food and"
+        },
+        {
+          "amount": "2.91",
+          "description": "ridiculus mus. Proin"
+        },
+        {
+          "amount": "16.34",
+          "description": "Food"
+        }
+      ],
+      "net_amount": "32.59-",
+      "receipt_date": "Apr 21, 2023\n",
+      "total_amount": "Feb 1, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:34.456Z"
+  },
+  {
+    "file_name": "d0072420-1e59-4804-8e0c-732e3fd95824-43.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "85.03",
+          "description": "and Literature Health\nFashion Home"
+        },
+        {
+          "amount": "75.15",
+          "description": "penatibus et magnis"
+        },
+        {
+          "amount": "61.07",
+          "description": "mollis. Integer"
+        },
+        {
+          "amount": "13.55",
+          "description": "nisl"
+        }
+      ],
+      "net_amount": "28.08-",
+      "receipt_date": "Mar 4, 2023\n",
+      "total_amount": "Feb 18,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:39.339Z"
+  },
+  {
+    "file_name": "bb34ecc1-83e9-49b8-a5b5-569754d8cfd8-44.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "17.25",
+          "description": "Beauty and Personal\nToys and Games\nClothing and Fashion\nand Fashion Home and\nGames Automotive"
+        }
+      ],
+      "net_amount": "40.34-",
+      "receipt_date": "Jan 10, 2023\n",
+      "total_amount": "40.34-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:43.662Z"
+  },
+  {
+    "file_name": "873431c4-a9bc-4b6e-a299-fd8983993e12-45.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "45.20",
+          "description": "Garden Beauty and Personal\nand Garden\nToys and Games\nFashion Home and Garden\nand"
+        }
+      ],
+      "net_amount": "49.20-",
+      "receipt_date": "Mar 29, 2022\n",
+      "total_amount": "Jul 29, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:48.354Z"
+  },
+  {
+    "file_name": "42a8cd3c-e4d9-4752-8c06-690ba7706afb-46.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "93.38",
+          "description": "odio. Nam interdum enim"
+        },
+        {
+          "amount": "64.21",
+          "description": "Automotive and"
+        },
+        {
+          "amount": "26.24",
+          "description": "dignissim."
+        },
+        {
+          "amount": "22.67",
+          "description": "Aliquam adipiscing lobortis risus."
+        },
+        {
+          "amount": "92.70",
+          "description": "pede. Cras vulputate velit eu"
+        }
+      ],
+      "net_amount": "36.55-",
+      "receipt_date": "Mar 25, 2023\n",
+      "total_amount": "Apr 21",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:52.097Z"
+  },
+  {
+    "file_name": "ccfb587f-687f-444d-bb09-6c9854704f5a-47.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "90.18",
+          "description": "Home and Garden"
+        },
+        {
+          "amount": "36.80",
+          "description": "Sports and Fitness Books"
+        },
+        {
+          "amount": "29.79",
+          "description": "Fashion"
+        },
+        {
+          "amount": "4.72",
+          "description": "non, cursus non,"
+        }
+      ],
+      "net_amount": "17.42-",
+      "receipt_date": "Jan 9, 2023\n",
+      "total_amount": "17.42-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:45:56.938Z"
+  },
+  {
+    "file_name": "5002d8f0-1bad-424b-b01c-bbc2fcfd6d9b-49.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "55.34",
+          "description": "ante. Maecenas mi felis,\nsapien, gravida"
+        },
+        {
+          "amount": "90.61",
+          "description": "ullamcorper, nisl arcu"
+        },
+        {
+          "amount": "48.18",
+          "description": "Games Automotive and Vehicles\nBeverages"
+        }
+      ],
+      "net_amount": "40.29-",
+      "receipt_date": "Dec 3, 2022\n",
+      "total_amount": "Jun 16,-20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:04.695Z"
+  },
+  {
+    "file_name": "bdc9b47b-1375-4e97-9d39-8565facc70d2-50.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "14.61",
+          "description": "vel est tempor bibendum."
+        },
+        {
+          "amount": "55.56"
+        },
+        {
+          "amount": "61.87"
+        },
+        {
+          "amount": "74.97"
+        },
+        {
+          "amount": "52.84"
+        }
+      ],
+      "net_amount": "42.30-",
+      "receipt_date": "Apr 30, 2023\n",
+      "total_amount": "42.30-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:08.798Z"
+  },
+  {
+    "file_name": "fc590ad7-5c1b-468f-bb01-b7319210113e-36.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "13.91",
+          "description": "Food and\nCare Sports and Fitness"
+        },
+        {
+          "amount": "81.93",
+          "description": "Health"
+        },
+        {
+          "amount": "6.60",
+          "description": "Home and Garden Beauty"
+        },
+        {
+          "amount": "56.58"
+        }
+      ],
+      "net_amount": "31.62-",
+      "receipt_date": "Mar 14, 2023\n",
+      "total_amount": "Nov 21,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:12.423Z"
+  },
+  {
+    "file_name": "64ff6a00-21db-4c64-b425-2ebbc1afc76e-51.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "9.53",
+          "description": "and Games Automotive\nFitness Books and Literature\nand Fashion Home and"
+        },
+        {
+          "description": "for personal car = $0.XX/mile"
+        },
+        {
+          "amount": "19.29",
+          "description": "Sports and Fitness\nPersonal Care Sports and Fitness"
+        }
+      ],
+      "net_amount": "32.66-",
+      "receipt_date": "Dec 7, 2022\n",
+      "total_amount": "Nov 22,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:13.536Z"
+  },
+  {
+    "file_name": "b115b5e3-f1d2-4b60-936c-bb505898efdc-52.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "13.16",
+          "description": "and Garden\nSports and\nToys and Games\nCare"
+        },
+        {
+          "description": "ment for personal car = $0.XX/mile"
+        },
+        {
+          "amount": "99.96",
+          "description": "Games Automotive and"
+        }
+      ],
+      "net_amount": "27.03-",
+      "receipt_date": "Feb 12, 2023\n",
+      "total_amount": "Nov 8, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:17.102Z"
+  },
+  {
+    "file_name": "e298754d-78a4-4c1e-b8d5-33d3340c228b-38.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "67.26",
+          "description": "Phasellus dolor elit,"
+        },
+        {
+          "amount": "27.01",
+          "description": "Fitness Books"
+        },
+        {
+          "amount": "36.27",
+          "description": "Care Sports and Fitness Books"
+        },
+        {
+          "amount": "32.28"
+        },
+        {
+          "amount": "72.22"
+        }
+      ],
+      "net_amount": "22.17-",
+      "receipt_date": "Apr 10, 2023\n",
+      "total_amount": "22.17-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:20.198Z"
+  },
+  {
+    "file_name": "3e7aeed4-b44a-4c11-a578-ee08aa8fbeb0-53.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "39.27",
+          "description": "and Personal Care\nand"
+        },
+        {
+          "amount": "89.76",
+          "description": "Vehicles Food and\nand Games"
+        },
+        {
+          "amount": "85.24"
+        }
+      ],
+      "net_amount": "3.76",
+      "receipt_date": "Feb 22, 2022\n",
+      "total_amount": "3.76 ",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:21.178Z"
+  },
+  {
+    "file_name": "41203482-70ec-493b-8185-14b3fd0d1279-54.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "97.13",
+          "description": "pellentesque."
+        },
+        {
+          "amount": "91.42",
+          "description": "non, bibendum sed, est. Nunc\nQuisque libero lacus,"
+        },
+        {
+          "amount": "65.62",
+          "description": "gestas, urna"
+        },
+        {
+          "amount": "22.37",
+          "description": "sapien, cursus in,"
+        }
+      ],
+      "net_amount": "11.29-",
+      "receipt_date": "Mar 13, 2023\n",
+      "total_amount": "11.29-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:25.301Z"
+  },
+  {
+    "file_name": "a1feb9f6-8f6e-4c20-8c5e-f444fe19ffcf-55.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "83.70",
+          "description": "Vehicles\nand Personal Care Sports"
+        },
+        {
+          "amount": "6.73",
+          "description": "ridiculus mus. Proin vel nisl."
+        },
+        {
+          "amount": "14.30"
+        },
+        {
+          "amount": "66.79"
+        }
+      ],
+      "net_amount": "42.50-",
+      "receipt_date": "May 21, 2022\n",
+      "total_amount": "42.50-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:29.517Z"
+  },
+  {
+    "file_name": "11abe0f3-0c2f-41bb-9c23-5ea8a8016f7e-56.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "52.73",
+          "description": "Fashion Home"
+        },
+        {
+          "amount": "11.23",
+          "description": "Sports and Fitness Books"
+        },
+        {
+          "amount": "27.90",
+          "description": "Donec tempor, est"
+        },
+        {
+          "amount": "26.14",
+          "description": "mus. Proin vel arcu"
+        },
+        {
+          "amount": "96.45",
+          "description": "libero. Integer in magna."
+        }
+      ],
+      "net_amount": "39.73-",
+      "receipt_date": "Oct 23, 2022\n",
+      "total_amount": "Oct 27,",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:33.242Z"
+  },
+  {
+    "file_name": "9417d3de-2d8f-4907-96a9-4a7b1a1b93a9-57.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "94.18",
+          "description": "Books and Literature Health\nSports and Fitness Books"
+        },
+        {
+          "amount": "47.35",
+          "description": "Clothing and Fashion\nFashion Home and Garden Beauty\nand Personal Care Sports and"
+        }
+      ],
+      "net_amount": "36.20-",
+      "receipt_date": "Apr 3, 2023\n",
+      "total_amount": "Mar 17,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:37.466Z"
+  },
+  {
+    "file_name": "ba87de2f-d787-490a-b24f-e459b10d037a-58.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "12.54",
+          "description": "and Wellness Toys and\nand Wellness Toys and"
+        },
+        {
+          "amount": "13.48",
+          "description": "Automotive and Vehicles Food and\nGarden Beauty and Personal"
+        },
+        {
+          "amount": "22.76",
+          "description": "and Beverages"
+        }
+      ],
+      "net_amount": "43.36-",
+      "receipt_date": "Jan 29, 2023\n",
+      "total_amount": "Mar 21,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:46.811Z"
+  },
+  {
+    "file_name": "fb6c4db8-75da-49d2-80cf-8bd1751b4741-59.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "12.86",
+          "description": "and Literature Health and\nElectronics Clothing and Fashion\nPersonal Care"
+        },
+        {
+          "amount": "54.22",
+          "description": "Games Automotive and"
+        }
+      ],
+      "net_amount": "1.98",
+      "receipt_date": "Dec 19, 2022\n",
+      "total_amount": "Jun 10,-20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:51.244Z"
+  },
+  {
+    "file_name": "d98ead56-e358-44ff-884c-c7ab29f0452a-15.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "79.22",
+          "description": "Clothing and"
+        },
+        {
+          "amount": "72.31",
+          "description": "Vehicles Food and\nand Fitness Books"
+        },
+        {
+          "amount": "16.98",
+          "description": "Vehicles\nBeauty and"
+        }
+      ],
+      "net_amount": "34.23-",
+      "receipt_date": "Apr 9, 2023\n",
+      "total_amount": "Apr 28, -",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:49.489Z"
+  },
+  {
+    "file_name": "bb22c4fe-8d97-4b00-98f6-36995cf2a9c5-62.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "description": "Drive revenue growth and profitability Build"
+        },
+        {
+          "amount": "19.06",
+          "description": "Clothing and"
+        },
+        {
+          "amount": "86.22",
+          "description": "Books and"
+        },
+        {
+          "amount": "23.55",
+          "description": "Vehicles Food and"
+        },
+        {
+          "amount": "14.75",
+          "description": "Literature Health"
+        },
+        {
+          "amount": "61.53"
+        }
+      ],
+      "net_amount": "17.29-",
+      "receipt_date": "Jun 2, 2022\n",
+      "total_amount": "61.53\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:56.298Z"
+  },
+  {
+    "file_name": "0ebbef3a-cd31-4fda-a773-5501c0b99f84-63.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "64.81",
+          "description": "Wellness Toys and\nGarden Beauty and\nClothing"
+        },
+        {
+          "description": "for personal car = $0.XX/mile"
+        },
+        {
+          "amount": "52.02",
+          "description": "Nullam suscipit, est ac"
+        },
+        {
+          "amount": "65.94"
+        }
+      ],
+      "net_amount": "21.76-",
+      "receipt_date": "Jul 13, 2022\n",
+      "total_amount": "21.76-\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:00.443Z"
+  },
+  {
+    "file_name": "5dd50418-3d9d-4f81-b2a0-4b9d587f935e-64.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "58.51",
+          "description": "and Literature Health"
+        },
+        {
+          "amount": "76.20",
+          "description": "Health and Wellness Toys"
+        },
+        {
+          "amount": "81.30",
+          "description": "Personal Care"
+        },
+        {
+          "amount": "83.73",
+          "description": "Care Sports"
+        },
+        {
+          "amount": "95.34",
+          "description": "Books and"
+        }
+      ],
+      "net_amount": "38.68-",
+      "receipt_date": "Jan 2, 2023\n",
+      "total_amount": "76.20\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:04.858Z"
+  },
+  {
+    "file_name": "be770617-0288-4448-acae-b09915c066e4-65.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "42.91",
+          "description": "Vehicles Food and"
+        },
+        {
+          "amount": "45.05",
+          "description": "Wellness Toys and Games"
+        },
+        {
+          "amount": "46.23",
+          "description": "and Garden Beauty and Personal"
+        },
+        {
+          "amount": "14.56",
+          "description": "Literature Health"
+        },
+        {
+          "amount": "66.65"
+        }
+      ],
+      "net_amount": "28.70-",
+      "receipt_date": "Aug 7, 2022\n",
+      "total_amount": "28.70-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:09.233Z"
+  },
+  {
+    "file_name": "d02fdb85-bbc0-41f3-93e3-21d12a66b87a-66.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "67.88",
+          "description": "Automotive and\nand Games Automotive and\nPersonal Care Sports and\nWellness Toys and\nGarden Beauty and Personal"
+        }
+      ],
+      "net_amount": "45.43-",
+      "receipt_date": "Feb 14, 2023\n",
+      "total_amount": "Dec 1, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:13.802Z"
+  },
+  {
+    "file_name": "376ec5ec-f178-41f6-8f6a-d956028f2d17-67.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "63.48",
+          "description": "and Literature"
+        },
+        {
+          "amount": "89.36",
+          "description": "Health and"
+        },
+        {
+          "amount": "74.82",
+          "description": "Fitness Books and Literature"
+        },
+        {
+          "amount": "33.54",
+          "description": "Automotive and Vehicles"
+        }
+      ],
+      "net_amount": "20.26-",
+      "receipt_date": "Mar 21, 2022\n",
+      "total_amount": "Jan 29, -",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:17.918Z"
+  },
+  {
+    "file_name": "d9d21c19-16bd-453f-8869-21e578b11386-68.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "12.48",
+          "description": "Care Sports\nand Fitness Books and"
+        },
+        {
+          "amount": "16.96",
+          "description": "Sports"
+        },
+        {
+          "amount": "38.49",
+          "description": "Automotive"
+        },
+        {
+          "amount": "51.53",
+          "description": "Personal Care Sports and"
+        }
+      ],
+      "net_amount": "5.52",
+      "receipt_date": "Sep 5, 2022\n",
+      "total_amount": "Dec 14,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:21.321Z"
+  },
+  {
+    "file_name": "74d1accd-07a5-4a7c-9b3d-7c6e2c8918ac-69.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "57.85",
+          "description": "and Personal Care"
+        },
+        {
+          "amount": "42.90",
+          "description": "Garden Beauty and Personal"
+        },
+        {
+          "amount": "87.58"
+        },
+        {
+          "amount": "94.69"
+        },
+        {
+          "amount": "20.31"
+        }
+      ],
+      "net_amount": "5.81",
+      "receipt_date": "Mar 22, 2023\n",
+      "total_amount": "Mar 29,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:24.816Z"
+  },
+  {
+    "file_name": "8efeae15-aed7-4d0a-b986-fe5f23d9593f-70.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "82.48",
+          "description": "and Fashion Home"
+        },
+        {
+          "amount": "14.01",
+          "description": "Wellness Toys and Games\nHome"
+        },
+        {
+          "amount": "14.43",
+          "description": "Literature Health and Wellness\nSports and Fitness Books"
+        }
+      ],
+      "net_amount": "6.31",
+      "receipt_date": "Feb 24, 2023\n",
+      "total_amount": "Jul 11, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:29.327Z"
+  },
+  {
+    "file_name": "f3a00e68-c2e7-4f5d-844c-69d18d555c7d-71.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "74.32",
+          "description": "Personal Care Sports"
+        },
+        {
+          "amount": "27.31",
+          "description": "vel, venenatis vel, faucibus"
+        },
+        {
+          "amount": "85.90",
+          "description": "dolor sit amet, consectetuer adipiscing"
+        },
+        {
+          "amount": "24.76"
+        },
+        {
+          "amount": "51.11"
+        }
+      ],
+      "net_amount": "28.40-",
+      "receipt_date": "Jan 9, 2023\n",
+      "total_amount": "Nov 20,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:32.643Z"
+  },
+  {
+    "file_name": "1bc6e9f4-7ad5-4afd-82f1-6d4dea877393-72.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "98.34",
+          "description": "Toys and Games Automotive"
+        },
+        {
+          "amount": "12.25",
+          "description": "Vehicles Food and Beverages"
+        },
+        {
+          "amount": "76.34",
+          "description": "Clothing and Fashion Home and"
+        },
+        {
+          "amount": "15.76",
+          "description": "Games Automotive and\nand Fitness Books and"
+        }
+      ],
+      "net_amount": "5.96",
+      "receipt_date": "Mar 28, 2022\n",
+      "total_amount": "Oct 2, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:36.574Z"
+  },
+  {
+    "file_name": "401656fc-c01e-4045-91fe-c5fe972ab023-74.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "98.38",
+          "description": "Fashion Home"
+        },
+        {
+          "amount": "95.91",
+          "description": "Donec elementum, lorem ut"
+        },
+        {
+          "amount": "28.51",
+          "description": "natoque penatibus"
+        },
+        {
+          "amount": "75.36",
+          "description": "molestie tellus. Ae"
+        },
+        {
+          "amount": "70.40",
+          "description": "ante. Maecenas mi"
+        }
+      ],
+      "net_amount": "9.94",
+      "receipt_date": "Feb 9, 2023\n",
+      "total_amount": "Mar 14,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:48.074Z"
+  },
+  {
+    "file_name": "08c5903b-2a03-4b13-83c2-d1ce62c5c629-75.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "65.02",
+          "description": "Literature Health and\nFashion Home and Garden\nCare Sports and"
+        },
+        {
+          "amount": "57.15"
+        },
+        {
+          "amount": "47.74"
+        }
+      ],
+      "net_amount": "49.73-",
+      "receipt_date": "Sep 25, 2021\n",
+      "total_amount": "89.61\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:52.423Z"
+  },
+  {
+    "file_name": "b12e126d-abe9-49e4-b876-48503da80465-60.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "98.06",
+          "description": "ornare. In faucibus. Morbi"
+        },
+        {
+          "amount": "28.01"
+        },
+        {
+          "amount": "17.09"
+        },
+        {
+          "amount": "52.21"
+        },
+        {
+          "amount": "94.81"
+        }
+      ],
+      "net_amount": "21.67-",
+      "receipt_date": "Jan 15, 2023\n",
+      "total_amount": "Apr 3, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:55.418Z"
+  },
+  {
+    "file_name": "991308ac-cb64-4c34-8347-06f28a08fb00-76.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "44.59",
+          "description": "ante. Vivamus non lorem vitae"
+        },
+        {
+          "amount": "56.26"
+        },
+        {
+          "amount": "31.74"
+        },
+        {
+          "amount": "30.71"
+        },
+        {
+          "amount": "88.22"
+        }
+      ],
+      "net_amount": "1.05",
+      "receipt_date": "Dec 2, 2022\n",
+      "total_amount": "Dec 21,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:56.837Z"
+  },
+  {
+    "file_name": "0eab1443-2aa7-4e1e-a414-0bf542508628-78.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "59.02",
+          "description": "Maecenas ornare egestas ligula."
+        },
+        {
+          "amount": "52.74",
+          "description": "elementum sem, vitae"
+        },
+        {
+          "amount": "66.24"
+        },
+        {
+          "amount": "87.07"
+        },
+        {
+          "amount": "29.84"
+        }
+      ],
+      "net_amount": "40.46-",
+      "receipt_date": "Jul 2, 2022\n",
+      "total_amount": "66.24\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:05.481Z"
+  },
+  {
+    "file_name": "f01e7989-bda7-425f-b4e2-2324f136fb37-79.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "52.45",
+          "description": "Personal Care Sports and"
+        },
+        {
+          "amount": "37.31",
+          "description": "Home and"
+        },
+        {
+          "amount": "52.18",
+          "description": "Electronics Clothing and\nand Fitness Books and"
+        },
+        {
+          "amount": "33.70"
+        }
+      ],
+      "net_amount": "44.61-",
+      "receipt_date": "Oct 18, 2022\n",
+      "total_amount": "Nov 1, 20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:47:10.231Z"
+  },
+  {
+    "file_name": "2f70097a-8ad4-460c-8220-9278174da002-80.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "36.86",
+          "description": "Toys and Games Automotive and\nand Garden Beauty\nGarden Beauty and Personal\nClothing and\nand Literature Health and"
+        }
+      ],
+      "net_amount": "32.06-",
+      "receipt_date": "Sep 27, 2022\n",
+      "total_amount": "88.66\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:14.070Z"
+  },
+  {
+    "file_name": "f1b33a03-4780-4d6b-85a3-048c97597972-61.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "63.74",
+          "description": "Electronics Clothing and Fashion\nand Games Automotive and Vehicles\nand\nFashion Home and\nGarden Beauty"
+        },
+        {
+          "description": "for personal car = $0.XX/mile"
+        }
+      ],
+      "net_amount": "31.29-",
+      "receipt_date": "Jan 23, 2023\n",
+      "total_amount": "Jan 4, 201",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:45:52.023Z"
+  },
+  {
+    "file_name": "425a48bf-d686-4366-ada9-190aa47427ed-48.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "45.91",
+          "description": "Garden Beauty\nGames\nand Fashion Home and Garden\nGames Automotive and Vehicles\nWellness Toys"
+        }
+      ],
+      "net_amount": "5.19",
+      "receipt_date": "Mar 12, 2023\n",
+      "total_amount": "Feb 11,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:00.840Z"
+  },
+  {
+    "file_name": "f93e47cd-9992-4de7-b847-0bc3e2870de7-73.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "0.06",
+          "description": "Literature"
+        },
+        {
+          "amount": "29.25",
+          "description": "and Games Automotive and Vehicles\nand Vehicles"
+        },
+        {
+          "amount": "35.22",
+          "description": "Beauty and Personal Care Sports"
+        },
+        {
+          "amount": "41.80",
+          "description": "and Wellness Toys and Games"
+        }
+      ],
+      "net_amount": "40.04-",
+      "receipt_date": "Apr 28, 2023\n",
+      "total_amount": "Jul 26, 20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:43.724Z"
+  },
+  {
+    "file_name": "d21d5728-5d1c-4d70-a17a-fad75bb9df8d-81.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "68.25",
+          "description": "Fitness Books and\nGarden Beauty and"
+        },
+        {
+          "amount": "72.19",
+          "description": "Food and\nCare Sports and"
+        },
+        {
+          "amount": "68.17",
+          "description": "Games"
+        }
+      ],
+      "net_amount": "43.31-",
+      "receipt_date": "May 12, 2023\n",
+      "total_amount": "43.31-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:13.894Z"
+  },
+  {
+    "file_name": "18c67c0f-d66e-41c6-ad3e-22d1577a0085-82.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "42.74",
+          "description": "Automotive and\nand Vehicles"
+        },
+        {
+          "amount": "0.76",
+          "description": "Fitness Books and Literature"
+        },
+        {
+          "amount": "2.54"
+        },
+        {
+          "amount": "29.85"
+        }
+      ],
+      "net_amount": "43.98-",
+      "receipt_date": "Feb 4, 2022\n",
+      "total_amount": "59.37\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:17.962Z"
+  },
+  {
+    "file_name": "72404aba-6065-473a-8962-2f114096d17a-83.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "90.25",
+          "description": "Wellness Toys"
+        },
+        {
+          "amount": "83.93",
+          "description": "Toys and\nand\nand Personal Care"
+        }
+      ],
+      "net_amount": "16.71-",
+      "receipt_date": "Jul 24, 2022\n",
+      "total_amount": "56.78\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:22.122Z"
+  },
+  {
+    "file_name": "5953e61d-5973-4a9f-a5e5-f224fe3405b1-84.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "93.78",
+          "description": "Fitness Books and Literature Health"
+        },
+        {
+          "amount": "18.26",
+          "description": "and Games\nWellness Toys\nGarden Beauty and"
+        },
+        {
+          "amount": "58.36",
+          "description": "Beauty and Personal"
+        }
+      ],
+      "net_amount": "18.37-",
+      "receipt_date": "Mar 3, 2023\n",
+      "total_amount": "Aug 16,-",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:46:26.787Z"
+  },
+  {
+    "file_name": "3296eb8d-0a5a-4ee5-b1ac-08126592b155-85.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "84.34",
+          "description": "arcu. Morbi"
+        },
+        {
+          "amount": "69.72",
+          "description": "Books and Literature Health"
+        },
+        {
+          "amount": "54.90",
+          "description": "Books and Literature Health and"
+        },
+        {
+          "amount": "76.58"
+        },
+        {
+          "amount": "59.67"
+        }
+      ],
+      "net_amount": "18.40-",
+      "receipt_date": "Feb 8, 2023\n",
+      "total_amount": "18.40-\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:31.086Z"
+  },
+  {
+    "file_name": "24396b5c-08ce-45ea-8c98-43ecb96b1ef9-86.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "73.29",
+          "description": "Care Sports and Fitness\nand Games Automotive"
+        },
+        {
+          "amount": "38.11",
+          "description": "Vehicles Food and Beverages"
+        },
+        {
+          "amount": "89.78",
+          "description": "Books and Literature Health"
+        },
+        {
+          "amount": "26.97",
+          "description": "Sports and Fitness"
+        }
+      ],
+      "net_amount": "46.05-",
+      "receipt_date": "Sep 6, 2022\n",
+      "total_amount": "Mar 19,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:35.206Z"
+  },
+  {
+    "file_name": "7a4a98c4-8548-4830-b674-6e54af2a9cc9-87.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "12.26",
+          "description": "Toys and Games Automotive and\nVehicles Food and\nand Fashion Home and Garden\nand\nWellness Toys and Games"
+        }
+      ],
+      "net_amount": "34.78-",
+      "receipt_date": "Apr 16, 2023\n",
+      "total_amount": "Dec",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:38.650Z"
+  },
+  {
+    "file_name": "bce51ba4-8151-4af4-8b26-b19331c8b2b3-89.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "45.15",
+          "description": "Toys and"
+        },
+        {
+          "amount": "36.08",
+          "description": "Personal Care Sports and"
+        },
+        {
+          "amount": "14.82",
+          "description": "Personal Care Sports and\nand Literature"
+        }
+      ],
+      "net_amount": "12.16-",
+      "receipt_date": "Jun 18, 2022\n",
+      "total_amount": "Dec 20,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:48.502Z"
+  },
+  {
+    "file_name": "80632af7-3075-4b0a-be13-946d61f698cd-90.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "28.37",
+          "description": "Books and Literature Health and\nToys and\nand Beverages"
+        },
+        {
+          "amount": "99.54",
+          "description": "Toys and"
+        },
+        {
+          "amount": "5.47",
+          "description": "Personal Care Sports and"
+        }
+      ],
+      "net_amount": "8.33",
+      "receipt_date": "Feb 12, 2022\n",
+      "total_amount": "Oct 30, -20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:52.536Z"
+  },
+  {
+    "file_name": "3cd90802-8efd-48ca-90d1-df72f79b989a-91.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "98.49",
+          "description": "and Literature"
+        },
+        {
+          "amount": "15.84",
+          "description": "Personal Care Sports\nSports and\nand Games Automotive"
+        },
+        {
+          "amount": "84.10"
+        }
+      ],
+      "net_amount": "22.94-",
+      "receipt_date": "Apr 8, 2023\n",
+      "total_amount": "33.69\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:56.776Z"
+  },
+  {
+    "file_name": "f01db28d-874e-4867-ba78-8f296c7ea6a4-93.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "94.17",
+          "description": "Sports and Fitness Books and"
+        },
+        {
+          "amount": "54.63",
+          "description": "Automotive and"
+        },
+        {
+          "amount": "32.95",
+          "description": "tempus mauris"
+        },
+        {
+          "amount": "75.76",
+          "description": "Phasellus ornare. Fusce mollis. Duis"
+        },
+        {
+          "amount": "93.63"
+        }
+      ],
+      "net_amount": "7.78",
+      "receipt_date": "Nov 25, 2020\n",
+      "total_amount": "Mar 29,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:04.825Z"
+  },
+  {
+    "file_name": "12c47d95-5f78-4a3c-a742-91bebcef2de9-94.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "89.38",
+          "description": "nulla."
+        },
+        {
+          "amount": "50.75"
+        },
+        {
+          "amount": "30.71"
+        },
+        {
+          "amount": "69.99"
+        },
+        {
+          "amount": "89.60"
+        }
+      ],
+      "net_amount": "37.50-",
+      "receipt_date": "May 11, 2023\n",
+      "total_amount": "Jun 29, -20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:08.004Z"
+  },
+  {
+    "file_name": "48e98e19-b889-466b-baaa-1d8fb33bdc10-95.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "29.41",
+          "description": "Home and Garden Beauty and"
+        },
+        {
+          "amount": "0.50",
+          "description": "Care Sports and Fitness Books"
+        },
+        {
+          "amount": "53.32",
+          "description": "Clothing"
+        }
+      ],
+      "net_amount": "11.50-",
+      "receipt_date": "Jan 16, 2023\n",
+      "total_amount": "Jul 20, 20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:12.034Z"
+  },
+  {
+    "file_name": "d2fc01f9-587d-48eb-9c91-cc3cff807f70-96.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "53.63",
+          "description": "and Fashion Home and Garden"
+        },
+        {
+          "amount": "68.99",
+          "description": "Games Automotive and Vehicles\nand Garden Beauty\nFitness Books and Literature"
+        },
+        {
+          "amount": "22.63",
+          "description": "Home and Garden"
+        }
+      ],
+      "net_amount": "34.69-",
+      "receipt_date": "Apr 28, 2023\n",
+      "total_amount": "Jan 29, -",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:16.063Z"
+  },
+  {
+    "file_name": "288223fc-6aae-4c63-b0fb-0b5fc18bbe64-97.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "2.63",
+          "description": "elementum sem, vitae aliquam eros"
+        },
+        {
+          "amount": "6.27",
+          "description": "Food and\nFashion Home"
+        },
+        {
+          "amount": "63.56",
+          "description": "dui, in sodales"
+        },
+        {
+          "amount": "96.08",
+          "description": "Clothing and Fashion Home"
+        }
+      ],
+      "net_amount": "4.57",
+      "receipt_date": "May 12, 2023\n",
+      "total_amount": "Oct 27, -20",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:19.413Z"
+  },
+  {
+    "file_name": "fbb5fb81-775f-4c7a-b54d-603480c591ad-98.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "30.05",
+          "description": "Books and Literature Health"
+        },
+        {
+          "amount": "38.85",
+          "description": "Games Automotive and Vehicles"
+        },
+        {
+          "amount": "57.30",
+          "description": "Food"
+        },
+        {
+          "amount": "92.67",
+          "description": "Literature Health and\nCare Sports and Fitness Books"
+        }
+      ],
+      "net_amount": "25.08-",
+      "receipt_date": "Nov 30, 2022\n",
+      "total_amount": "30.05\n",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:47:23.522Z"
+  },
+  {
+    "file_name": "86f392ec-53c4-468c-8fef-a9c6c67975cd-99.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "71.19",
+          "description": "Food and\nFitness Books and"
+        },
+        {
+          "amount": "29.46",
+          "description": "Personal Care Sports\nand Fashion Home and\nSports and Fitness"
+        }
+      ],
+      "net_amount": "49.03-",
+      "receipt_date": "Aug 29, 2022\n",
+      "total_amount": "Nov 8, 20",
+      "supplier_city": "",
+      "supplier_name": "Expense Reimbursement",
+      "supplier_address": ""
+    },
+    "created_at": "2023-05-22T12:47:27.734Z"
+  },
+  {
+    "file_name": "a8ece6fc-fec8-42f8-8fdd-29f85a0b8cfe-88.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "18.08",
+          "description": "Wellness Toys"
+        },
+        {
+          "amount": "21.08",
+          "description": "Personal Care Sports"
+        },
+        {
+          "amount": "78.06",
+          "description": "Sports and Fitness Books"
+        },
+        {
+          "amount": "88.35",
+          "description": "nonummy ac, feugiat"
+        },
+        {
+          "amount": "50.55",
+          "description": "vestibulum nec, euismod in, dolor."
+        }
+      ],
+      "net_amount": "12.99-",
+      "receipt_date": "Sep 26, 2020\n",
+      "total_amount": "88.35\n",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:46:44.009Z"
+  },
+  {
+    "file_name": "30b52aa6-ba2c-4867-a8fc-5cb5fb6e9c97-92.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "80.65",
+          "description": "vitae dolor."
+        },
+        {
+          "amount": "58.32",
+          "description": "mauris ut mi. Duis"
+        },
+        {
+          "amount": "64.74"
+        },
+        {
+          "amount": "0.46"
+        },
+        {
+          "amount": "48.80"
+        }
+      ],
+      "net_amount": "5.35",
+      "receipt_date": "Mar 8, 2023\n",
+      "total_amount": "Dec 21,-2",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:00.517Z"
+  },
+  {
+    "file_name": "f1b96ef9-0c4b-4daa-b648-5ea8937d4877-77.pdf",
+    "processor_name": "Expense model",
+    "processor_id": "60c1cac3391f0c81",
+    "all_fields": {
+      "currency": "$",
+      "line_item": [
+        {
+          "amount": "0.31",
+          "description": "Fitness Books"
+        },
+        {
+          "amount": "36.42",
+          "description": "Garden Beauty and"
+        },
+        {
+          "amount": "62.03",
+          "description": "Literature Health and Wellness Toys"
+        },
+        {
+          "amount": "70.16",
+          "description": "and\nFashion Home"
+        }
+      ],
+      "net_amount": "47.72-",
+      "receipt_date": "Jul 17, 2021\n",
+      "total_amount": "Nov 24,-",
+      "supplier_name": "Expense Reimbursement"
+    },
+    "created_at": "2023-05-22T12:47:00.807Z"
+  }
+]
