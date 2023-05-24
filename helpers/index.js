@@ -3,9 +3,13 @@ const moment = require('moment')
 const axios = require('axios')
 const path = require('path')
 const codes = require('./codes.json')
-const { postgresDB, service_key, projectId, docAiClient, schema } = require('../config')
+const { postgresDB, service_key, projectId, docAiClient, schema, storage } = require('../config')
 const { runQuery } = require('./postgresQueries')
 const { getDocumentAIProcessorsList } = require('./gcpHelpers')
+
+const docAIBucket = storage.bucket(process.env?.storage_bucket || `doc_ai_form`)
+const BUFFER_SIZE = 8192
+const buffer = Buffer.alloc(BUFFER_SIZE)
 
 const checkDocumentQuality = async (filePath) => {
     let processorId = '19fe7c3bad567f9b'
@@ -229,6 +233,26 @@ const downloadPublicFile = async (url, path) => {
     })
 }
 
+const uploadFile = (filePath, destinationPath, folder) => {
+    try {
+        let bytesRead = fs.readFileSync(destinationPath, buffer)
+        const blob = docAIBucket.file(filePath)
+
+        let blobStream = blob.createWriteStream()
+
+        blobStream.on('finish', async () => {
+            console.log('done')
+        })
+        blobStream.on('error', async (e) => {
+            console.log('erro')
+        })
+        blobStream.end(bytesRead)
+    }
+    catch (e) {
+        console.log('error')
+    }
+}
+
 const addDataInDatabase = async (k, submission, model) => {
     try {
         let folderPath = path.resolve(__dirname, '../data', k)
@@ -236,6 +260,9 @@ const addDataInDatabase = async (k, submission, model) => {
         let filesList = fs.readdirSync(filesPath)
         let documentData = require(path.resolve(folderPath, 'data.json'))
         let schemaData = require(path.resolve(folderPath, 'key_form.json'))
+        let exportTable = require(path.resolve(folderPath, 'export_table.json'))
+        let pdfDocuments = require(path.resolve(folderPath, 'pdf_documents.json'))
+        let pdfPages = require(path.resolve(folderPath, 'pdf_pages.json'))
 
         let allPromises = []
 
@@ -245,34 +272,62 @@ const addDataInDatabase = async (k, submission, model) => {
 
         try {
             await runQuery(postgresDB, sqlQuery)
+
+            for (var f of filesList) {
+                let filePath = `${k}/${f}`
+                let destinationPath = path.resolve(filesPath, f)
+                uploadFile(filePath, destinationPath, k)
+            }
+
             for (var d of documentData) {
-                sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${d?.id}', '${d?.submission_id}', '${d?.file_name}', ${validateData(d?.user_id)}, '${d?.file_type}', '${d?.file_address}', '${d?.original_file_name}', '${d?.file_size}', ${d?.is_completed}, ${validateData(d?.original_file_address)}, NOW(), NOW())`
+                let filePath = `${k}/${d?.file_name}`
+                let fileUrl = `gs://${docAIBucket.name}/${filePath}`
+                sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${d?.id}', '${d?.submission_id}', '${d?.file_name}', ${validateData(d?.user_id)}, '${d?.file_type}', '${fileUrl}', '${d?.original_file_name}', '${d?.file_size}', ${d?.is_completed}, ${validateData(fileUrl)}, NOW(), NOW())`
 
                 allPromises.push(runQuery(postgresDB, sqlQuery))
             }
 
             for (var s of schemaData) {
-                sqlQuery = `INSERT INTO ${schema}.schema_form_key_pairs(file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES('${s?.file_name}', '${s?.field_name}', '${s?.field_value}', '${s?.time_stamp}', '${s?.validated_field_name}', '${s?.validated_field_value}', ${s?.confidence}, '${s?.file_size}', ${s?.key_x1}, ${s?.key_x2}, ${s?.key_y1}, ${s?.key_y2}, ${s?.value_x1}, ${s?.value_x2}, ${s?.value_y1}, ${s?.value_y2}, ${s?.page_number}, '${s?.id}', '${s?.type}', ${s?.field_name_confidence}, ${s?.field_value_confidence}, '${s?.column_name}')`
+                sqlQuery = `INSERT INTO ${schema}.schema_form_key_pairs(file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES('${s?.file_name}', '${s?.field_name}', '${s?.field_value}', '${s?.time_stamp}', ${null}, ${null}, '${s?.updated_date}', '${s?.confidence}', ${s?.key_x1}, ${s?.key_x2}, ${s?.key_y1}, ${s?.key_y2}, ${s?.value_x1}, ${s?.value_x2}, ${s?.value_y1}, ${s?.value_y2}, ${s?.page_number}, '${s?.id}', '${s?.type}', ${s?.field_name_confidence}, ${s?.field_value_confidence}, '${s?.column_name}');`
+
+                allPromises.push(runQuery(postgresDB, sqlQuery))
+            }
+
+            for (var e of exportTable) {
+                sqlQuery = `INSERT INTO ${schema}.export_table (file_name, processor_name, processor_id, all_fields, created_at) VALUES ('${e?.file_name}', '${model?.displayName}', '${model?.id}', '${JSON.stringify(e?.all_fields)}'::jsonb, NOW());`
+
+                allPromises.push(runQuery(postgresDB, sqlQuery))
+            }
+
+            for (var p of pdfDocuments) {
+                sqlQuery = `INSERT INTO ${schema}.pdf_documents (file_name, pages_count, entities_count, text, schema_id) VALUES ('${p?.file_name}', ${p?.pages_count}, ${p?.entities_count}, '${p?.text}', '${p?.schema_id}');`
+
+                allPromises.push(runQuery(postgresDB, sqlQuery))
+            }
+
+            for (var p of pdfPages) {
+                sqlQuery = `INSERT INTO ${schema}.pdf_pages (id, file_name, dimensions, "pageNumber", paragraphs) VALUES ('${p?.id}', '${p?.file_name}', '${p?.dimensions}', ${p?.pageNumber}, '${p?.paragraphs}');`
 
                 allPromises.push(runQuery(postgresDB, sqlQuery))
             }
 
             Promise.all(allPromises)
                 .then((result) => {
-                    console.log('res', result)
+                    console.log('result', result)
                 })
                 .catch((e) => {
                     console.log('e', e)
                 })
         }
         catch (e) {
-            console.log('Alreaedy Added')
+            console.log('Alreaedy Added', e?.message || e)
         }
-
-
 
         // for (var f of filesList) {
         //     console.log('f', f)
+        //     let filePath = `${k}/${f}`
+        //     let destinationPath = path.resolve(filesPath, f)
+        //     uploadFile(filePath, destinationPath, k)
         // }
     }
     catch (e) {
