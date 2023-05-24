@@ -4,7 +4,7 @@ import HOME from '../../assets/home.svg'
 import FORWARD from '../../assets/forward.svg'
 import MENU from '../../assets/menu.svg'
 import allPaths from '../../Config/paths'
-import LOGO from '../../assets/logo.svg'
+import LOGO from '../../assets/Doc_ai_logo.svg'
 import MENU_LOGO from '../../assets/sidebar_icons/menu.svg'
 import { BsBell } from 'react-icons/bs'
 // import { Drawer, IconButton } from "@material-ui/core";
