@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import LOGO from '../../assets/logo.svg'
+import LOGO from '../../assets/Doc_ai_logo.svg'
 import { BsBell } from 'react-icons/bs'
 
 const Header = (props) => {
