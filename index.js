@@ -42,7 +42,9 @@ app.use(express.json())
 
 server.listen(PORT, () => {
   console.log(`Server up and running on ${PORT}`)
-  addDefaultData()
+  setTimeout(() => {
+    addDefaultData()
+  }, 1000)
   if (process.env.NODE_ENV === 'production') {
     configureBucketCors()
   }

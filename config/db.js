@@ -2,10 +2,9 @@ const { Sequelize } = require('sequelize')
 const addModels = require('../models')
 const config = require('./config')
 
-const schema = `google_doc_ai2`
+const schema = process?.env?.schema || `google_doc_ai`
 
 const init = (cloudConfig = config) => {
-    console.log('cloudConfig', process.env.NODE_ENV)
     try {
         let db = new Sequelize({ ...cloudConfig, ssl: true, pool: { maxConnections: 50, maxIdleTime: 30 }, language: 'en' })
 

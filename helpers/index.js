@@ -253,86 +253,93 @@ const uploadFile = (filePath, destinationPath, folder) => {
     }
 }
 
+const insertData = async (query) => {
+    let sqlQuery = query.slice(0, -2)
+
+    await runQuery(postgresDB, sqlQuery)
+}
+
+const replaceQuotation = (txt) => txt?.replace(/'/g, "''")
+
 const addDataInDatabase = async (k, submission, model) => {
-    try {
-        let folderPath = path.resolve(__dirname, '../data', k)
-        let filesPath = path.resolve(folderPath, 'files')
-        let filesList = fs.readdirSync(filesPath)
-        let documentData = require(path.resolve(folderPath, 'data.json'))
-        let schemaData = require(path.resolve(folderPath, 'key_form.json'))
-        let exportTable = require(path.resolve(folderPath, 'export_table.json'))
-        let pdfDocuments = require(path.resolve(folderPath, 'pdf_documents.json'))
-        let pdfPages = require(path.resolve(folderPath, 'pdf_pages.json'))
-
-        let allPromises = []
-
-        let sqlQuery = `INSERT INTO ${schema}.submissions(
-            id, submission_name, processor_id, processor_name, user_id, threshold, created_at, is_deleted)
-            VALUES (${validateData(submission?.id)}, 'Default ${convertTitle(k)}', ${validateData(model?.id)}, ${validateData(model?.displayName)}, ${validateData(submission?.id)}, ${20}, NOW(), ${false});`
-
+    return new Promise(async (resolve, reject) => {
         try {
-            await runQuery(postgresDB, sqlQuery)
+            let folderPath = path.resolve(__dirname, '../data', k)
+            let filesPath = path.resolve(folderPath, 'files')
+            let filesList = fs.readdirSync(filesPath)
+            let documentData = require(path.resolve(folderPath, 'data.json'))
+            let schemaData = require(path.resolve(folderPath, 'key_form.json'))
+            let exportTable = require(path.resolve(folderPath, 'export_table.json'))
+            let pdfDocuments = require(path.resolve(folderPath, 'pdf_documents.json'))
+            let pdfPages = require(path.resolve(folderPath, 'pdf_pages.json'))
 
-            for (var f of filesList) {
-                let filePath = `${k}/${f}`
-                let destinationPath = path.resolve(filesPath, f)
-                uploadFile(filePath, destinationPath, k)
+            let sqlQuery = `INSERT INTO ${schema}.submissions(
+                id, submission_name, processor_id, processor_name, user_id, threshold, created_at, is_deleted, status)
+                VALUES (${validateData(submission?.id)}, 'Default ${convertTitle(k)}', ${validateData(model?.id)}, ${validateData(model?.displayName)}, ${validateData(submission?.id)}, ${20}, NOW(), ${false}, 'Processing');`
+
+            try {
+                await runQuery(postgresDB, sqlQuery)
+
+                for (var f of filesList) {
+                    let filePath = `${k}/${f}`
+                    let destinationPath = path.resolve(filesPath, f)
+                    uploadFile(filePath, destinationPath, k)
+                }
+
+                sqlQuery = `INSERT INTO ${schema}.pdf_documents (file_name, pages_count, entities_count, text, schema_id) VALUES `
+
+                for (var p of pdfDocuments) {
+                    sqlQuery += `('${p?.file_name}', ${p?.pages_count}, ${p?.entities_count}, '${replaceQuotation(p?.text)}', '${p?.schema_id}'), `
+                }
+
+                await insertData(sqlQuery)
+
+                sqlQuery = `INSERT INTO ${schema}.pdf_pages (id, file_name, dimensions, "pageNumber", paragraphs) VALUES `
+
+                for (var p of pdfPages) {
+                    sqlQuery += `('${p?.id}', '${p?.file_name}', '${p?.dimensions}', ${p?.pageNumber}, '${replaceQuotation(p?.paragraphs)}'), `
+                }
+
+                await insertData(sqlQuery)
+
+                sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES `
+
+                for (var d of documentData) {
+                    let filePath = `${k}/${d?.file_name}`
+                    let fileUrl = `gs://${docAIBucket.name}/${filePath}`
+                    sqlQuery += `('${d?.id}', '${d?.submission_id}', '${d?.file_name}', ${validateData(d?.user_id)}, '${d?.file_type}', '${fileUrl}', '${d?.original_file_name}', '${d?.file_size}', ${d?.is_completed}, ${validateData(fileUrl)}, NOW(), NOW()), `
+                }
+
+                await insertData(sqlQuery)
+
+                sqlQuery = `INSERT INTO ${schema}.schema_form_key_pairs(file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES `
+
+                for (var s of schemaData) {
+                    sqlQuery += `('${s?.file_name}', '${s?.field_name}', '${s?.field_value}', '${s?.time_stamp}', ${null}, ${null}, '${s?.updated_date}', '${s?.confidence}', ${s?.key_x1}, ${s?.key_x2}, ${s?.key_y1}, ${s?.key_y2}, ${s?.value_x1}, ${s?.value_x2}, ${s?.value_y1}, ${s?.value_y2}, ${s?.page_number}, '${s?.id}', '${s?.type}', ${s?.field_name_confidence}, ${s?.field_value_confidence}, '${s?.column_name}'), `
+                }
+
+                await insertData(sqlQuery)
+
+                sqlQuery = `INSERT INTO ${schema}.export_table (file_name, processor_name, processor_id, all_fields, created_at) VALUES `
+
+                for (var e of exportTable) {
+                    sqlQuery += `('${e?.file_name}', '${model?.displayName}', '${model?.id}', '${JSON.stringify(e?.all_fields)}'::jsonb, NOW()), `
+                }
+
+                await insertData(sqlQuery)
+
+                resolve()
             }
-
-            for (var d of documentData) {
-                let filePath = `${k}/${d?.file_name}`
-                let fileUrl = `gs://${docAIBucket.name}/${filePath}`
-                sqlQuery = `INSERT INTO ${schema}.documents(id, submission_id, file_name, user_id, file_type, file_address, original_file_name, file_size, is_completed, original_file_address, created_at, updated_at) VALUES('${d?.id}', '${d?.submission_id}', '${d?.file_name}', ${validateData(d?.user_id)}, '${d?.file_type}', '${fileUrl}', '${d?.original_file_name}', '${d?.file_size}', ${d?.is_completed}, ${validateData(fileUrl)}, NOW(), NOW())`
-
-                allPromises.push(runQuery(postgresDB, sqlQuery))
+            catch (e) {
+                console.log('Alreaedy Added', k)
+                resolve()
             }
-
-            for (var s of schemaData) {
-                sqlQuery = `INSERT INTO ${schema}.schema_form_key_pairs(file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES('${s?.file_name}', '${s?.field_name}', '${s?.field_value}', '${s?.time_stamp}', ${null}, ${null}, '${s?.updated_date}', '${s?.confidence}', ${s?.key_x1}, ${s?.key_x2}, ${s?.key_y1}, ${s?.key_y2}, ${s?.value_x1}, ${s?.value_x2}, ${s?.value_y1}, ${s?.value_y2}, ${s?.page_number}, '${s?.id}', '${s?.type}', ${s?.field_name_confidence}, ${s?.field_value_confidence}, '${s?.column_name}');`
-
-                allPromises.push(runQuery(postgresDB, sqlQuery))
-            }
-
-            for (var e of exportTable) {
-                sqlQuery = `INSERT INTO ${schema}.export_table (file_name, processor_name, processor_id, all_fields, created_at) VALUES ('${e?.file_name}', '${model?.displayName}', '${model?.id}', '${JSON.stringify(e?.all_fields)}'::jsonb, NOW());`
-
-                allPromises.push(runQuery(postgresDB, sqlQuery))
-            }
-
-            for (var p of pdfDocuments) {
-                sqlQuery = `INSERT INTO ${schema}.pdf_documents (file_name, pages_count, entities_count, text, schema_id) VALUES ('${p?.file_name}', ${p?.pages_count}, ${p?.entities_count}, '${p?.text}', '${p?.schema_id}');`
-
-                allPromises.push(runQuery(postgresDB, sqlQuery))
-            }
-
-            for (var p of pdfPages) {
-                sqlQuery = `INSERT INTO ${schema}.pdf_pages (id, file_name, dimensions, "pageNumber", paragraphs) VALUES ('${p?.id}', '${p?.file_name}', '${p?.dimensions}', ${p?.pageNumber}, '${p?.paragraphs}');`
-
-                allPromises.push(runQuery(postgresDB, sqlQuery))
-            }
-
-            Promise.all(allPromises)
-                .then((result) => {
-                    console.log('result', result)
-                })
-                .catch((e) => {
-                    console.log('e', e)
-                })
         }
         catch (e) {
-            console.log('Alreaedy Added', e?.message || e)
+            console.log('e', k, e?.message || e)
+            resolve()
         }
-
-        // for (var f of filesList) {
-        //     console.log('f', f)
-        //     let filePath = `${k}/${f}`
-        //     let destinationPath = path.resolve(filesPath, f)
-        //     uploadFile(filePath, destinationPath, k)
-        // }
-    }
-    catch (e) {
-        console.log('e', k, e?.message || e)
-    }
+    })
 }
 
 const addDefaultData = async () => {
@@ -355,7 +362,7 @@ const addDefaultData = async () => {
 
     for (var [k, v] of Object?.entries(submissions)) {
         let model = allProcessors?.filter(v => v?.displayName?.toLowerCase() === submissions?.[k]?.name?.toLowerCase())?.[0]
-        addDataInDatabase(k, v, model)
+        await addDataInDatabase(k, v, model)
     }
 }
 
