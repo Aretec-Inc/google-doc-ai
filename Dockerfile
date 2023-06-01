@@ -1,4 +1,4 @@
-FROM node:14 AS ui-build 
+FROM node:16 AS ui-build 
 WORKDIR /usr/src/app
 COPY client/ ./client/
 RUN cd client && yarn && yarn run build
