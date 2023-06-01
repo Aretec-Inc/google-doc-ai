@@ -129,7 +129,6 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
                         }
                         let objChild = {}
                         for (var p of e?.properties) {
-                            console.log('****', p?.type?.split('/'))
                             var field_name = p?.type?.split('/')?.slice(-1,)?.[0]
                             objChild[field_name] = p?.mentionText
                         }
@@ -139,10 +138,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
                         obj[e?.type] = e?.mentionText
                     }
                 }
-                console.log('result document', obj)
-                let id = uuidv4()
                 let sqlQuery = `INSERT INTO ${schema}.export_table (file_name, processor_name, processor_id, all_fields, created_at) VALUES ('${file_name}', '${processorName}', '${processorId}', '${JSON.stringify(obj)}'::jsonb, NOW());`
-                console.log('sqlQuery', sqlQuery)
                 await runQuery(postgresDB, sqlQuery)
                 console.log('AI Process end.')
             }
@@ -188,19 +184,18 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
             await Promise.all(pagesArray)
 
             let pageFormFieldsArray = []
-            if (!entities.length) {
+            console.log('**************************************')
+            for (let i = 0; i < pages.length; i++) {
+                let page = pages?.[i]
+                let pageNumber = page?.pageNumber
 
-                for (let i = 0; i < pages.length; i++) {
-                    let page = pages?.[i]
-                    let pageNumber = page?.pageNumber
+                console.log('pageNumber', pageNumber)
 
-                    const formFields = page?.formFields
-                    if (Array.isArray(formFields)) {
-                        for (const formField of formFields) {
-                            let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)
-                            /// console.log('formfieldValues in LOOP', formfieldValues)
-                            pageFormFieldsArray.push(formfieldValues)
-                        }
+                const formFields = page?.formFields
+                if (Array.isArray(formFields)) {
+                    for (const formField of formFields) {
+                        let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)
+                        pageFormFieldsArray.push(formfieldValues)
                     }
                 }
             }
@@ -215,20 +210,20 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
                 extraProperties = []
             }
 
-            if (Array.isArray(entities) && entities?.length) {
-                if (hasExtraProperties) {
-                    entities = [...entities, ...extraProperties]
-                }
-                for (const entity of entities) {
-                    entitiesArray.push(get_form_field_values(entity, { type: typeEntities, text, exact_file_name_with_ext, isEntity: true }, isTesting))
-                }
-            }
+            // if (Array.isArray(entities) && entities?.length) {
+            //     if (hasExtraProperties) {
+            //         entities = [...entities, ...extraProperties]
+            //     }
+            //     for (const entity of entities) {
+            //         entitiesArray.push(get_form_field_values(entity, { type: typeEntities, text, exact_file_name_with_ext, isEntity: true }, isTesting))
+            //     }
+            // }
 
             let trim = (v) => typeof v == 'string' ? v?.trim() : v
 
             const arrayToString = (arryy) => arryy?.map(d => trim(d))?.filter(Boolean)?.toString()
             let formFieldsValues = arrayToString(pageFormFieldsArray)
-            let formEntities = arrayToString(entitiesArray)
+            // let formEntities = arrayToString(entitiesArray)
 
             console.log('insert_form_key_pair_with_values start')
             let insert_form_fields = (!isTesting && formFieldsValues?.length) ? insertToDB.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formFieldsValues }) : null
@@ -237,7 +232,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
 
             console.log('insert_form_key_pair_with_values start')
 
-            let insert_form_entities = (!isTesting && formEntities?.length) ? insertToDB.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formEntities }) : null
+            // let insert_form_entities = (!isTesting && formEntities?.length) ? insertToDB.insert_form_key_pair_with_values({ formKeyPairTableName, VALUES: formEntities }) : null
 
             console.log('insert_form_key_pair_with_values end')
 
@@ -245,7 +240,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
             let failedRequests = []
             try {
                 if (!isTesting) {
-                    finalResult = await Promise.allSettled([...pagesArray, insert_form_fields, insert_form_entities])
+                    finalResult = await Promise.allSettled([...pagesArray, insert_form_fields])
                     failedRequests = finalResult?.filter(res => res.status !== 'fulfilled')
                 }
             }
@@ -257,7 +252,7 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
 
             // return document
 
-            console.log('entituesss ', entitiesArray)
+            // console.log('entituesss ', entitiesArray)
             let schemaForJSON = entitiesArray.map(d => ({ name: cleanFieldName(d?.field_name), type: 'STRING', mode: 'NULLABLE' }))
             const bigquerySchema = getUniqueArrayOfObjects(schemaForJSON, 'name')
             // console.log('bigquerySchema', JSON.stringify(bigquerySchema))
@@ -386,6 +381,7 @@ const docAIv3 = async (obj) => {
         return obj
     }
     catch (e) {
+        console.log('eeee', e)
         let error = e?.message ? e.message : e.toString()
         console.error('docAI index.js error', error)
 

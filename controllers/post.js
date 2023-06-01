@@ -225,6 +225,12 @@ const uploadDocuments = async (req, res) => {
             let fileOriginalName = file?.fileOriginalName?.replace(/'|"/g, '')
             let fileName = file?.fileName?.replace(/'|"/g, '')
 
+            // let fileId = uuidv4()
+
+            // fileName = `${fileId}-${fileName}`
+
+            // console.log('fileName', fileName)
+
             let postData = {
                 fileUrl,
                 fileName,
