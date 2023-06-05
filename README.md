@@ -51,6 +51,93 @@ Git Repo: [https://github.com/Aretec-Inc/google-doc-ai](https://github.com/Arete
 
 Follow the instructions provided in this section to install gcloud on your system and deploy the app.
 
+# Google Cloud Project Setup
+
+## Prerequisites
+
+Install gcloud on your system following this [link](https://cloud.google.com/sdk/docs/install).
+
+## Setup Steps
+
+1. Open your command line interface in the `google-doc-ai` project folder and authenticate your service account by running:
+
+    ```bash
+    gcloud auth activate-service-account --key-file=./service_key.json
+    ```
+
+2. Set your project ID (you can get this from `service_key.json`):
+
+    ```bash
+    gcloud config set project <PROJECT_ID_HERE>
+    ```
+
+3. Enable necessary APIs:
+
+    ```bash
+    gcloud services enable cloudbuild.googleapis.com && 
+    gcloud services enable containerregistry.googleapis.com && 
+    gcloud services enable secretmanager.googleapis.com && 
+    gcloud services enable servicenetworking.googleapis.com && 
+    gcloud services enable vpcaccess.googleapis.com && 
+    gcloud services enable documentai.googleapis.com && 
+    gcloud services enable sqladmin.googleapis.com && 
+    gcloud services enable run.googleapis.com && 
+    gcloud services enable cloudresourcemanager.googleapis.com
+    ```
+
+4. Enable additional APIs if required:
+
+    ```bash
+    gcloud services enable contentwarehouse.googleapis.com
+    ```
+
+5. Create a default VPC:
+
+    ```bash
+    gcloud compute addresses create google-managed-services-default --global --prefix-length=16 --description="peering range for Google" --network=default --purpose=VPC_PEERING
+    ```
+
+6. Connect with your VPC network:
+
+    ```bash
+    gcloud services vpc-peerings connect --service=servicenetworking.googleapis.com --ranges=google-managed-services-default --network=default
+    ```
+
+7. Create a database instance:
+
+    ```bash
+    gcloud sql instances create doc-ai-db --database-version=POSTGRES_14 --cpu=1 --memory=3840MiB --storage-size=20480MiB --network=default --no-assign-ip --region=us-central1
+    ```
+
+8. Update the database password:
+
+    ```bash
+    gcloud sql users set-password postgres --instance=doc-ai-db --password=postgres
+    ```
+
+9. Create a Serverless VPC:
+
+    ```bash
+    gcloud compute networks vpc-access connectors create doc-ai-vpc --region=us-central1 --network=default --range=10.8.0.0/28 --min-instances=2 --max-instances=10 --machine-type=e2-micro
+    ```
+
+10. Create a Cloud Storage Bucket (Bucket name should be unique so you can concatenate your project id with the Bucket name):
+
+    ```bash
+    gsutil mb gs://BUCKET_NAME_PROJECT_ID && gsutil uniformbucketlevelaccess set off gs://BUCKET_NAME_PROJECT_ID
+    ```
+
+11. Create a build (replace `$PROJECT_ID` with your project ID):
+
+    ```bash
+    gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
+    ```
+
+12. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `PRIVATE_IP_HERE`, and `BUCKET_NAME_HERE` with your respective values):
+
+    ```bash
+    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=postgres@DB_HOST=PRIVATE_IP_HERE@storage_bucket=BUCKET_NAME_HERE" --set-cloudsql-instances=$PROJECT_ID:us-central1
+
 ## 5. Create And Deploy through Script (Automatically)
 
 Run the following command to deploy the app on your project:
