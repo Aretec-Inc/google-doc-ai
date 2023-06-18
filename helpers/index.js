@@ -11,31 +11,6 @@ const docAIBucket = storage.bucket(process.env?.storage_bucket || `doc_ai_form`)
 const BUFFER_SIZE = 8192
 const buffer = Buffer.alloc(BUFFER_SIZE)
 
-const checkDocumentQuality = async (filePath) => {
-    const projectId = await auth.getProjectId()
-    let processorId = '19fe7c3bad567f9b'
-    const name = `projects/${projectId}/locations/us/processors/${processorId}`
-    const fs = require('fs').promises
-    const imageFile = await fs.readFile(filePath)
-
-    // Convert the image data to a Buffer and base64 encode it.
-    const encodedImage = Buffer.from(imageFile).toString('base64');
-    const request = {
-        name,
-        document: {
-            content: encodedImage,
-            mimeType: 'application/pdf'
-        }
-    }
-    const [result] = await docAiClient.processDocument(request);
-    const { document } = result;
-    // console.log(JSON.stringify(document),'<== docai')
-    let reason = document?.entities[0]?.properties
-    let sorted = reason.sort((a, b) => b.confidence - a.confidence)
-    console.log(sorted, 'sorted')
-    return { confidence: document?.entities[0]?.confidence, text: document?.text, reason: sorted[0]?.type }
-}
-
 const addZero = (num) => `${num}`.padStart(2, '0')
 const getDate = (date) => {
     if (date) {
@@ -374,7 +349,6 @@ module.exports = {
     getDate,
     downloadFile,
     uploadFileToStorage,
-    checkDocumentQuality,
     apiResponse,
     successFalse,
     validateData,
