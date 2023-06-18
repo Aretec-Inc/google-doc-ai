@@ -7,7 +7,7 @@ const axios = require('axios')
 
 // const projectId = service_key?.project_id
 
-const projectId = 'doc-ai-test-387013'
+const projectId = 'aretec-test'
 
 const deployApp = () => {
 

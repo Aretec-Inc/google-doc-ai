@@ -2,15 +2,12 @@ const { schema } = require('../config')
 const docAIv3 = require('./docAiHelpers')
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3
 
-const getDocumentAIProcessorsList = (service_key, projectId) => {
+const getDocumentAIProcessorsList = (projectId) => {
     //https://googleapis.dev/nodejs/documentai/latest/v1beta3.DocumentProcessorServiceClient.html#listProcessors
     return new Promise(async (resolve, reject) => {
         try {
             const docAIParent = `projects/${projectId}/locations/us`
-            const DocAIclient = new DocumentProcessorServiceClient({
-                projectId,
-                credentials: service_key
-            })
+            const DocAIclient = new DocumentProcessorServiceClient()
             let d = await DocAIclient.listProcessors({ parent: docAIParent })
             let noNulls = d?.filter(Boolean)?.flat()
 
@@ -33,7 +30,7 @@ const formLoop = async (arr) => {
 
     console.log('arr', arr?.length)
 
-    for(var v of arr) {
+    for (var v of arr) {
         v.gcs_input_uri = v?.fileUrl
 
         console.log('start', v?.fileId)

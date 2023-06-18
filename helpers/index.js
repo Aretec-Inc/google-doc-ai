@@ -3,7 +3,7 @@ const moment = require('moment')
 const axios = require('axios')
 const path = require('path')
 const codes = require('./codes.json')
-const { postgresDB, service_key, projectId, docAiClient, schema, storage } = require('../config')
+const { postgresDB, docAiClient, schema, storage, auth } = require('../config')
 const { runQuery } = require('./postgresQueries')
 const { getDocumentAIProcessorsList } = require('./gcpHelpers')
 
@@ -12,10 +12,11 @@ const BUFFER_SIZE = 8192
 const buffer = Buffer.alloc(BUFFER_SIZE)
 
 const checkDocumentQuality = async (filePath) => {
+    const projectId = await auth.getProjectId()
     let processorId = '19fe7c3bad567f9b'
     const name = `projects/${projectId}/locations/us/processors/${processorId}`
-    const fs = require('fs').promises;
-    const imageFile = await fs.readFile(filePath);
+    const fs = require('fs').promises
+    const imageFile = await fs.readFile(filePath)
 
     // Convert the image data to a Buffer and base64 encode it.
     const encodedImage = Buffer.from(imageFile).toString('base64');
@@ -358,7 +359,8 @@ const addDefaultData = async () => {
         }
     }
 
-    let allProcessors = await getDocumentAIProcessorsList(service_key, projectId)
+    const projectId = await auth.getProjectId()
+    let allProcessors = await getDocumentAIProcessorsList(projectId)
 
     for (var [k, v] of Object?.entries(submissions)) {
         let model = allProcessors?.filter(v => v?.displayName?.toLowerCase() === submissions?.[k]?.name?.toLowerCase())?.[0]
