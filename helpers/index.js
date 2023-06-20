@@ -3,7 +3,7 @@ const moment = require('moment')
 const axios = require('axios')
 const path = require('path')
 const codes = require('./codes.json')
-const { postgresDB, docAiClient, schema, storage, auth } = require('../config')
+const { postgresDB, schema, storage, projectId } = require('../config')
 const { runQuery } = require('./postgresQueries')
 const { getDocumentAIProcessorsList } = require('./gcpHelpers')
 
@@ -334,7 +334,6 @@ const addDefaultData = async () => {
         }
     }
 
-    const projectId = await auth.getProjectId()
     let allProcessors = await getDocumentAIProcessorsList(projectId)
 
     for (var [k, v] of Object?.entries(submissions)) {

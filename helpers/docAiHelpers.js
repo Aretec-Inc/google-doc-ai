@@ -4,7 +4,7 @@ const insertToDB = require('./insertToDB')
 const get_form_field_values = require('./getFormFieldValues')
 const { default: axios } = require('axios')
 const { runQuery } = require('./postgresQueries')
-const { postgresDB, schema, docAiClient, auth } = require('../config')
+const { postgresDB, schema, docAiClient, projectId } = require('../config')
 
 const cleanFieldName = (name, dontTrim) => {
     /**
@@ -67,7 +67,6 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
             // The full resource name of the processor, e.g.:
             // projects/project-id/locations/location/processor/processor-id
             // You must create new processors in the Cloud Console first
-            const projectId = await auth.getProjectId()
             const name = `projects/${projectId}/locations/${location}/processors/${processorId}`
 
             // Read the file into memory.
