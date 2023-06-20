@@ -1,13 +1,13 @@
 const _ = require('lodash')
 const pdfparser = require('./pdf')
 const fastcsv = require('fast-csv')
-const { service_key, projectId, schema, postgresDB, storage } = require('../config')
+const { schema, postgresDB, storage, projectId } = require('../config')
 const { invoiceColumns } = require('../constants')
 const { getDocumentAIProcessorsList, runQuery, apiResponse, successFalse, getAuthUrl, isNull, calculateOffset, showTableHeaderByColumn, showTableBodyByColumn, convertTitle } = require('../helpers')
 
 const getAllProcessors = async (req, res) => {
     try {
-        let allProcessors = await getDocumentAIProcessorsList(service_key, projectId)
+        let allProcessors = await getDocumentAIProcessorsList(projectId)
 
         let obj = { success: true, allProcessors }
 

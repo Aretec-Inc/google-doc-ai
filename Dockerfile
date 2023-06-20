@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 COPY client/ ./client/
 RUN cd client && yarn && yarn run build
 
-FROM node as server
+FROM node:16 as server
 WORKDIR /root/
 
 COPY --from=ui-build /usr/src/app/client/build ./client/build

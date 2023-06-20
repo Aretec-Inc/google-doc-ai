@@ -31,7 +31,7 @@ jobs:
     
     - name: Deploy
       run: |
-        gcloud run deploy doc-ai --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:latest --set-env-vars "^@^ALLOWED_ORIGIN=${https://doc-ai-znp7f527ca-uc.a.run.app}" --set-cloudsql-instances=${{ secrets.GCP_PROJECT_ID }}:us-central1:doc-ai --set-secrets DB_USER=DB_USER:latest,DB_HOST=DB_HOST:latest,DB_PASSWORD=DB_PASSWORD:latest,service_key=service_key:latest --vpc-connector=projects/${{ secrets.GCP_PROJECT_ID }}/locations/us-central1/connectors/doc-ai-vpc --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic doc-ai --to-latest --region=us-central1
+        gcloud run deploy doc-ai --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APPLICATION }}:latest --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic doc-ai --to-latest --region=us-central1
 
     # - name: Set up Terraform
     #   uses: hashicorp/setup-terraform@v1
