@@ -140,7 +140,18 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 
 ## 5. Create And Deploy through Script (Automatically)
 
-Run the following command to deploy the app on your project:
+## Setup Instructions
+
+
+1. Create a `.env` file in the root directory of the project.
+
+2. Inside the `.env` file, add the following line:
+    projectId=$PROJECT_ID
+    Replace `'$PROJECT_ID'` with the ID of the project where you wish to deploy the app.
+
+3. Ensure that your account has the appropriate access rights to the specified project. Without the necessary permissions, the deployment will not be successful.
+
+4. Run the following command to deploy the app on your project:
 
 ```bash
 npm run deploy-app
