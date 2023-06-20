@@ -62,6 +62,8 @@
 
 .react-pdf__Document {
     /* overflow: auto !important; */
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
 }
 
 .OCR_RECT {

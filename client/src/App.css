@@ -1340,3 +1340,13 @@ body {
 }
 
 /* <---------------------------------------- DASHBOARD STYLING -------------------------------------------------------> */
+.arrowbck{
+    cursor: pointer;
+    position: absolute;
+    z-index: 11;
+    display: flex;
+    padding: 19px 10px;
+    top: 0px;
+    left: -41px;
+    background: #f3f3f3;
+}

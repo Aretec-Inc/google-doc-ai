@@ -81,7 +81,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         let width = ReactDOM.findDOMNode(PageWrapper?.current)?.clientWidth
         let height = ReactDOM.findDOMNode(PageWrapper?.current)?.clientHeight
 
-        let EightyPercentWidth = width - (width * .20)
+        let EightyPercentWidth = width - 150
 
         if (width && EightyPercentWidth && height) {
             setTriggerAddKeyPair(isTemplateView)
@@ -244,7 +244,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 
     return (
         <div style={{ background: '#f6f6f6' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', maxHeight: '95vh', minHeight: '75vh', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', flexDirection: 'row',overflow: 'hidden' }}>
                 {!redacted && <SideBar
                     isTemplateView={isTemplateView}
                     triggerAddKeyPair={triggerAddKeyPair}
@@ -404,8 +404,8 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                     selectedHighLights={selectedHighLights}
                                     setSelectedHighLights={setSelectedHighLights}
                                     scale={scale}
-                                    pageHeight={pageHeight}
-                                    pageWidth={pageWidth}
+                                    // pageHeight={'800px'}
+                                    // pageWidth={pageWidth}
                                     pageNumber={pageNumber}
                                     resizing={resizing}
                                     onDocumentLoadSuccess={onDocumentLoadSuccess}

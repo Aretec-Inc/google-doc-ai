@@ -245,9 +245,12 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     const bookMarkColor = isBookmarkLoading ? { color: 'gray' } : icon_style
     console.log("USER LOGIN ==>", userLogin?.role)
     return (
-        <div className='myShadowCard'>
-            <div className='artifact-top'>
-                <div className='artifact-sub'>
+        <div className='' style={{position:'relative'}}>
+                <span style={{ cursor: 'pointer' }} className='arrowbck' onClick={goBackFunc}>
+                        <AiOutlineArrowLeft style={{ fontSize: 21, color: '#0057E7' }} />
+                    </span>
+            {/* <div className='artifact-top'> */}
+                {/* <div className='artifact-sub'>
                     <span style={{ cursor: 'pointer', paddingTop: '9px' }} onClick={goBackFunc}>
                         <AiOutlineArrowLeft style={{ fontSize: 21, color: '#0057E7' }} />
                     </span>
@@ -257,7 +260,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                 </div>
                 <div className='new-doc'>
                     New Document
-                </div>
+                </div> */}
                 {/* <div style={{ marginLeft: 140 }}>
                     <span><b>{artifactData?.is_completed ? 'COMPLETED' : 'PROCESSING'}</b></span>
                 </div> */}
@@ -312,7 +315,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
 
                     <DownloadButton selectedCard={artifactData} />
                 </div> */}
-            </div>
+            {/* </div> */}
 
         </div >
     )
