@@ -67,30 +67,9 @@ const SubmissionVisuals = (props) => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 },
-                content: `Accuracy\n${accuracySubmission ? (100.0 - accuracySubmission) : 100}%`,
+                content: `Accuracy\n${accuracySubmission ? (100.0 - accuracySubmission)?.toFixed(2)  : 100}%`,
             },
-        },
-        // annotations: [
-        //     {
-        //         type: 'image',
-        //         src: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*ELYbTIVCgPoAAAAAAAAAAABkARQnAQ',
-
-        //         /** 位置 */
-        //         position: ['50%', '50%'],
-
-        //         /** 图形样式属性 */
-        //         style: {
-        //             width: 50,
-        //             height: 50,
-        //         },
-
-        //         /** x 方向的偏移量 */
-        //         offsetX: -25,
-
-        //         /** y 方向的偏移量 */
-        //         offsetY: 40,
-        //     },
-        // ],
+        }
     };
 
 
