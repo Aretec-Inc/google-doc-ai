@@ -67,7 +67,7 @@ const SubmissionVisuals = (props) => {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                 },
-                content: `Accuracy\n${accuracySubmission ? (100.0 - accuracySubmission) : 100}%`,
+                content: `Accuracy\n${accuracySubmission ? (100.0 - accuracySubmission)?.toFixed(2) : 100}%`,
             },
         },
         // annotations: [
