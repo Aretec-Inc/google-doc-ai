@@ -10,21 +10,21 @@ import { Bar } from '@ant-design/plots';
 
 const ConfidenceModel = (props) => {
     const { belowThresholdModelAcc, aboveThresholdModelAcc, confidenceModel } = props
+    console.log("CONFIDENCE MODAL ===>", confidenceModel)
     const data = [...confidenceModel]
     const config = {
         data,
         xField: 'count',
         yField: 'processor_name',
         seriesField: 'mode',
-        isPercent: true,
-        isStack: true,
+        // isPercent: true,
+        // isStack: true,
 
-        /** 自定义颜色 */
         color: ['#4285f4', '#fbbc05'],
         label: {
             position: 'middle',
             content: (item) => {
-                return (item?.count?.toFixed(2) * 100 + '%');
+                return (item?.count?.toFixed(2) + '%');
             },
             style: {
                 fill: '#fff',

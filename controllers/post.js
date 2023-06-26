@@ -704,7 +704,7 @@ const getDashboardData = async (req, res) => {
         totalFieldsGroupByModel?.value?.map((v, i) => {
             let obj = {
                 processor_name: v?.processor_name,
-                count: v?.count,
+                count: Number(v?.count?.toFixed(2)),
                 submission_name: v?.submission_name,
                 mode: 'Model Accuracy'
             }
@@ -717,7 +717,7 @@ const getDashboardData = async (req, res) => {
         totalFieldChangeGroupByModel?.value?.map((v, i) => {
             let obj = {
                 processor_name: v?.processor_name,
-                count: v?.count,
+                count: Number(v?.count?.toFixed(2)),
                 submission_name: v?.submission_name,
                 mode: 'Model Review'
             }
@@ -730,7 +730,7 @@ const getDashboardData = async (req, res) => {
         confByModel?.value?.map((v, i) => {
             let obj = {
                 processor_name: v?.processor_name,
-                count: v?.count,
+                count: Number(v?.count?.toFixed(2)),
                 mode: 'Model Accuracy'
             }
             return (
@@ -741,7 +741,7 @@ const getDashboardData = async (req, res) => {
         confByModel?.value?.map((v, i) => {
             let obj = {
                 processor_name: v?.processor_name,
-                count: 100 - v?.count,
+                count: Number((100 - v?.count)?.toFixed(2)),
                 mode: 'Model Review'
             }
             return (
@@ -749,6 +749,7 @@ const getDashboardData = async (req, res) => {
             )
         })
 
+        console.log("CONFIDENCE ===>", confidenceByModelFinalSchema)
 
         let obj = {
             success: true,
