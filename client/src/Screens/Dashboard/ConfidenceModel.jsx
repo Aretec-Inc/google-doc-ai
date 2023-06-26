@@ -10,7 +10,7 @@ import { Bar } from '@ant-design/plots';
 
 const ConfidenceModel = (props) => {
     const { belowThresholdModelAcc, aboveThresholdModelAcc, confidenceModel } = props
-    console.log("CONFIDENCE MODAL ===>", confidenceModel)
+    // console.log("CONFIDENCE MODAL ===>", confidenceModel)
     const data = [...confidenceModel]
     const config = {
         data,
