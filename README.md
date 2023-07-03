@@ -42,10 +42,6 @@ Git Repo: [https://github.com/Aretec-Inc/google-doc-ai](https://github.com/Arete
   - Cloud SQL Aadmin
   - Resource Manager Project IAM Admin
   - Cloud Run Admin
-- Now click on the service account you created Click on Keys Tab and click Add key button.
-- Click on Create New key and save it rename file to service_key.json.
-- Rename the downloaded key to service_key.json.
-- Put this file to Google-doc-ai-master folder in the Repo.
 
 ## 4. Create And Deploy through gcloud (Manually)
 
@@ -65,7 +61,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud auth login
     ```
 
-2. Set your project ID (you can get this from `service_key.json`):
+2. Set your project ID:
 
     ```bash
     gcloud config set project <PROJECT_ID_HERE>
