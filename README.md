@@ -59,10 +59,10 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 
 ## Setup Steps
 
-1. Open your command line interface in the `google-doc-ai` project folder and authenticate your service account by running:
+1. In the 'google-doc-ai' project directory, initiate your command line interface. Following that, execute the authentication process by selecting the account intended for the app's deployment:
 
     ```bash
-    gcloud auth activate-service-account --key-file=./service_key.json
+    gcloud auth login
     ```
 
 2. Set your project ID (you can get this from `service_key.json`):
