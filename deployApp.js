@@ -17,7 +17,7 @@ const deployApp = () => {
   //   console.log('gcloud auth activate-service-account --key-file=./service_key.json', error, stdout, stderr)
   // })
   try {
-    exec(`gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com`, async (error, stdout, stderr) => {
+    exec(`gcloud auth login && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com`, async (error, stdout, stderr) => {
       console.log('stdout: svc', stdout, error)
 
       exec(`gcloud iam service-accounts create doc-ai --display-name "doc-ai" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/editor" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/documentai.admin" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/storage.admin"`, async (error, stdout, stderr) => {
