@@ -13,6 +13,8 @@ const deployApp = () => {
   const serviceAccount = `doc-ai@${projectId}.iam.gserviceaccount.com`
   const postgresPassword = `postgres`
 
+  console.log('******')
+
   // exec(`gcloud auth activate-service-account --key-file=./service_key.json`, (error, stdout, stderr) => {
   //   console.log('gcloud auth activate-service-account --key-file=./service_key.json', error, stdout, stderr)
   // })
