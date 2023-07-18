@@ -115,6 +115,7 @@ const getUniqueArrayOfObjects = (ary, objectPropertName) => {
 const getAuthUrl = async (uri, storage) => {
     if (uri && uri.length) {
         try {
+            console.log('storage', storage)
             const expires = moment(moment(), 'MM-DD-YYYY').add(2, 'days')
             const bucketName = uri.split('/')[2]
             const myBucket = storage.bucket(bucketName)
