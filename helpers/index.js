@@ -115,9 +115,9 @@ const getUniqueArrayOfObjects = (ary, objectPropertName) => {
 const getAuthUrl = async (uri, storage) => {
     if (uri && uri.length) {
         try {
+            console.log('uri', uri)
             const expires = moment(moment(), 'MM-DD-YYYY').add(2, 'days')
             const bucketName = uri.split('/')[2]
-            console.log('bucketName', bucketName)
             const myBucket = storage.bucket(bucketName)
 
             const config = {
@@ -127,6 +127,8 @@ const getAuthUrl = async (uri, storage) => {
             }
 
             let file = myBucket.file(uri.replace(`gs://${bucketName}/`, ''))
+            console.log('file', file?.name)
+            console.log('myBucket', myBucket?.name)
             let [url] = await file.getSignedUrl(config)
             return url
         }
