@@ -2,7 +2,6 @@ const fs = require('fs')
 const moment = require('moment')
 const axios = require('axios')
 const path = require('path')
-const googleAuth = require('google-auth-library')
 const codes = require('./codes.json')
 const { postgresDB, schema, storage, projectId } = require('../config')
 const { runQuery } = require('./postgresQueries')
@@ -113,26 +112,10 @@ const getUniqueArrayOfObjects = (ary, objectPropertName) => {
     })
 }
 
-async function getServiceAccountDetails() {
-    const auth = new googleAuth.GoogleAuth({
-        scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    const client = await auth.getClient();
-
-    const projectId = await auth.getProjectId();
-    const url = `https://iam.googleapis.com/v1/projects/${projectId}/serviceAccounts/${client.email}`;
-
-    const res = await client.request({ url });
-
-    console.log('Service account details:', res.data);
-}
-
-
 const getAuthUrl = async (uri, storage) => {
     if (uri && uri.length) {
         try {
             console.log('uri', uri)
-            getServiceAccountDetails()
             const expires = moment(moment(), 'MM-DD-YYYY').add(2, 'days')
             const bucketName = uri.split('/')[2]
             const myBucket = storage.bucket(bucketName)
