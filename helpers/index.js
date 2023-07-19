@@ -126,14 +126,17 @@ const getAuthUrl = async (uri, storage) => {
                 accessibleAt: expires
             }
 
-            let file = myBucket.file(uri.replace(`gs://${bucketName}/`, ''))
+            let filePath = uri.replace(`gs://${bucketName}/`, '')
+            console.log('filePath', filePath)
+            let file = docAIBucket.file(filePath)
             console.log('file', file?.name)
             console.log('myBucket', myBucket?.name)
             let [url] = await file.getSignedUrl(config)
+            console.log('url', url)
             return url
         }
         catch (e) {
-            console.log('e', e)
+            console.log('e authUrl', e)
             return uri
         }
     }
@@ -220,7 +223,7 @@ const uploadFile = (filePath, destinationPath, folder) => {
         let blobStream = blob.createWriteStream()
 
         blobStream.on('finish', async () => {
-            console.log('done')
+            console.log('upload done!')
         })
         blobStream.on('error', async (e) => {
             console.log('erro')
@@ -315,7 +318,7 @@ const addDataInDatabase = async (k, submission, model) => {
             }
         }
         catch (e) {
-            console.log('e', k, e?.message || e)
+            console.log('e database', k, e?.message || e)
             resolve()
         }
     })

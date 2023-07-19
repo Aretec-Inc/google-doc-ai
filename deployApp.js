@@ -82,7 +82,7 @@ const deployApp = () => {
                 console.log('stdout***', stdout?.split(' ')?.filter(v => v)?.[1]?.split('\r\n')[0])
                 const HOST = stdout?.split(' ')?.filter(v => v)?.[1]?.split('\r\n')[0]
 
-                exec(`gcloud run deploy ${appName} --image=${imageUrl}:latest --set-env-vars "^@^ALLOWED_ORIGIN=${HOST}@DB_USER=postgres@DB_PASSWORD=${postgresPassword}@DB_HOST=${privateIp}@storage_bucket=${bucketName}@projectId=${projectId}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} --service-account=${serviceAccount} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
+                exec(`gcloud run deploy ${appName} --image=${imageUrl}:latest --memory=1Gi --set-env-vars "^@^ALLOWED_ORIGIN=${HOST}@DB_USER=postgres@DB_PASSWORD=${postgresPassword}@DB_HOST=${privateIp}@storage_bucket=${bucketName}@projectId=${projectId}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} --service-account=${serviceAccount} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
                   console.log('stdout: cloud run', stdout)
                 })
               })

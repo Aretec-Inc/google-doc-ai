@@ -16,8 +16,8 @@ const configureBucketCors = async () => {
             responseHeader: ['content-type']
         }
     ])
-        .then((t) => console.log('*****'))
-        .catch((e) => console.log('e', e))
+        .then((t) => console.log('***** cors enabled'))
+        .catch((e) => console.log('e storage', e))
 
 }
 

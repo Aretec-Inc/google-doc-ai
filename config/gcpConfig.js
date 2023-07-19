@@ -47,7 +47,7 @@ const createProcessor = async (displayName, processorType) => {
     console.log(`Processor type: ${response.type}`)
   }
   catch (e) {
-    console.log('e', e?.message)
+    console.log('e processors', e?.message)
   }
 
 }
