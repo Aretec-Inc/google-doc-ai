@@ -3,7 +3,7 @@ const { Storage } = require('@google-cloud/storage')
 const DLP = require('@google-cloud/dlp')
 const language = require('@google-cloud/language')
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3
-process.env[`GOOGLE_APPLICATION_CREDENTIALS`] = './service_key.json'
+// process.env[`GOOGLE_APPLICATION_CREDENTIALS`] = './service_key.json'
 
 // let service_key = JSON.parse(process.env.service_key || '{}')
 
