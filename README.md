@@ -114,7 +114,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 8. Update the database password:
 
     ```bash
-    gcloud sql users set-password postgres --instance=doc-ai-db --password=postgres
+    gcloud sql users set-password postgres --instance=doc-ai-db --password=$DB_PASSWORD
     ```
 
 9. Create a Serverless VPC:
@@ -126,7 +126,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 10. Create a Cloud Storage Bucket (Bucket name should be unique so you can concatenate your project id with the Bucket name):
 
     ```bash
-    gsutil mb gs://BUCKET_NAME_PROJECT_ID && gsutil uniformbucketlevelaccess set off gs://BUCKET_NAME_PROJECT_ID
+    gsutil mb gs://$BUCKET_NAME && gsutil uniformbucketlevelaccess set off gs://$BUCKET_NAME
     ```
 
 11. Create a build (replace `$PROJECT_ID` with your project ID):
@@ -135,10 +135,10 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
     ```
 
-12. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `PRIVATE_IP_HERE`, and `BUCKET_NAME_HERE` with your respective values):
+12. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, $DB_PASSWORD, and `$BUCKET_NAME` with your respective values):
 
     ```bash
-    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=postgres@DB_HOST=PRIVATE_IP_HERE@storage_bucket=BUCKET_NAME_HERE" --set-cloudsql-instances=$PROJECT_ID:us-central1
+    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-cloudsql-instances=$PROJECT_ID:us-central1
 
 ## 5. Create And Deploy through Script (Automatically)
 
