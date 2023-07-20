@@ -135,7 +135,13 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
     ```
 
-12. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
+12. Create a Secret `DOC_AI_CREDENTIALS` in your project Secret Manager :
+
+    ```bash
+    gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
+    ```
+
+13. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
 
     ```bash
     gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-cloudsql-instances=$PROJECT_ID:us-central1
