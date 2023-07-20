@@ -146,7 +146,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 13. Deploy the app on Cloud Run (Replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
 
     ```bash
-    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-cloudsql-instances=$PROJECT_ID:us-central1
+    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-secrets=DOC_AI_CREDENTIALS=DOC_AI_CREDENTIALS:latest --set-cloudsql-instances=$PROJECT_ID:us-central1 --vpc-connector=projects/$PROJECT_ID/locations/us-central1/connectors/doc-ai-vpc --allow-unauthenticated
 
 ## 5. Create And Deploy through Script (Automatically)
 
