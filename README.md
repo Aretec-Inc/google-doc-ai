@@ -135,13 +135,15 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
     ```
 
-12. Create a Secret `DOC_AI_CREDENTIALS` in your project Secret Manager :
+12. Create a Secret `DOC_AI_CREDENTIALS` in your project Secret Manager (Copy the JSON from `service_key.json` and replace it with $SERVICE_KEY_JSON, Make sure you removed the extra spaces from the JSON, check the screenshot) :
 
     ```bash
-    gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
+    echo -n "$SERVICE_KEY_JSON" | gcloud secrets create "DOC_AI_CREDENTIALS" --data-file=- --replication-policy="automatic"
     ```
+    ![image](https://github.com/Aretec-Inc/google-doc-ai/assets/69988975/55fd6658-ef74-42e0-a7ad-c7e3cbd03fc4)
 
-13. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
+
+13. Deploy the app on Cloud Run (Replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
 
     ```bash
     gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-cloudsql-instances=$PROJECT_ID:us-central1
