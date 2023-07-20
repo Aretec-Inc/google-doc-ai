@@ -13,11 +13,13 @@ const deployApp = () => {
   const serviceAccount = `doc-ai@${projectId}.iam.gserviceaccount.com`
   const postgresPassword = `postgres`
 
-  // exec(`gcloud auth activate-service-account --key-file=./service_key.json`, (error, stdout, stderr) => {
+  console.log('******')
+
+  // exec(`gcloud auth login && gcloud auth activate-service-account --key-file=./service_key.json`, (error, stdout, stderr) => {
   //   console.log('gcloud auth activate-service-account --key-file=./service_key.json', error, stdout, stderr)
   // })
   try {
-    exec(`gcloud auth login && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com`, async (error, stdout, stderr) => {
+    exec(`gcloud auth login && gcloud config set project ${projectId} && gcloud services enable cloudbuild.googleapis.com && gcloud services enable containerregistry.googleapis.com && gcloud services enable secretmanager.googleapis.com && gcloud services enable servicenetworking.googleapis.com && gcloud services enable vpcaccess.googleapis.com && gcloud services enable documentai.googleapis.com && gcloud services enable iamcredentials.googleapis.com`, async (error, stdout, stderr) => {
       console.log('stdout: svc', stdout, error)
 
       exec(`gcloud iam service-accounts create doc-ai --display-name "doc-ai" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/editor" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/documentai.admin" && gcloud projects add-iam-policy-binding ${projectId} --member "serviceAccount:${serviceAccount}" --role "roles/storage.admin"`, async (error, stdout, stderr) => {
@@ -80,7 +82,7 @@ const deployApp = () => {
                 console.log('stdout***', stdout?.split(' ')?.filter(v => v)?.[1]?.split('\r\n')[0])
                 const HOST = stdout?.split(' ')?.filter(v => v)?.[1]?.split('\r\n')[0]
 
-                exec(`gcloud run deploy ${appName} --image=${imageUrl}:latest --set-env-vars "^@^ALLOWED_ORIGIN=${HOST}@DB_USER=postgres@DB_PASSWORD=${postgresPassword}@DB_HOST=${privateIp}@storage_bucket=${bucketName}@projectId=${projectId}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} --service-account=${serviceAccount} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
+                exec(`gcloud run deploy ${appName} --image=${imageUrl}:latest --memory=1Gi --set-env-vars "^@^ALLOWED_ORIGIN=${HOST}@DB_USER=postgres@DB_PASSWORD=${postgresPassword}@DB_HOST=${privateIp}@storage_bucket=${bucketName}@projectId=${projectId}" --set-cloudsql-instances=${cloudInstance} --vpc-connector=projects/${projectId}/locations/${region}/connectors/doc-ai-vpc --allow-unauthenticated --region=${region} --project=${projectId} --service-account=${serviceAccount} && gcloud run services update-traffic ${appName} --to-latest --region=${region}`, (error, stdout, stderr) => {
                   console.log('stdout: cloud run', stdout)
                 })
               })
