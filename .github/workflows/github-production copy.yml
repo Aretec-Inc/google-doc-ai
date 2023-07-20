@@ -2,9 +2,9 @@ name: Deploy to Cloud Run
 
 on:
   push:
-    branches: [ deployment ]
+    branches: [ doc-ai-public ]
   pull_request:
-    branches: [ deployment ]
+    branches: [ doc-ai-public ]
 
 jobs:
   deploy:
