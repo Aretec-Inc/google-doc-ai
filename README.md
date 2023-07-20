@@ -82,7 +82,8 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud services enable documentai.googleapis.com && 
     gcloud services enable sqladmin.googleapis.com && 
     gcloud services enable run.googleapis.com && 
-    gcloud services enable cloudresourcemanager.googleapis.com
+    gcloud services enable cloudresourcemanager.googleapis.com &&
+    gcloud services enable iamcredentials.googleapis.com
     ```
 
 4. Enable additional APIs if required:
