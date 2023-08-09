@@ -113,7 +113,7 @@ const Sidenav = (props) => {
                             <img src={LOGO} alt="" className='logomain' />
                         </div>
                         <div className='right_side'>
-                            <div className='name_space'>
+                            {/* <div className='name_space'>
                                 <BsBell className='user_icon' />
                             </div>
                             <div className='loginuser'>
@@ -122,7 +122,7 @@ const Sidenav = (props) => {
                                     <h6>john Dae</h6>
                                     <span>john@gmail.com</span>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </section>

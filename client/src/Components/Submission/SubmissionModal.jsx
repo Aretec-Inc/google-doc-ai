@@ -36,7 +36,7 @@ const CreateSubmission = (props) => {
     const [loading, setLoading] = useState(false)
     const [uploadloading, setUploadLoading] = useState(false)
     const [buttonText, setButtonText] = useState('Upload')
-    const [submissionName, setSubmissionName] = useState(null)
+    const [submissionName, setSubmissionName] = useState('')
     const [threshold, setThreshold] = useState(50)
     const [showGCS, setShowGCS] = useState(false)
     const [showS3, setShowS3] = useState(false)
@@ -209,7 +209,7 @@ const CreateSubmission = (props) => {
                     }
                 }
                 catch (err) {
-                    console.error("ERROR DURING UPLOAD", err)
+                    console.error('ERROR DURING UPLOAD', err)
                 }
             }))
         }
@@ -297,7 +297,12 @@ const CreateSubmission = (props) => {
                             <Grid container spacing={2}>
                                 <Grid item sm={6} xs={12}>
                                     <h4>Submission Name</h4>
-                                    <Input className='login-inp-field ant-radius' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
+                                    <Input
+                                        className='login-inp-field ant-radius'
+                                        placeholder='Submission Name'
+                                        value={submissionName}
+                                        onChange={(e) => setSubmissionName(e?.target?.value)}
+                                    />
                                 </Grid>
                                 <Grid item sm={6} xs={12}>
                                     <h4>Threshold</h4>
@@ -393,7 +398,6 @@ const CreateSubmission = (props) => {
                             <Button className='process-btn process-btn2' type='primary' loading={loading} onClick={createSubmission}>Skip & Create Submission</Button>
                         </div>
                     </div> : <div className='progress-modal'>
-
                         <div className='progress-modal-head'>
                             <h5>Uploading {fileList?.length} {`item${fileList?.length === 1 ? '' : 's'}`}</h5>
                         </div>
@@ -420,7 +424,6 @@ const CreateSubmission = (props) => {
                             <Button className='process-btn' style={{ width: 140 }} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
                         </div>
                     </div>}
-
                     <input
                         type='file'
                         onChange={normFile}

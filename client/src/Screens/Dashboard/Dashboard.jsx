@@ -98,7 +98,7 @@ const Dashboard = (props) => {
                         Services
                     </h2>
                 </div>
-                <div className='right_sec_head'>
+                {/* <div className='right_sec_head'>
                     <Button type='text' className='secondary_header_buttons'>
                         <span className="material-symbols-outlined mg_rgt_3px">
                             chat
@@ -115,7 +115,7 @@ const Dashboard = (props) => {
                             Learn
                         </span>
                     </Button>
-                </div>
+                </div> */}
             </div>
             {/* <Divider /> */}
             <br />
