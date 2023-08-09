@@ -31,12 +31,11 @@ import { validateLength, convertTitle, disabledDate, itemRender } from '../../ut
 import { getAllSubmissions } from '../../Redux/actions/docActions'
 import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
 
-
 const useStyles = makeStyles({
     tableHead: {
-        backgroundColor: '#f5f5f5',
-    },
-});
+        backgroundColor: '#f5f5f5'
+    }
+})
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props
@@ -135,7 +134,7 @@ const Submission = (props) => {
                         </span>
                     </Button>
                 </div>
-                <div className='right_sec_head'>
+                {/* <div className='right_sec_head'>
                     <Button type='text' className='secondary_header_buttons'>
                         <span className="material-symbols-outlined mg_rgt_3px">
                             chat
@@ -152,7 +151,7 @@ const Submission = (props) => {
                             Learn
                         </span>
                     </Button>
-                </div>
+                </div> */}
             </div>
             {/* <Divider /> */}
             <br />

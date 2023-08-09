@@ -42,6 +42,10 @@ Git Repo: [https://github.com/Aretec-Inc/google-doc-ai](https://github.com/Arete
   - Cloud SQL Aadmin
   - Resource Manager Project IAM Admin
   - Cloud Run Admin
+- Now click on the service account you created Click on Keys Tab and click Add key button.
+- Click on Create New key and save it rename file to service_key.json.
+- Rename the downloaded key to service_key.json.
+- Put this file to Google-doc-ai-master folder in the Repo.
 
 ## 4. Create And Deploy through gcloud (Manually)
 
@@ -55,13 +59,13 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 
 ## Setup Steps
 
-1. In the 'google-doc-ai' project directory, initiate your command line interface. Following that, execute the authentication process by selecting the account intended for the app's deployment:
+1. Open your command line interface in the `google-doc-ai` project folder and authenticate your service account by running:
 
     ```bash
-    gcloud auth login
+    gcloud auth activate-service-account --key-file=./service_key.json
     ```
 
-2. Set your project ID:
+2. Set your project ID (you can get this from `service_key.json`):
 
     ```bash
     gcloud config set project <PROJECT_ID_HERE>
@@ -78,6 +82,8 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud services enable documentai.googleapis.com && 
     gcloud services enable sqladmin.googleapis.com && 
     gcloud services enable run.googleapis.com && 
+    gcloud services enable cloudresourcemanager.googleapis.com &&
+    gcloud services enable iamcredentials.googleapis.com &&
     gcloud services enable cloudresourcemanager.googleapis.com
     ```
 
@@ -108,7 +114,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 8. Update the database password:
 
     ```bash
-    gcloud sql users set-password postgres --instance=doc-ai-db --password=postgres
+    gcloud sql users set-password postgres --instance=doc-ai-db --password=$DB_PASSWORD
     ```
 
 9. Create a Serverless VPC:
@@ -120,7 +126,7 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 10. Create a Cloud Storage Bucket (Bucket name should be unique so you can concatenate your project id with the Bucket name):
 
     ```bash
-    gsutil mb gs://BUCKET_NAME_PROJECT_ID && gsutil uniformbucketlevelaccess set off gs://BUCKET_NAME_PROJECT_ID
+    gsutil mb gs://$BUCKET_NAME && gsutil uniformbucketlevelaccess set off gs://$BUCKET_NAME
     ```
 
 11. Create a build (replace `$PROJECT_ID` with your project ID):
@@ -129,10 +135,25 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
     gcloud builds submit --tag gcr.io/$PROJECT_ID/doc-ai --timeout=9000 --machine-type=n1-highcpu-32
     ```
 
-12. Deploy the app on Cloud Run (replace `$PROJECT_ID`, `PRIVATE_IP_HERE`, and `BUCKET_NAME_HERE` with your respective values):
+12. Create a Secret `DOC_AI_CREDENTIALS` in your project Secret Manager (Copy the JSON from `service_key.json` and replace it with $SERVICE_KEY_JSON, Make sure you removed the extra spaces from the JSON, check the screenshot) :
 
     ```bash
-    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=postgres@DB_HOST=PRIVATE_IP_HERE@storage_bucket=BUCKET_NAME_HERE" --set-cloudsql-instances=$PROJECT_ID:us-central1
+    echo -n "$SERVICE_KEY_JSON" | gcloud secrets create "DOC_AI_CREDENTIALS" --data-file=- --replication-policy="automatic"
+    ```
+    ![image](https://github.com/Aretec-Inc/google-doc-ai/assets/69988975/55fd6658-ef74-42e0-a7ad-c7e3cbd03fc4)
+
+
+13. Deploy the app on Cloud Run (Replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
+
+    ```bash
+    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME" --set-secrets=DOC_AI_CREDENTIALS=DOC_AI_CREDENTIALS:latest --set-cloudsql-instances=$PROJECT_ID:us-central1 --vpc-connector=projects/$PROJECT_ID/locations/us-central1/connectors/doc-ai-vpc --allow-unauthenticated --region=us-central1
+    ```
+
+14. Now go to the Cloud Run and copy the `APP URL` and Replace with the `$APP_URL` and run this command (Replace `$PROJECT_ID`, `$DB_PRIVATE_IP`, `$DB_PASSWORD`, and `$BUCKET_NAME` with your respective values):
+
+    ```bash
+    gcloud run deploy doc-ai --image=gcr.io/$PROJECT_ID/doc-ai:latest --memory=1Gi --set-env-vars "^@^DB_USER=postgres@DB_PASSWORD=$DB_PASSWORD@DB_HOST=DB_PRIVATE_IP@storage_bucket=$BUCKET_NAME@ALLOWED_ORIGIN=$APP_URL" --set-secrets=DOC_AI_CREDENTIALS=DOC_AI_CREDENTIALS:latest --set-cloudsql-instances=$PROJECT_ID:us-central1 --vpc-connector=projects/$PROJECT_ID/locations/us-central1/connectors/doc-ai-vpc --allow-unauthenticated --region=us-central1 && gcloud run services update-traffic doc-ai --to-latest --region=us-central1
+    ```
 
 ## 5. Create And Deploy through Script (Automatically)
 

@@ -5,7 +5,7 @@ const language = require('@google-cloud/language')
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3
 // process.env[`GOOGLE_APPLICATION_CREDENTIALS`] = './service_key.json'
 
-// let service_key = JSON.parse(process.env.service_key || '{}')
+let DOC_AI_CREDENTIALS = JSON.parse(process?.env?.DOC_AI_CREDENTIALS || '{}')
 
 // try {
 //   if (process.env.NODE_ENV === 'production' && require('../service_key.json')) {
@@ -18,11 +18,12 @@ const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v
 
 // Instantiates a client
 
-const storage = new Storage()
-const languageClient = new language.LanguageServiceClient()
-const dlpClient = new DLP.DlpServiceClient()
-const docAiClient = new DocumentProcessorServiceClient()
-const projectId = process?.env?.projectId
+const projectId = DOC_AI_CREDENTIALS?.project_id
+const credentials = { projectId, credentials: DOC_AI_CREDENTIALS }
+const storage = new Storage(credentials)
+const languageClient = new language.LanguageServiceClient(credentials)
+const dlpClient = new DLP.DlpServiceClient(credentials)
+const docAiClient = new DocumentProcessorServiceClient(credentials)
 
 const createProcessor = async (displayName, processorType) => {
   try {

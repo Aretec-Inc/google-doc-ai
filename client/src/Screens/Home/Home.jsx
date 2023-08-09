@@ -46,22 +46,19 @@ const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const Home = (props) => {
+    const [open, setOpen] = useState(false)
 
-    useEffect(() => {
-        console.log("HELLO")
-    }, [])
-
-    const [open, setOpen] = useState(false);
     const showModal = () => {
-        setOpen(true);
-    };
+        setOpen(true)
+    }
+
     const handleOk = (e) => {
-        console.log(e);
-        setOpen(false);
-    };
+        console.log(e)
+        setOpen(false)
+    }
     const handleCancel = (e) => {
-        console.log(e);
-        setOpen(false);
+        console.log(e)
+        setOpen(false)
     }
 
     return (
@@ -76,9 +73,7 @@ const Home = (props) => {
                         placeholder='Filter'
                         optionFilterProp='children'
                         filterOption={(input, option) => option.children.includes(input)}
-                        filterSort={(optionA, optionB) =>
-                            optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
-                        }
+                        filterSort={(optionA, optionB) => optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())}
                     >
                         <Option value='Not Identified'>Not Identified</Option>
                         <Option value='Closed'>Closed</Option>
@@ -119,7 +114,6 @@ const Home = (props) => {
                         // size='small'
                         width={1000}
                     >
-
                         <div className='select-process'>
                             <div className='modalname'>
                                 <h5>Select Processor</h5>
@@ -168,7 +162,6 @@ const Home = (props) => {
                             </div>
                         </div>
                     </Modal>
-
                 </div>
             </div>
 
@@ -211,8 +204,6 @@ const Home = (props) => {
                                                 <TableCell className='submission-table-cell submission-row-cell'>csd</TableCell>
                                                 <TableCell className='submission-table-cell submission-row-cell'>scsdcsdc</TableCell>
                                             </TableRow>
-
-
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
