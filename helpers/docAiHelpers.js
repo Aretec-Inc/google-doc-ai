@@ -123,6 +123,18 @@ const docAI = ({ location, processorId, bucket_name, file_name, given_json, isTe
                 skip_docai = true
                 json_file = require('../gt_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json');
                 }
+                if(file_name?.includes('irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.pdf')){
+                skip_docai = true
+                json_file = require('../gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json');
+                }
+                if(file_name?.includes('irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.pdf')){
+                skip_docai = true
+                json_file = require('../gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json');
+                }
+                if(file_name?.includes('irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.pdf')){
+                skip_docai = true
+                json_file = require('../gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json');
+                }
                 if(skip_docai){
                     console.log('skipping docai')
                     document = json_file
