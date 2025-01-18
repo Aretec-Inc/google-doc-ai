@@ -9,9 +9,9 @@ module.exports = {
     },
     cloudDB: {
         username: 'postgres',
-        password: 'postgres',
+        password: 'x*Q5"%YLc48gHyvZ',
         database: 'postgres',
-        host: '35.185.46.62',
+        host: '35.193.171.200',
         dialect: 'postgres',
         port: 5432
     },

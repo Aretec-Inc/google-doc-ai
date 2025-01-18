@@ -1,278 +1,274 @@
-import React, { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Select from 'antd/lib/select'
-import DatePicker from 'antd/lib/date-picker'
-import Button from 'antd/lib/button'
-import Progress from 'antd/lib/progress'
-import Tooltip from 'antd/lib/tooltip'
-import Spin from 'antd/lib/spin'
-import Input from 'antd/lib/input'
-import Divider from 'antd/lib/divider'
-import Pagination from 'antd/lib/pagination'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@mui/material/Grid'
-import { CiMenuKebab } from 'react-icons/ci'
-import { BsSearch } from 'react-icons/bs'
-import moment from 'moment'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import SubmissionModal from '../../Components/Submission/SubmissionModal'
-import SubmissionTemplate from './SubmissionTemplate'
-import { validateLength, convertTitle, disabledDate, itemRender } from '../../utils/helpers'
-import { getAllSubmissions } from '../../Redux/actions/docActions'
-import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
+import { Share, Search, MoreVertical, MessageCircle, GraduationCap, Plus } from 'lucide-react';
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../Components/ui/table";
+import { Button } from "../../Components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../Components/ui/select";
+import { Calendar } from "../../Components/ui/calendar";
+import { Input } from "../../Components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../Components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../Components/ui/popover";
+import { Card, CardContent } from "../../Components/ui/card";
 
-const useStyles = makeStyles({
-    tableHead: {
-        backgroundColor: '#f5f5f5',
-    },
-});
-
-const TabPanel = (props) => {
-    const { children, value, index, ...other } = props
-
-    return (
-        <div
-            role='tabpanel'
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    )
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired
-}
-
-const { Option } = Select
-const { RangePicker } = DatePicker
-const dateFormat = 'YYYY/MM/DD'
+import { validateLength, convertTitle, disabledDate } from '../../utils/helpers';
+import { getAllSubmissions } from '../../Redux/actions/docActions';
+import SubmissionModal from '../../Components/Submission/SubmissionModal';
+import SubmissionTemplate from './SubmissionTemplate';
 
 const Submission = (props) => {
-    const { dispatch } = props
-    const classes = useStyles();
-    const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || [])
-    const totalSubmissions = useSelector((state) => state?.docReducer?.totalSubmissions || 0)
-    const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || [])
-    const [open, setOpen] = useState(false)
-    const [showTemplate, setShowTemplate] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [templateData, setTemplateData] = useState({})
-    const [submissionName, setSubmissionName] = useState('')
-    const [processorId, setProcessorId] = useState('')
-    const [dateRange, setDateRange] = useState(null)
-    const [pageSize, setPageSize] = useState(10)
-    const [pageNo, setPageNo] = useState(1)
+  const { dispatch } = props;
+  const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || []);
+  const totalSubmissions = useSelector((state) => state?.docReducer?.totalSubmissions || 0);
+  const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || []);
 
-    useEffect(() => {
-        if (!allSubmissions?.length) {
-            setLoading(true)
-        }
-        dispatch(getAllSubmissions({ submissionName, processorId, dateRange, pageNo, pageSize }, setLoading))
-    }, [open, showTemplate, submissionName, processorId, dateRange, pageNo, pageSize])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showTemplate, setShowTemplate] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [templateData, setTemplateData] = useState({});
+  const [filters, setFilters] = useState({
+    submissionName: '',
+    processorId: '',
+    dateRange: null,
+    pageSize: 10,
+    pageNo: 1
+  });
 
-    const showModal = () => {
-        setOpen(true)
+  useEffect(() => {
+    if (!allSubmissions?.length) {
+      setLoading(true);
     }
+    dispatch(getAllSubmissions(filters, setLoading));
+  }, [isModalOpen, showTemplate, filters]);
 
-    const handleCancel = () => {
-        setOpen(false)
+  const handleDateRangeSelect = (dates) => {
+    if (!dates || dates.length < 2) {
+      setFilters(prev => ({ ...prev, dateRange: null }));
+      return;
     }
+    
+    setFilters(prev => ({
+      ...prev,
+      dateRange: {
+        start: moment(dates[0]).format('YYYY-MM-DD'),
+        end: moment(dates[1]).add(1, 'day').format('YYYY-MM-DD')
+      }
+    }));
+  };
 
-    const setRange = (d) => {
-        if (!d) {
-            return setDateRange(null)
-        }
-        setDateRange({
-            start: d[0].format('YYYY-MM-DD'),
-            end: moment(d[1]).add(1, 'day').format('YYYY-MM-DD')
-        })
-    }
+  if (showTemplate && templateData?.id) {
+    return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />;
+  }
 
-    if (showTemplate && templateData?.id) {
-        return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />
-    }
-
-    return (
-        <div className='template-screen'>
-            <div className='secondary_header_container'>
-                <div className='left_sec_head'>
-                    <div className='secondary_header_left'>
-                        <img width={'30px'} src={SHARE_ICON} alt='SHARE_ICON' />
-                        <h2 className='secondary_header_heading'>
-                            Submission
-                        </h2>
-                    </div>
-                    <h2 className='secondary_header_heading'>
-                        Services
-                    </h2>
-                    <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
-                        <span className="material-symbols-outlined">
-                            add
-                        </span>
-                        <span>
-                            Create Submission
-                        </span>
-                    </Button>
-                </div>
-                <div className='right_sec_head'>
-                    <Button type='text' className='secondary_header_buttons'>
-                        <span className="material-symbols-outlined mg_rgt_3px">
-                            chat
-                        </span>
-                        <span>
-                            Help Assistant
-                        </span>
-                    </Button>
-                    <Button type='text' className='secondary_header_buttons'>
-                        <span className="material-symbols-outlined mg_rgt_3px">
-                            school
-                        </span>
-                        <span>
-                            Learn
-                        </span>
-                    </Button>
-                </div>
-            </div>
-            {/* <Divider /> */}
-            <br />
-            <Grid container spacing={1} justifyContent={'space-between'}>
-                <Grid item xl={2} lg={2} md={4} sm={6} xs={12}>
-                    <Select
-                        className='subdropdes ant-radius'
-                        showSearch
-                        allowClear
-                        placeholder='Filter'
-                        optionFilterProp='children'
-                        filterOption={(input, option) => option?.children?.includes(input)}
-                        filterSort={(optionA, optionB) =>
-                            optionA?.children?.toLowerCase()?.localeCompare(optionB?.children?.toLowerCase())
-                        }
-                        onChange={(e) => setProcessorId(e)}
-                    >
-                        {allProcessors?.map((v, i) => <Option key={i} value={v?.id}>{v?.displayName}</Option>)}
-                    </Select>
-                </Grid>
-                <Grid item xl={2} lg={3} md={4} sm={6} xs={12}>
-                    <RangePicker
-                        format={dateFormat}
-                        style={{ width: '100%' }}
-                        className='ant-radius'
-                        disabledDate={disabledDate}
-                        onChange={setRange}
-                    />
-                </Grid>
-                <Grid item xl={8} lg={7} md={4} sm={7} xs={12}>
-                    <Input
-                        className='ant-radius'
-                        placeholder='Search by Submission name'
-                        prefix={<BsSearch className='search-field-icon' />}
-                        onChange={(e) => setSubmissionName(e?.target?.value)}
-                        style={{ maxWidth: 600 }}
-                    />
-                </Grid>
-                {/* <Grid item xl={4} lg={3} md={12} sm={5} xs={12} style={{ textAlign: 'right' }}>
-                    <Button style={{ background: '#4285F4', color: '#fff', width: '180px' }} onClick={showModal} className='date width-sub height_57px ant-radius'
-                    >Create Submission</Button>
-                </Grid> */}
-            </Grid>
-
-            <div className='submission-div'>
-                <div className='submission-card'>
-                    <div className='submission-card-div'>
-                        <div className='submission-main-list'>
-                            <div className='submission-heading'>
-                                <p className='submission-title mg_lf_15px'>{totalSubmissions} Submissions</p>
-                                <div className='processor-data'>
-                                    <CiMenuKebab className='menuicon' />
-                                </div>
-                            </div>
-                            <div className='submission-table-main'>
-                                <Spin spinning={loading}>
-                                    <TableContainer component={Paper} className='submission-table'>
-                                        <Table
-                                            size='small' aria-label='a dense table'
-                                        >
-                                            <TableHead className={classes.tableHead}>
-                                                <TableRow className='submission-head'>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Submission</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Processor</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Total Forms</TableCell>
-                                                    {/* <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell> */}
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {allSubmissions?.map((v, i) => {
-                                                    return (
-                                                        <TableRow
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                            key={i}
-                                                        >
-                                                            <TableCell className='submission-table-first-col pointer submission-row-cell' component='th' scope='row'>
-                                                                <Link onClick={() => (setShowTemplate(true), setTemplateData(v))}>
-                                                                    <Tooltip placement='top' title={convertTitle(v?.submission_name)}>
-                                                                        {validateLength(convertTitle(v?.submission_name), 16)}
-                                                                    </Tooltip>
-                                                                </Link>
-                                                            </TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.processor_name}</TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.total_forms}</TableCell>
-                                                            {/* <TableCell className='submission-table-cell submission-row-cell'>
-                                                                <Progress
-                                                                    percent={v?.average_confidence}
-                                                                />
-                                                            </TableCell> */}
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.status}</TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Spin>
-                            </div>
-                            <div className='submissions-foote'>
-                                <Pagination
-                                    total={totalSubmissions}
-                                    pageSize={pageSize}
-                                    current={pageNo}
-                                    itemRender={itemRender}
-                                    showQuickJumper
-                                    hideOnSinglePage
-                                    onShowSizeChange={(e) => setPageSize(e * 10)}
-                                    onChange={setPageNo}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {open ? <SubmissionModal closeModal={handleCancel} {...props} /> : null}
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b">
+        <div className="flex h-16 items-center px-4 md:px-6">
+          <div className="flex items-center space-x-4">
+            <Share className="h-6 w-6" />
+            <h2 className="text-2xl font-semibold">Submission</h2>
+            <h2 className="text-2xl font-semibold text-muted-foreground">Services</h2>
+            
+            <Button 
+              variant="ghost" 
+              className="ml-16"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Submission
+            </Button>
+          </div>
+          
+          <div className="ml-auto flex items-center space-x-4">
+            <Button variant="ghost">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Help Assistant
+            </Button>
+            <Button variant="ghost">
+              <GraduationCap className="h-4 w-4 mr-2" />
+              Learn
+            </Button>
+          </div>
         </div>
-    )
-}
+      </div>
 
-export default Submission
+      {/* Filters */}
+      <div className="p-4 md:p-6 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="md:col-span-2">
+            <Select
+              onValueChange={(value) => setFilters(prev => ({ ...prev, processorId: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                {allProcessors?.map((processor) => (
+                  <SelectItem key={processor.id} value={processor.id}>
+                    {processor.displayName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="md:col-span-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  {filters.dateRange ? 
+                    `${moment(filters.dateRange.start).format('MM/DD/YYYY')} - ${moment(filters.dateRange.end).format('MM/DD/YYYY')}` 
+                    : "Pick a date range"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={moment().toDate()}
+                  selected={filters.dateRange}
+                  onSelect={handleDateRangeSelect}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="md:col-span-7">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by Submission name"
+                className="pl-8"
+                onChange={(e) => setFilters(prev => ({ ...prev, submissionName: e.target.value }))}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <Card>
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between p-4">
+              <h3 className="text-lg font-medium">{totalSubmissions} Submissions</h3>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Submission</TableHead>
+                  <TableHead>Processor</TableHead>
+                  <TableHead>Total Forms</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Created Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allSubmissions?.map((submission) => (
+                  <TableRow key={submission.id}>
+                    <TableCell>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link 
+                              onClick={() => {
+                                setShowTemplate(true);
+                                setTemplateData(submission);
+                              }}
+                              className="hover:underline"
+                            >
+                              {validateLength(convertTitle(submission.submission_name), 16)}
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {convertTitle(submission.submission_name)}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                    <TableCell>{submission.processor_name}</TableCell>
+                    <TableCell>{submission.total_forms}</TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
+                        ${submission.status === 'Processing' ? 'bg-blue-50 text-blue-700' : 
+                          submission.status === 'Completed' ? 'bg-green-50 text-green-700' :
+                          'bg-gray-50 text-gray-700'}`}>
+                        {submission.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>{moment(submission.created_at).format('MMM D, YYYY, h:mm:ss A')}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm text-muted-foreground">
+                  Page {filters.pageNo} of {Math.ceil(totalSubmissions / filters.pageSize)}
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFilters(prev => ({ ...prev, pageNo: prev.pageNo - 1 }))}
+                  disabled={filters.pageNo === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFilters(prev => ({ ...prev, pageNo: prev.pageNo + 1 }))}
+                  disabled={filters.pageNo >= Math.ceil(totalSubmissions / filters.pageSize)}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <SubmissionModal
+          closeModal={() => setIsModalOpen(false)}
+          {...props}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Submission;

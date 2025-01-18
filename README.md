@@ -151,3 +151,13 @@ Install gcloud on your system following this [link](https://cloud.google.com/sdk
 
 ```bash
 npm run deploy-app
+
+
+## Start Instructions
+
+##  Backend
+yarn dev-cloud
+
+## Frontend
+cd client
+yarn start-client

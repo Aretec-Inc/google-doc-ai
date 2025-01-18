@@ -119,8 +119,8 @@ const Sidenav = (props) => {
                             <div className='loginuser'>
                                 <div className='loginuser-img'></div>
                                 <div className='loginname'>
-                                    <h6>john Dae</h6>
-                                    <span>john@gmail.com</span>
+                                    <h6>Waqas Haq</h6>
+                                    <span>waqas@aretecinc.com</span>
                                 </div>
                             </div>
                         </div>

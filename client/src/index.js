@@ -5,7 +5,13 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux'
 import { store, persistor } from './Redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
-import 'antd/dist/antd.css';
+import './styles/globals.css'; 
+import HITLInterface from './Screens/HITLinterface.jsx';
+
+// import 'antd/dist/antd.css';
+// import 'antd/dist/reset.css'; // For Ant Design v5 and above
+
+
 // import { AllRoutes } from './Config/routes';
 import App from './App'
 const root = document.getElementById('root')
