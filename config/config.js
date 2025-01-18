@@ -8,10 +8,10 @@ module.exports = {
         port: 5432
     },
     cloudDB: {
-        username: 'postgres',
-        password: 'x*Q5"%YLc48gHyvZ',
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
         database: 'postgres',
-        host: '35.193.171.200',
+        host: process.env.DB_HOST,
         dialect: 'postgres',
         port: 5432
     },
