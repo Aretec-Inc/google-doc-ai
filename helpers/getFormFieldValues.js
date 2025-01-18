@@ -1,34 +1,19 @@
 const insertToDB = require('./insertToDB')
 const get_info = require('./getInfo')
 
-module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext, isEntity }, isTesting = false) => {
+module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext }, isTesting = false) => {
 
     const valueType = d && d.valueType
-    const fieldType = isEntity ? d?.type : null
-    const fieldName = get_info((d.fieldName || d), text, pageNumber, valueType, fieldType)
-    let theFieldValue = d.fieldValue || d || {}
 
-    let normalizedValue = theFieldValue?.normalizedValue?.text
-    let hasNormalizedValue = typeof normalizedValue == "string"
 
-    if (hasNormalizedValue) {
-        theFieldValue.textAnchor = { content: normalizedValue }
-    }
+    const fieldValue = get_info(d, text, pageNumber, valueType)
+    const fNameText = d?.type
+    const fValueText = d?.mentionText
 
-    const fieldValue = get_info(theFieldValue, text, pageNumber, valueType)
-    const fNameText = fieldName?.content?.text
-    const fValueText = fieldValue?.content?.text
-
-    const fNameRect = fieldName?.rect
     const fValueRect = fieldValue?.rect
 
-    const fNameConfidence = fieldName?.confidence
     const fValueConfidence = fieldValue?.confidence
 
-    const fN_x1 = fNameRect?.x1
-    const fN_x2 = fNameRect?.x2
-    const fN_y1 = fNameRect?.y1
-    const fN_y2 = fNameRect?.y2
 
     const fV_x1 = fValueRect?.x1
     const fV_x2 = fValueRect?.x2
@@ -38,23 +23,23 @@ module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext, isEntit
         file_name: exact_file_name_with_ext,
         field_name: fNameText || "",
         field_value: fValueText || "",
-        // validated_field_name: "nodejs",
-        // validated_field_value,
-        confidence: fNameConfidence || fValueConfidence,
-        key_x1: fN_x1,
-        key_x2: fN_x2,
-        key_y1: fN_y1,
-        key_y2: fN_y2,
+        confidence: fValueConfidence || 0,
+        key_x1: null,
+        key_x2: null,
+        key_y1: null,
+        key_y2: null,
         value_x1: fV_x1,
         value_x2: fV_x2,
         value_y1: fV_y1,
         value_y2: fV_y2,
         pageNumber: (pageNumber || 1),
         type,
-
-        field_name_confidence: fNameConfidence,
+        data_types:typeof(fValueText),
+        field_name_confidence: 0,
         field_value_confidence: fValueConfidence,
     }
+
+    console.log("key pairs data" , key_pairs_Data)
     //  console.log(fieldName, ":", fieldValue)
     if (exact_file_name_with_ext && !isTesting) {
         return insertToDB.gen_form_key_pair_values(key_pairs_Data)
