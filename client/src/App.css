@@ -18,13 +18,6 @@ body {
     overflow: hidden;
 }
 
-.mainheader {
-    background: #FEFEFE;
-    border-bottom: 1px solid #dfe0e4 !important;
-    z-index: 11;
-    position: relative;
-}
-
 .Top-header {
     display: flex;
     justify-content: space-between;

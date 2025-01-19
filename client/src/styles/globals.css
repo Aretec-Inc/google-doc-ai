@@ -108,3 +108,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add to your CSS file */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  font-size: 24px;
+}
+
+/* Active state for icons */
+.material-symbols-outlined.text-blue-600 {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+  color: #2563eb;
+}

@@ -154,6 +154,11 @@ npm run deploy-app
 
 
 ## Start Instructions
+Update .env file with 
+
+DB_HOST=""
+DB_USER=""""
+DB_PASSWORD=""
 
 ##  Backend
 yarn dev-cloud

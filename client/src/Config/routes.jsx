@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import Button from 'antd/lib/button'
 import Result from 'antd/lib/result'
 import { BrowserRouter, Route, Routes, useNavigate, useLocation } from 'react-router-dom'
-import { Submission, Dashboard, Configuration } from '../Screens'
+import { Submission, Dashboard, Configuration, BusinessRules } from '../Screens'
 import { Header, Sidenav } from '../Components'
 import { getAllProcessors, getAllSubmissions } from '../Redux/actions/docActions'
 import SelectedDocument from '../Components/SelectedDocument/SelectedDocument'
@@ -94,6 +94,7 @@ const AllRoutes = () => {
                 <Route path={allPaths?.DASHBOARD} element={<WrapComponent Component={Dashboard} />} />
                 <Route path={allPaths?.SUBMISSION} element={<WrapComponent Component={Submission} />} />
                 <Route path={allPaths?.CONFIGURATION} element={<WrapComponent Component={Configuration} />} />
+                <Route path={allPaths?.BusinessRules} element={<WrapComponent Component={BusinessRules} />} />
                 <Route path={'/document'} element={<WrapComponent Component={SelectedDocument} getData={() => console.log('Hello')} openModal={false} disableBack={true} closeModal={() => console.log(false)} artifactData={data} />} />
                 <Route path='/:page404' exact element={<Page404 />} />
                 {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />

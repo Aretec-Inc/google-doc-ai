@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Share, Search, MoreVertical, MessageCircle, GraduationCap, Upload, Flag } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';  // Added useNavigate here
+import { Search, ArrowLeft, Upload, MoreVertical } from 'lucide-react';
 import moment from 'moment';
-import { Progress, Slider } from 'antd';
+import { Progress } from 'antd';
 
 import {
   Table,
@@ -34,12 +35,44 @@ import { GET } from '../../utils/apis';
 import UploadModal from '../../Components/Submission/UploadModal';
 import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument';
 
+// Breadcrumb Component
+const SimpleBreadcrumb = ({ submissionName }) => {
+  const navigate = useNavigate();  // Now this will work
+
+  const handleSubmissionClick = (e) => {
+    e.preventDefault();
+    navigate('/submission');
+  };
+
+  return (
+    <nav className="px-4 py-2" aria-label="Breadcrumb">
+      <ol className="flex items-center text-sm">
+        <li>
+          <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
+        </li>
+        <li className="mx-2 text-gray-500">/</li>
+        <li>
+          <Link 
+            to="/submission" 
+            onClick={handleSubmissionClick}
+            className="text-[#0067b8] hover:underline"
+          >
+            Submission
+          </Link>
+        </li>
+        <li className="mx-2 text-gray-500">/</li>
+        <li className="text-gray-600">{submissionName}</li>
+      </ol>
+    </nav>
+  );
+};
+
 const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
   const submission_id = templateData?.id;
   const [threshold, setThreshold] = useState(templateData?.threshold || 0);
   const [allFiles, setAllFiles] = useState([]);
   const [totalFiles, setTotalFiles] = useState(0);
-  const [selectedFile, setSelectedFile] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
   const [showDocument, setShowDocument] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -99,10 +132,6 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
     });
   };
 
-  const handleThresholdChange = (value) => {
-    setThreshold(value);
-  };
-
   const downloadCsv = async () => {
     try {
       const response = await secureApi.post(
@@ -135,110 +164,79 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4 md:px-6">
+    <div className="bg-white min-h-screen">
+      {/* Breadcrumb */}
+      <SimpleBreadcrumb submissionName={convertTitle(templateData?.submission_name)} />
+
+      {/* Title Section */}
+      <div className="border-b bg-white">
+        <div className="px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Share className="h-6 w-6" />
-            <h2 className="text-2xl font-semibold">Submission</h2>
-            <h2 className="text-2xl font-semibold text-muted-foreground">Services</h2>
-            
             <Button 
               variant="ghost" 
-              className="ml-16"
+              size="icon"
+              onClick={goBack}
+              className="mr-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-xl font-medium">Submission: {convertTitle(templateData?.submission_name)}</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-500">
+              Threshold: {threshold}%
+            </span>
+            <Button 
               onClick={() => setIsModalOpen(true)}
+              className="ml-4"
             >
               <Upload className="h-4 w-4 mr-2" />
               Upload
             </Button>
           </div>
-          
-          <div className="ml-auto flex items-center space-x-4">
-            <Button variant="ghost">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Help Assistant
-            </Button>
-            <Button variant="ghost">
-              <GraduationCap className="h-4 w-4 mr-2" />
-              Learn
-            </Button>
-          </div>
         </div>
       </div>
 
-      <div className="p-4 md:p-6 space-y-4">
-        {/* Back button and filters */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="md:col-span-1">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={goBack}
-            >
-              <ArrowLeft className="h-4 w-4" />
+      {/* Filters */}
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by ID or File name"
+            className="pl-8"
+            onChange={(e) => setFileName(e.target.value)}
+          />
+        </div>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full justify-start text-left font-normal">
+              {dateRange ? 
+                `${moment(dateRange.start).format('MM/DD/YYYY')} - ${moment(dateRange.end).format('MM/DD/YYYY')}` 
+                : "Pick a date range"}
             </Button>
-          </div>
-
-          <div className="md:col-span-3">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {dateRange ? 
-                    `${moment(dateRange.start).format('MM/DD/YYYY')} - ${moment(dateRange.end).format('MM/DD/YYYY')}` 
-                    : "Pick a date range"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={moment().toDate()}
-                  selected={dateRange}
-                  onSelect={handleDateRangeSelect}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          <div className="md:col-span-8">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by ID or File name"
-                className="pl-8"
-                onChange={(e) => setFileName(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Submission info */}
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium">
-            Submission: {convertTitle(templateData?.submission_name)}
-          </h3>
-          <div className="flex items-center space-x-4 w-64">
-            <span className="text-sm text-muted-foreground">Threshold:</span>
-            <Slider
-              value={threshold}
-              onChange={handleThresholdChange}
-              min={0}
-              max={100}
-              step={1}
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={moment().toDate()}
+              selected={dateRange}
+              onSelect={handleDateRangeSelect}
+              numberOfMonths={2}
             />
-            <span className="text-sm min-w-[40px]">{threshold}%</span>
-          </div>
-        </div>
+          </PopoverContent>
+        </Popover>
+      </div>
 
-        {/* Table */}
+      {/* Content Section */}
+      <div className="px-4 pb-4">
         <Card>
           <CardContent className="p-0">
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center space-x-4">
-                <h3 className="text-lg font-medium">{totalFiles} Documents</h3>
-                <span className="text-sm text-muted-foreground">
+                <span className="font-medium">{totalFiles} Documents</span>
+                <span className="text-sm text-gray-500">
                   Processor: {templateData?.processor_name}
                 </span>
               </div>
@@ -254,7 +252,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
                     </Button>
                   </>
                 ) : (
-                  <Button onClick={() => setViewTable(true)}>
+                  <Button onClick={() => setViewTable(true)} variant="secondary">
                     View Table
                   </Button>
                 )}
@@ -263,88 +261,58 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
 
             <Table>
               <TableHeader>
-                {viewTable ? (
-                  <TableRow>
-                    {exportColumns.map((column, index) => (
-                      <TableHead key={index}>{convertTitle(column)}</TableHead>
-                    ))}
-                  </TableRow>
-                ) : (
-                  <TableRow>
-                    <TableHead>File Name</TableHead>
-                    <TableHead>Confidence</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created Date</TableHead>
-                  </TableRow>
-                )}
+                <TableRow>
+                  <TableHead className="w-[40%]">File Name</TableHead>
+                  <TableHead className="w-[20%]">Confidence</TableHead>
+                  <TableHead className="w-[20%]">Status</TableHead>
+                  <TableHead className="w-[20%]">Created Date</TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
-                {viewTable ? (
-                  exportData.map((row, rowIndex) => (
-                    <TableRow key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <TableCell key={`${rowIndex}-${cellIndex}`}>
-                          {convertTitle(cell || '-')}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  allFiles.map((file) => (
-                    <TableRow key={file.id}>
-                      <TableCell>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => {
-                                  setSelectedFile(file);
-                                  setShowDocument(true);
-                                }}
-                                className="hover:underline"
-                              >
-                                {validateLength(convertTitle(file.original_file_name), 50)}
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {convertTitle(file.original_file_name)}
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        {file.is_completed && file.min_confidence < threshold && (
-                          <Flag className="h-4 w-4 inline-block ml-2 text-red-500" />
-                        )}
-                      </TableCell>
-                      <TableCell>
+                {allFiles.map((file) => (
+                  <TableRow key={file.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center">
+                        <Link 
+                          onClick={() => {
+                            setSelectedFile(file);
+                            setShowDocument(true);
+                          }}
+                          className="hover:underline text-blue-600"
+                        >
+                          {validateLength(convertTitle(file.original_file_name), 50)}
+                        </Link>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="w-full">
                         <Progress
                           percent={file.average_confidence}
-                          size="small"
                           status={file.average_confidence < threshold ? "exception" : "active"}
+                          size="small"
                         />
-                      </TableCell>
-                      <TableCell>
-                        <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
-                          ${file.is_completed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-                          {file.is_completed ? 'Completed' : 'Processing'}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {moment(file.created_at).format('MMM D, YYYY, h:mm:ss A')}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
+                        ${file.is_completed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                        {file.is_completed ? 'Completed' : 'Processing'}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {moment(file.created_at).format('MMM D, YYYY, h:mm:ss A')}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center space-x-2">
-                <p className="text-sm text-muted-foreground">
-                  Page {pageNo} of {Math.ceil(totalFiles / pageSize)}
-                </p>
-              </div>
-              <div className="flex items-center space-x-2">
+            <div className="flex items-center justify-between p-4 border-t">
+              <p className="text-sm text-gray-500">
+                Page {pageNo} of {Math.ceil(totalFiles / pageSize)}
+              </p>
+              <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   size="sm"

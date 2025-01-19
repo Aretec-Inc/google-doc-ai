@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { Share, Search, MoreVertical, MessageCircle, GraduationCap, Plus } from 'lucide-react';
+import { Search, MoreVertical, Plus, ChevronRight } from 'lucide-react';
 
 import {
   Table,
@@ -39,14 +39,11 @@ import { validateLength, convertTitle, disabledDate } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions';
 import SubmissionModal from '../../Components/Submission/SubmissionModal';
 import SubmissionTemplate from './SubmissionTemplate';
-import { ChevronRight } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
 
+// Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName }) => {
-  const location = useLocation();
-  
   return (
-    <nav className="py-2 px-4 bg-white" aria-label="Breadcrumb">
+    <nav className="py-2 px-4 border-b" aria-label="Breadcrumb">
       <ol className="flex items-center text-sm">
         <li>
           <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
@@ -114,34 +111,29 @@ const Submission = (props) => {
     <div className="bg-white">
       {/* Breadcrumb */}
       <SimpleBreadcrumb submissionName={templateData?.submission_name} />
-      
-      {/* Main Title Section */}
+
+      {/* Title Section */}
       <div className="border-b bg-white">
         <div className="px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-xl">Submission</h1>
             <span className="text-gray-500">Services</span>
-            <button className="ml-8 px-4 py-2 flex items-center space-x-2 hover:bg-gray-50 rounded">
-              <span>+</span>
-              <span>Create Submission</span>
-            </button>
-          </div>
-          <div className="flex items-center space-x-6">
-            <button className="flex items-center space-x-2">
-              <span>Help Assistant</span>
-            </button>
-            <button className="flex items-center space-x-2">
-              <span>Learn</span>
-            </button>
+            <Button 
+              variant="outline"
+              className="ml-8"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Submission
+            </Button>
           </div>
         </div>
       </div>
-      
-      {/* Filters */}
 
+      {/* Filters */}
       <div className="p-4 md:p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        <div className="md:col-span-7">
+          <div className="md:col-span-7">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -190,8 +182,6 @@ const Submission = (props) => {
               </PopoverContent>
             </Popover>
           </div>
-
-
         </div>
 
         {/* Table */}
