@@ -2,9 +2,9 @@ name: Deploy to Cloud Run
 
 on:
   push:
-    branches: [ deployment-irs ]
+    branches: [ IRS ]
   pull_request:
-    branches: [ deployment-irs ]
+    branches: [ IRS ]
 
 jobs:
   deploy:
@@ -27,8 +27,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-doc-ai --timeout=9000 --machine-type=n1-highcpu-32
+        gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-document-ai --timeout=9000 --machine-type=n1-highcpu-32
     
     - name: Deploy
       run: |
-        gcloud run deploy irs-doc-ai --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-doc-ai:latest --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic irs-doc-ai --to-latest --region=us-central1
+        gcloud run deploy irs-doc-aiument --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-document-ai:latest --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic irs-doc-aiument --to-latest --region=us-central1
