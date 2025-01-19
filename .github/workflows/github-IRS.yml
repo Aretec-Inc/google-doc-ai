@@ -31,4 +31,4 @@ jobs:
     
     - name: Deploy
       run: |
-        gcloud run deploy irs-doc-aiument --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-document-ai:latest --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic irs-doc-aiument --to-latest --region=us-central1
+        gcloud run deploy irs-document-ai --image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/irs-document-ai:latest --allow-unauthenticated --region=us-central1 --project=${{ secrets.GCP_PROJECT_ID }} && gcloud run services update-traffic irs-document-ai --to-latest --region=us-central1
