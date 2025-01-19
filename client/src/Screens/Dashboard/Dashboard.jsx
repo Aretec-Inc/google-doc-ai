@@ -70,7 +70,7 @@ const Dashboard = () => {
         <div className="min-h-screen bg-white">
             {/* Header */}
             <div className="border-b">
-                <div className="flex h-16 items-center px-4">
+                <div className="flex h-16 items-center">
                     <div className="flex items-center space-x-4">
                         <Layout className="h-6 w-6" />
                         <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -89,7 +89,7 @@ const Dashboard = () => {
             </div>
 
             {/* Main Content */}
-            <div className="p-4">
+            <div className="py-4">
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Card>

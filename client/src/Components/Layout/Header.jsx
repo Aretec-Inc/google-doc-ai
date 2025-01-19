@@ -1,5 +1,3 @@
-// src/Components/Layout/Header.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import LOGO from '../../assets/Doc_ai_logo.svg';
@@ -14,7 +12,7 @@ const Header = ({ setToggleHeader }) => {
         <>
             {/* Primary Navigation */}
             <div className="bg-[#002D62] w-full">
-                <div className="container mx-auto px-4">
+                <div className="mx-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
                             <span 
@@ -48,10 +46,10 @@ const Header = ({ setToggleHeader }) => {
 
             {/* Secondary Navigation */}
             <div className="bg-[#00254d] w-full">
-                <div className="container mx-auto px-4">
+                <div className="mx-8">
                     <div className="flex justify-between items-center">
                         <nav className="flex">
-                            <Link to="/file" className="px-6 py-3 text-white hover:bg-[#003478]">File</Link>
+                            <Link to="/file" className="px-1 py-3 text-white hover:bg-[#003478]">File</Link>
                             <Link to="/submission" className="px-6 py-3 text-white hover:bg-[#003478]">Submission</Link>
                             <Link to="/forms" className="px-6 py-3 text-white hover:bg-[#003478]">Forms & Instructions</Link>
                         </nav>

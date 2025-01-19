@@ -28,35 +28,3 @@ const SelectedCard = (props) => {
 }
 
 export default SelectedCard
-// class SelectedCard extends React.Component {
-//     constructor(props) {
-//         super(props)
-//     }
-
-//     render() {
-//         return (
-//             <div>
-//                 <div className='btn-div'>
-//                     <SelectedCardData {...this.props} />
-//                 </div>
-//             </div>
-//         )
-//     }
-// }
-
-// const mapStateToProps = (state) => {
-//     return {
-//         user: state.authReducer.user,
-//         selectedKey: state.authReducer.selectedKey,
-//         artifactData: state.authReducer.artifactData
-//     }
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         loginUser: (user) => dispatch(loginUser(user)),
-//         removeUser: () => dispatch(removeUser())
-//     }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(SelectedCard)

@@ -7,7 +7,7 @@ body {
 .main-screen {
     display: flex;
     background: #FEFEFE;
-    margin-top: 60px;
+    margin-top: 10px;
     height: calc(100vh - 75px);
     overflow-y: auto;
     font-family: 'Roboto';

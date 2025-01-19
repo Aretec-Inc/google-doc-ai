@@ -43,7 +43,7 @@ import SubmissionTemplate from './SubmissionTemplate';
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName }) => {
   return (
-    <nav className="py-2 px-4 border-b" aria-label="Breadcrumb">
+    <nav className="py-2 border-b" aria-label="Breadcrumb">
       <ol className="flex items-center text-sm">
         <li>
           <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
@@ -114,7 +114,7 @@ const Submission = (props) => {
 
       {/* Title Section */}
       <div className="border-b bg-white">
-        <div className="px-4 py-4 flex justify-between items-center">
+        <div className="py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-xl">Submission</h1>
             <span className="text-gray-500">Services</span>
@@ -131,7 +131,7 @@ const Submission = (props) => {
       </div>
 
       {/* Filters */}
-      <div className="p-4 md:p-6 space-y-4">
+      <div className="py-4 md:py-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           <div className="md:col-span-7">
             <div className="relative">

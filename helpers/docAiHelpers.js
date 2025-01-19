@@ -147,7 +147,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../inference_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
+          json_file = require("../docAIJSON/inference_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
         }
         if (
           file_name?.includes(
@@ -155,7 +155,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
+          json_file = require("../docAIJSON/gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
         }
         if (
           file_name?.includes(
@@ -163,7 +163,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
+          json_file = require("../docAIJSON/gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
         }
         if (
           file_name?.includes(
@@ -171,31 +171,31 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
+          json_file = require("../docAIJSON/gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
         }
         if (
           file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
         ) {
           skip_docai = true;
-          json_file = require("../inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
+          json_file = require("../docAIJSON/inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
         }
         if (
           file_name?.includes("f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.pdf")
         ) {
           skip_docai = true;
-          json_file = require("../inference-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
+          json_file = require("../docAIJSON/inference-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
         }
         if (
           file_name?.includes("f941sb_f09e9682-9763-4202-8f3f-336320575038.pdf")
         ) {
           skip_docai = true;
-          json_file = require("../inference-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
+          json_file = require("../docAIJSON/inference-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
         }
         if (
           file_name?.includes("f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.pdf")
         ) {
           skip_docai = true;
-          json_file = require("../inference-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
+          json_file = require("../docAIJSON/inference-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
         }
         if (
           file_name?.includes(
@@ -203,7 +203,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../inference_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+          json_file = require("../docAIJSON/inference_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
         }
         if (
           file_name?.includes(
@@ -211,7 +211,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../inference_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+          json_file = require("../docAIJSON/inference_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
         }
         if (skip_docai) {
           console.log("skipping docai");

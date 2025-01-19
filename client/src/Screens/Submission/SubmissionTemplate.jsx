@@ -45,15 +45,15 @@ const SimpleBreadcrumb = ({ submissionName }) => {
   };
 
   return (
-    <nav className="px-4 py-2" aria-label="Breadcrumb">
+    <nav className="py-2" aria-label="Breadcrumb">
       <ol className="flex items-center text-sm">
         <li>
           <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
         </li>
         <li className="mx-2 text-gray-500">/</li>
         <li>
-          <Link 
-            to="/submission" 
+          <Link
+            to="/submission"
             onClick={handleSubmissionClick}
             className="text-[#0067b8] hover:underline"
           >
@@ -99,7 +99,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
         `${GET.FILES_BY_ID}?submission_id=${submission_id}`,
         { fileName, dateRange, pageNo, pageSize }
       );
-      
+
       setAllFiles(response?.documents || []);
       setTotalFiles(response?.totalFiles || 0);
       dispatch(setDocuments({ [submission_id]: response?.documents || [] }));
@@ -125,7 +125,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
       setDateRange(null);
       return;
     }
-    
+
     setDateRange({
       start: moment(dates[0]).format('YYYY-MM-DD'),
       end: moment(dates[1]).add(1, 'day').format('YYYY-MM-DD')
@@ -139,7 +139,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
         {},
         { responseType: 'blob' }
       );
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -170,13 +170,13 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
 
       {/* Title Section */}
       <div className="border-b bg-white">
-        <div className="px-4 py-4 flex justify-between items-center">
+        <div className="py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={goBack}
-              className="mr-2"
+              className=""
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -186,7 +186,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
             <span className="text-sm text-gray-500">
               Threshold: {threshold}%
             </span>
-            <Button 
+            <Button
               onClick={() => setIsModalOpen(true)}
               className="ml-4"
             >
@@ -198,7 +198,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
       </div>
 
       {/* Filters */}
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -211,8 +211,8 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-full justify-start text-left font-normal">
-              {dateRange ? 
-                `${moment(dateRange.start).format('MM/DD/YYYY')} - ${moment(dateRange.end).format('MM/DD/YYYY')}` 
+              {dateRange ?
+                `${moment(dateRange.start).format('MM/DD/YYYY')} - ${moment(dateRange.end).format('MM/DD/YYYY')}`
                 : "Pick a date range"}
             </Button>
           </PopoverTrigger>
@@ -230,7 +230,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
       </div>
 
       {/* Content Section */}
-      <div className="px-4 pb-4">
+      <div className="pb-4">
         <Card>
           <CardContent className="p-0">
             <div className="flex items-center justify-between p-4 border-b">
@@ -273,7 +273,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
                   <TableRow key={file.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-center">
-                        <Link 
+                        <Link
                           onClick={() => {
                             setSelectedFile(file);
                             setShowDocument(true);
