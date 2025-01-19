@@ -417,7 +417,7 @@ const CreateSubmission = (props) => {
                                     <Grid item>
                                         <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
                                             <img src={GCS} alt="" className='upload-image' />
-                                            <span>Google Cloud Storage</span>
+                                            <span>GCS</span>
                                         </div>
                                     </Grid>
                                 </Grid>
