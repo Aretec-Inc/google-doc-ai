@@ -243,7 +243,6 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     const icon_style = { color: 'rgb(0, 128, 247)' }
 
     const bookMarkColor = isBookmarkLoading ? { color: 'gray' } : icon_style
-    console.log("USER LOGIN ==>", userLogin?.role)
     return (
         <div className='myShadowCard'>
             <div className='artifact-top'>
@@ -258,60 +257,6 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                 <div className='new-doc'>
                     New Document
                 </div>
-                {/* <div style={{ marginLeft: 140 }}>
-                    <span><b>{artifactData?.is_completed ? 'COMPLETED' : 'PROCESSING'}</b></span>
-                </div> */}
-                {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> */}
-                {/* {isPDF(artifactData?.artifact_type) && (
-                        <Spin spinning={updatedFile}>
-                            <div className='artifact-version'>
-                                <Button
-                                    type='primary'
-                                    style={{ margin: 0, marginRight: 10 }}
-                                    onClick={() => draggerRef.current.click()}
-                                >
-                                    Upload Updated File
-                                </Button>
-                                <Select
-                                    showSearch
-                                    placeholder='Select Version'
-                                    optionFilterProp='children'
-                                    value={version}
-                                    style={{ minWidth: 100 }}
-                                    onChange={onChange}
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    {Array.isArray(versions) && versions.length && versions.map((v, i) => <Option value={i} key={i} >{`Version ${i + 1}`}</Option>)}
-                                </Select>
-                                <input
-                                    type='file'
-                                    onChange={normFile}
-                                    ref={draggerRef}
-                                    accept='application/pdf'
-                                    style={{ display: 'none' }}
-                                />
-                            </div>
-                        </Spin>
-                    )} */}
-                {/* <Tooltip title={isBookMarked ? (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to remove from bookmark') : (isBookmarkLoading ? 'Please wait, Loading Bookmark' : 'Click to add as a bookmark')}>
-                        <span onClick={() => addOrRemoveBookMark()} id='artifactBookmark'>
-
-                            {isBookMarked ? (
-                                <Bookmark className='MaterialIcons myHeaderIcons' style={{ fontSize: 30, ...bookMarkColor }} />
-                            ) : (
-                                <BookmarkBorderOutlined className='MaterialIcons myHeaderIcons' style={{ fontSize: 30, ...bookMarkColor }} />
-                            )
-                            }
-                        </span>
-                    </Tooltip> */}
-
-                {/* <CheckCircleOutline style={{ fontSize: 27, margin: '0px 6px', color: 'rgb(0, 128, 247)' }} /> */}
-                {/* <ValidateButton artifactData={artifactData} disabled={artifactData?.is_validate} id={artifactData?.id} />
-
-                    <DownloadButton selectedCard={artifactData} />
-                </div> */}
             </div>
 
         </div >

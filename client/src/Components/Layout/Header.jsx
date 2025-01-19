@@ -11,12 +11,12 @@ const Header = ({ setToggleHeader }) => {
     return (
         <>
             {/* Primary Navigation */}
-            <div className="bg-[#002D62] w-full">
+            <div className="bg-[#00599c] w-full">
                 <div className="mx-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <span 
-                                className="material-symbols-outlined text-white cursor-pointer mr-4" 
+                            <span
+                                className="material-symbols-outlined text-white cursor-pointer mr-4"
                                 onClick={clickToogle}
                             >
                                 menu
@@ -45,7 +45,7 @@ const Header = ({ setToggleHeader }) => {
             </div>
 
             {/* Secondary Navigation */}
-            <div className="bg-[#00254d] w-full">
+            <div className="bg-[#002d62] w-full">
                 <div className="mx-8">
                     <div className="flex justify-between items-center">
                         <nav className="flex">
@@ -55,9 +55,9 @@ const Header = ({ setToggleHeader }) => {
                         </nav>
                         <div className="flex items-center space-x-4">
                             <div className="relative">
-                                <input 
-                                    type="text" 
-                                    placeholder="Search" 
+                                <input
+                                    type="text"
+                                    placeholder="Search"
                                     className="py-1 px-3 pr-8 rounded text-sm w-64"
                                 />
                                 <span className="absolute right-2 top-1/2 transform -translate-y-1/2 material-symbols-outlined text-gray-400 text-sm">

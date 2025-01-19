@@ -39,33 +39,6 @@ const FormDialog = ({ closeDialog, data, onSave, is_editable, artifactData }) =>
             })
     }, [])
 
-    // let updateNow = (isFieldName) => {
-    //     setIsLoading(true)
-    //     secureApi.post(parseURL(`${allAPIs.update_key_pair}`), { id, [str_validated_field_name]: fieldName, [str_validated_field_value]: fieldValue })
-    //         .then(data => {
-    //             let results = data?.data
-    //             setIsLoading(false)
-    //             if (typeof onSave == 'function') onSave()
-
-    //             if (results.success) {
-    //                 successMessage(`Succesfully updated field!`)
-    //                 if (typeof refresh == 'function') refresh()
-    //             }
-    //             else {
-    //                 errorMessage(results.message || 'Something went wrong!')
-    //                 console.log(`Received Success false from server,`, results)
-    //             }
-
-    //             close()
-    //         })
-    //         .catch(e => {
-    //             errorMessage(e.message || 'Something went wrong!')
-    //             console.log('Error occurred in updateNow funciton in EditableTableCell.jsx ', e)
-    //             setIsLoading(false)
-    //         })
-    // }
-    //const KeyPairTable = ({ key_pairs, is_editable = true, refresh, isDLP, isSchemaGenerated, artifactData }) => {
-
     return (
         <Dialog fullWidth={true} maxWidth={'md'} open={true} onClose={close} aria-labelledby='form-dialog-title'>
             <DialogTitle id='form-dialog-title'>Adjudicate</DialogTitle>
