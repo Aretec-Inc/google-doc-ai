@@ -40,14 +40,14 @@ const Dashboard = () => {
             setLoading(true);
             const data = await secureApi.post(POST.DASHBOARD_DATA, filters);
             setDashboardData({
-                documents: data.documents,
-                submissions: data.submissions,
-                totalNumbers: data.totalFixes,
-                accuracySubmission: data.accBySubmission,
-                overAllConfidence: data.overAllConfidence,
-                aboveThresholdModelAcc: data.aboveArr,
-                belowThresholdModelAcc: data.belowArr,
-                confidenceModel: data.confidenceByModelFinalSchema
+                documents: data?.documents,
+                submissions: data?.submissions,
+                totalNumbers: data?.totalFixes,
+                accuracySubmission: data?.accBySubmission,
+                overAllConfidence: data?.overAllConfidence,
+                aboveThresholdModelAcc: data?.aboveArr,
+                belowThresholdModelAcc: data?.belowArr,
+                confidenceModel: data?.confidenceByModelFinalSchema
             });
         } catch (err) {
             errorMessage(err?.response?.data?.message);
@@ -100,7 +100,7 @@ const Dashboard = () => {
                             </p>
                         </CardContent>
                     </Card>
-                    
+
                     <Link to="/submission" className="block">
                         <Card className="hover:bg-gray-50/50 group">
                             <CardContent className="p-6">
@@ -119,7 +119,7 @@ const Dashboard = () => {
                             </CardContent>
                         </Card>
                     </Link>
-                    
+
                     <Card>
                         <CardContent className="p-6">
                             <h3 className="text-lg font-semibold text-gray-900">Fields Transcribed</h3>
@@ -146,10 +146,10 @@ const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="min-h-[400px]">
-                                    <SubmissionVisuals 
+                                    <SubmissionVisuals
                                         submissionsList={submissionsList}
                                         accuracySubmission={dashboardData.accuracySubmission}
-                                        setSubmissionFilter={(val) => setFilters(prev => ({...prev, submission: val}))}
+                                        setSubmissionFilter={(val) => setFilters(prev => ({ ...prev, submission: val }))}
                                     />
                                 </div>
                             </div>
@@ -167,9 +167,9 @@ const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="min-h-[400px]">
-                                    <ProcessorVisuals 
-                                        aboveThresholdModelAcc={dashboardData.aboveThresholdModelAcc}
-                                        belowThresholdModelAcc={dashboardData.belowThresholdModelAcc}
+                                    <ProcessorVisuals
+                                        aboveThresholdModelAcc={dashboardData?.aboveThresholdModelAcc}
+                                        belowThresholdModelAcc={dashboardData?.belowThresholdModelAcc}
                                     />
                                 </div>
                             </div>
@@ -187,9 +187,9 @@ const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="min-h-[400px]">
-                                    <ConfidenceSubmission 
+                                    <ConfidenceSubmission
                                         confidences={confidences}
-                                        setConfidenceFilter={(val) => setFilters(prev => ({...prev, confidence: val}))}
+                                        setConfidenceFilter={(val) => setFilters(prev => ({ ...prev, confidence: val }))}
                                         overAllConfidence={dashboardData.overAllConfidence}
                                     />
                                 </div>
@@ -208,10 +208,10 @@ const Dashboard = () => {
                                     </p>
                                 </div>
                                 <div className="min-h-[400px]">
-                                    <ConfidenceModel 
-                                        confidenceModel={dashboardData.confidenceModel}
-                                        aboveThresholdModelAcc={dashboardData.aboveThresholdModelAcc}
-                                        belowThresholdModelAcc={dashboardData.belowThresholdModelAcc}
+                                    <ConfidenceModel
+                                        confidenceModel={dashboardData?.confidenceModel}
+                                        aboveThresholdModelAcc={dashboardData?.aboveThresholdModelAcc}
+                                        belowThresholdModelAcc={dashboardData?.belowThresholdModelAcc}
                                     />
                                 </div>
                             </div>

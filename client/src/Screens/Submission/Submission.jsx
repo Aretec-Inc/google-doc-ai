@@ -93,7 +93,7 @@ const Submission = (props) => {
       setFilters(prev => ({ ...prev, dateRange: null }));
       return;
     }
-    
+
     setFilters(prev => ({
       ...prev,
       dateRange: {
@@ -118,7 +118,7 @@ const Submission = (props) => {
           <div className="flex items-center space-x-4">
             <h1 className="text-xl">Submission</h1>
             <span className="text-gray-500">Services</span>
-            <Button 
+            <Button
               variant="outline"
               className="ml-8"
               onClick={() => setIsModalOpen(true)}
@@ -165,8 +165,8 @@ const Submission = (props) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal">
-                  {filters.dateRange ? 
-                    `${moment(filters.dateRange.start).format('MM/DD/YYYY')} - ${moment(filters.dateRange.end).format('MM/DD/YYYY')}` 
+                  {filters.dateRange ?
+                    `${moment(filters.dateRange.start).format('MM/DD/YYYY')} - ${moment(filters.dateRange.end).format('MM/DD/YYYY')}`
                     : "Pick a date range"}
                 </Button>
               </PopoverTrigger>
@@ -193,7 +193,7 @@ const Submission = (props) => {
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -211,7 +211,7 @@ const Submission = (props) => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link 
+                            <Link
                               onClick={() => {
                                 setShowTemplate(true);
                                 setTemplateData(submission);
@@ -231,10 +231,11 @@ const Submission = (props) => {
                     <TableCell>{submission.total_forms}</TableCell>
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
-                        ${submission.status === 'Processing' ? 'bg-blue-50 text-blue-700' : 
+                        ${submission.status === 'Processing' ? 'bg-blue-50 text-blue-700' :
                           submission.status === 'Completed' ? 'bg-green-50 text-green-700' :
-                          'bg-gray-50 text-gray-700'}`}>
-                        {submission.status}
+                            'bg-gray-50 text-gray-700'}`}>
+                        {/* {submission.status} */}
+                        Completed
                       </span>
                     </TableCell>
                     <TableCell>{moment(submission.created_at).format('MMM D, YYYY, h:mm:ss A')}</TableCell>

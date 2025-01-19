@@ -49,9 +49,16 @@ const Header = ({ setToggleHeader }) => {
                 <div className="mx-8">
                     <div className="flex justify-between items-center">
                         <nav className="flex">
-                            <Link to="/file" className="px-1 py-3 text-white hover:bg-[#003478]">File</Link>
+                            <Link to="/" className="px-1 py-3 text-white hover:bg-[#003478]">Dashboard</Link>
                             <Link to="/submission" className="px-6 py-3 text-white hover:bg-[#003478]">Submission</Link>
-                            <Link to="/forms" className="px-6 py-3 text-white hover:bg-[#003478]">Forms & Instructions</Link>
+                            <Link
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    window.open("https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms", "_blank");
+                                }}
+                                to="https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms"
+                                className="px-6 py-3 text-white hover:bg-[#003478]">
+                                Forms & Instructions</Link>
                         </nav>
                         <div className="flex items-center space-x-4">
                             <div className="relative">
@@ -69,7 +76,7 @@ const Header = ({ setToggleHeader }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     );
 };

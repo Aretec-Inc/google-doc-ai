@@ -1,23 +1,18 @@
 import React, { useEffect, useRef } from 'react'
-import { isPDF } from '../../utils/pdfConstants'
 import SparkMD5 from 'spark-md5'
 
-import { Tooltip, Button, Modal, Select } from 'antd'
+import { Modal, Select, Tooltip } from 'antd'
 import Highlighter from 'react-highlight-words'
 import './SelectedCardData.css'
 // import { LeftOutlined } from '@ant-design/icons'
-import { AiOutlineArrowLeft } from "react-icons/ai";
-import { BookmarkBorderOutlined, Bookmark } from '@material-ui/icons'
 import { CloudUploadOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { AiOutlineArrowLeft } from "react-icons/ai"
 import { useSelector } from 'react-redux'
 import { secureApi } from '../../Config/api'
-import { useState } from 'react'
-import { removeBookmark, successNotification, warningMessage, errorMessage } from '../../utils/pdfHelpers'
-import ValidateButton from './ValidateButton'
-import DownloadButton from '../ArtifactDataCard/DownloadButton'
+import { ARTIFACT, BOOKMARKS_APIS } from '../../utils/apis'
+import { errorMessage, removeBookmark, successNotification, warningMessage } from '../../utils/pdfHelpers'
 import './HeaderTopBar.css'
-import { ARTIFACT, BOOKMARKS_APIS, POST, GET } from '../../utils/apis'
-import { manager } from '../../utils/constants'
 
 const { Option } = Select
 
@@ -254,9 +249,9 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                         <p style={{ marginBottom: 0, marginLeft: 10, flex: 1 }}>{highlighter(smallLengthName)}</p>
                     </Tooltip>
                 </div>
-                <div className='new-doc'>
+                {/* <div className='new-doc'>
                     New Document
-                </div>
+                </div> */}
             </div>
 
         </div >

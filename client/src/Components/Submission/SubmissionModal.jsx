@@ -1,22 +1,22 @@
-import React, { useState, useRef } from 'react'
-import { Select, Modal, Progress, Space, Button, Tooltip, Spin, Input } from 'antd'
-import axios from 'axios'
 import Grid from '@mui/material/Grid'
-import Stepper from '@mui/material/Stepper'
+import Slider from '@mui/material/Slider'
 import Step from '@mui/material/Step'
 import StepButton from '@mui/material/StepButton'
-import Slider from '@mui/material/Slider'
+import Stepper from '@mui/material/Stepper'
+import { Button, Input, Modal, Progress, Select, Space, Spin, Tooltip } from 'antd'
+import axios from 'axios'
+import React, { useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import DRIVE from '../../assets/drive.svg'
+import GCP from '../../assets/gcp.svg'
+import LOCALDRIVE from '../../assets/localdrive.svg'
+import ONE_DRIVE from '../../assets/onedrive.svg'
+import AMAZON from '../../assets/S3.svg'
 import { secureApi } from '../../Config/api'
 import { POST } from '../../utils/apis'
-import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
-import { useSelector } from 'react-redux'
+import { convertTitle, errorMessage, successMessage, validateLength, warningMessage } from '../../utils/helpers'
 import GCSUpload from './GCSUpload'
 import S3Upload from './S3Upload'
-import LOCALDRIVE from '../../assets/localdrive.svg'
-import DRIVE from '../../assets/drive.svg'
-import AMAZON from '../../assets/S3.svg'
-import ONE_DRIVE from '../../assets/onedrive.svg'
-import GCP from '../../assets/gcp.svg'
 
 const { Option } = Select
 
@@ -272,6 +272,29 @@ const CreateSubmission = (props) => {
             })
     }
 
+
+    const customProcessorList = [
+        {
+            displayName: "Form 941",
+            id: "478e2c892dc83bbc",
+            state: "ENABLED",
+            type: "FORM_PARSER_PROCESSOR"
+        },
+        {
+            displayName: "Form 941 Schedule B",
+            id: "478e2c892dc83bbc",
+            state: "ENABLED",
+            type: "FORM_PARSER_PROCESSOR"
+        },
+        {
+            displayName: "Form 941 Schedule D",
+            id: "478e2c892dc83bbc",
+            state: "ENABLED",
+            type: "FORM_PARSER_PROCESSOR"
+        }
+    ]
+
+    console.log("Schematized processors for domain-specific documents.", allProcessors)
     return (
         <div className='template-screen'>
             <Modal
@@ -295,11 +318,11 @@ const CreateSubmission = (props) => {
                     {showS3 ? <S3Upload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : showGCS ? <GCSUpload templateData={{ ...processor, isNew: true }} threshold={threshold} submissionName={submissionName} goBack={() => setShowGCS(false)} handleCancel={handleCancel} /> : activeStep === 0 ? <div className='select-process'>
                         <div className='modal-content-sec'>
                             <Grid container spacing={2}>
-                                <Grid item sm={6} xs={12}>
+                                <Grid item sm={12} xs={12}>
                                     <h4>Submission Name</h4>
                                     <Input className='login-inp-field ant-radius' placeholder='Submission Name' onChange={(e) => setSubmissionName(e?.target?.value)} />
                                 </Grid>
-                                <Grid item sm={6} xs={12}>
+                                {/* <Grid item sm={6} xs={12}>
                                     <h4>Threshold</h4>
                                     <Slider
                                         value={threshold}
@@ -307,9 +330,9 @@ const CreateSubmission = (props) => {
                                         valueLabelDisplay='auto'
                                         onChange={(e) => setThreshold(e?.target?.value)}
                                     />
-                                </Grid>
+                                </Grid> */}
                             </Grid>
-                            <div className='modal-content-data'>
+                            {/* <div className='modal-content-data'>
                                 <h6>General</h6>
                                 <p>Ready to use out-of-the-box processors for general document goals.</p>
                             </div>
@@ -325,24 +348,34 @@ const CreateSubmission = (props) => {
                                         </div>
                                     </Grid>
                                 </Grid>
-                            </div>
+                            </div> */}
                             <div className='modal-content-data'>
                                 <h6>Model</h6>
                                 <p>Schematized processors for domain-specific documents.</p>
-                                <div className='specialize-dropdown'>
+                                <div className='specialize-dropdown2'>
                                     <Select
                                         className='width subdropdes ant-radius'
                                         showSearch
                                         placeholder='Select Model'
                                         optionFilterProp='children'
                                         value={selectedModel}
-                                        onSelect={(i) => (setProcessor(allProcessors[i]), setSelectedModel(i))}
-                                        filterOption={(input, option) => option.children.includes(input)}
+                                        onSelect={(value) => {
+                                            const selectedProcessor = [...allProcessors, ...customProcessorList][value];
+                                            setProcessor(selectedProcessor);
+                                            setSelectedModel(value);
+                                        }}
+                                        filterOption={(input, option) =>
+                                            option.children.toLowerCase().includes(input.toLowerCase())
+                                        }
                                         filterSort={(optionA, optionB) =>
                                             optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
                                         }
                                     >
-                                        {allProcessors?.map((v, i) => <Option key={i} value={i}>{v?.displayName}</Option>)}
+                                        {[...allProcessors, ...customProcessorList]?.map((processor, index) => (
+                                            <Option key={index} value={index}>
+                                                {processor?.displayName}
+                                            </Option>
+                                        ))}
                                     </Select>
                                 </div>
                                 <div className='btn-end-div'>
@@ -350,76 +383,77 @@ const CreateSubmission = (props) => {
                                 </div>
                             </div>
                         </div>
-                    </div> : !showFilesModal && !fileList?.length ? <div className='select-process'>
-                        <div className='modalname'>
-                            <h5>Select Source to Upload Files</h5>
-                        </div>
-                        <div className='process-tiles'>
-                            <Grid container justifyContent={'space-between'}>
-                                <Grid item>
-                                    <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
-                                        <img src={LOCALDRIVE} alt="" className='upload-image' />
-                                        <span>Local Drive</span>
-                                    </div>
-                                </Grid>
-                                <Grid item>
+                    </div> : !showFilesModal && !fileList?.length ?
+                        <div className='select-process' >
+                            <div className='modalname'>
+                                <h5>Select Source to Upload Files</h5>
+                            </div>
+                            <div className='process-tiles' style={{ justifyContent: 'space-evenly' }}>
+                                <Grid container justifyContent={'space-between'}>
+                                    <Grid item>
+                                        <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
+                                            <img src={LOCALDRIVE} alt="" className='upload-image' />
+                                            <span>Local Drive</span>
+                                        </div>
+                                    </Grid>
+                                    {/* <Grid item>
                                     <div className='process-tiles-main' onClick={() => setShowS3(true)}>
                                         <img src={AMAZON} alt="" className='upload-image' />
                                         <span>Amazon</span>
                                     </div>
-                                </Grid>
-                                <Grid item>
-                                    <div className='process-tiles-main'>
-                                        <img src={DRIVE} alt="" className='upload-image' />
-                                        <span>Drive</span>
-                                    </div>
-                                </Grid>
-                                <Grid item>
+                                </Grid> */}
+                                    <Grid item>
+                                        <div className='process-tiles-main'>
+                                            <img src={DRIVE} alt="" className='upload-image' />
+                                            <span>Drive</span>
+                                        </div>
+                                    </Grid>
+                                    {/* <Grid item>
                                     <div className='process-tiles-main'>
                                         <img src={ONE_DRIVE} alt="" className='upload-image' />
                                         <span>OneDrive</span>
                                     </div>
+                                </Grid> */}
+                                    <Grid item>
+                                        <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
+                                            <img src={GCP} alt="" className='upload-image' />
+                                            <span>Google Cloud Storage</span>
+                                        </div>
+                                    </Grid>
                                 </Grid>
-                                <Grid item>
-                                    <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
-                                        <img src={GCP} alt="" className='upload-image' />
-                                        <span>Google Cloud Storage</span>
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        </div>
-                        <div className='btn-end-div'>
-                            <Button className='process-btn process-btn2' type='default' disabled={loading} onClick={handleBack}>Back</Button>
-                            <Button className='process-btn process-btn2' type='primary' loading={loading} onClick={createSubmission}>Skip & Create Submission</Button>
-                        </div>
-                    </div> : <div className='progress-modal'>
+                            </div>
+                            <div className='btn-end-div'>
+                                <Button className='process-btn process-btn2' type='default' disabled={loading} onClick={handleBack}>Back</Button>
+                                <Button className='process-btn process-btn2' type='primary' loading={loading} onClick={createSubmission}>Skip & Create Submission</Button>
+                            </div>
+                        </div> : <div className='progress-modal'>
 
-                        <div className='progress-modal-head'>
-                            <h5>Uploading {fileList?.length} {`item${fileList?.length === 1 ? '' : 's'}`}</h5>
-                        </div>
-                        <div className='progress-bar-section'>
-                            {fileList?.map((v, i) => {
-                                return (
-                                    <div className='single-bar-div' key={i}>
-                                        <div className='upload-file-name'>
-                                            <Tooltip placement='top' title={convertTitle(v?.name)}>
-                                                {validateLength(convertTitle(v?.name), 16)}
-                                            </Tooltip>
+                            <div className='progress-modal-head'>
+                                <h5>Uploading {fileList?.length} {`item${fileList?.length === 1 ? '' : 's'}`}</h5>
+                            </div>
+                            <div className='progress-bar-section'>
+                                {fileList?.map((v, i) => {
+                                    return (
+                                        <div className='single-bar-div' key={i}>
+                                            <div className='upload-file-name'>
+                                                <Tooltip placement='top' title={convertTitle(v?.name)}>
+                                                    {validateLength(convertTitle(v?.name), 16)}
+                                                </Tooltip>
+                                            </div>
+                                            <div className='progress-bar-line'>
+                                                <Space direction='vertical' style={{ width: '100%' }}>
+                                                    <Progress className='progress-thickness' percent={v?.progress} size={[300, 20]} />
+                                                </Space>
+                                            </div>
                                         </div>
-                                        <div className='progress-bar-line'>
-                                            <Space direction='vertical' style={{ width: '100%' }}>
-                                                <Progress className='progress-thickness' percent={v?.progress} size={[300, 20]} />
-                                            </Space>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <div className='btn-end-div'>
-                            <Button className='process-btn process-btn2' style={{ width: 140 }} disabled={uploadloading} onClick={() => (setShowFilesModal(false, setFileList([])))}>Back</Button>
-                            <Button className='process-btn' style={{ width: 140 }} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
-                        </div>
-                    </div>}
+                                    )
+                                })}
+                            </div>
+                            <div className='btn-end-div'>
+                                <Button className='process-btn process-btn2' style={{ width: 140 }} disabled={uploadloading} onClick={() => (setShowFilesModal(false, setFileList([])))}>Back</Button>
+                                <Button className='process-btn' style={{ width: 140 }} type='primary' loading={uploadloading} onClick={onFinish}>{buttonText}</Button>
+                            </div>
+                        </div>}
 
                     <input
                         type='file'

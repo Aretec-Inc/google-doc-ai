@@ -625,6 +625,11 @@ body {
     margin-top: 12px;
 }
 
+.specialize-dropdown2 {
+    width: 100%;
+    margin-top: 12px;
+}
+
 .btn-end-div {
     display: flex;
     justify-content: flex-end;
