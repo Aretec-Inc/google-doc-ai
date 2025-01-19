@@ -1,379 +1,382 @@
-import React, { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import DatePicker from 'antd/lib/date-picker'
-import Button from 'antd/lib/button'
-import Progress from 'antd/lib/progress'
-import Tooltip from 'antd/lib/tooltip'
-import Spin from 'antd/lib/spin'
-import Input from 'antd/lib/input'
-import Pagination from 'antd/lib/pagination'
-import Divider from 'antd/lib/divider'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import Grid from '@mui/material/Grid'
-import PropTypes from 'prop-types'
-import { CiMenuKebab } from 'react-icons/ci'
-import { BsSearch } from 'react-icons/bs'
-import moment from 'moment'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import Slider from '@mui/material/Slider'
-import UploadModal from '../../Components/Submission/UploadModal'
-import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument'
-import FLAG from '../../assets/flag.svg'
-import { errorMessage, convertTitle, validateLength, disabledDate, itemRender } from '../../utils/helpers'
-import { setDocuments } from '../../Redux/actions/docActions'
-import { secureApi } from '../../Config/api'
-import { GET } from '../../utils/apis'
-import SHARE_ICON from '../../assets/icons/secondary_head_icons/shareblack.svg'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Share, Search, MoreVertical, MessageCircle, GraduationCap, Upload, Flag } from 'lucide-react';
+import moment from 'moment';
+import { Progress, Slider } from 'antd';
 
-const TabPanel = (props) => {
-    const { children, value, index, ...other } = props
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../Components/ui/table";
+import { Button } from "../../Components/ui/button";
+import { Input } from "../../Components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../Components/ui/tooltip";
+import { Card, CardContent } from "../../Components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../Components/ui/popover";
+import { Calendar } from "../../Components/ui/calendar";
 
+import { errorMessage, convertTitle, validateLength } from '../../utils/helpers';
+import { setDocuments } from '../../Redux/actions/docActions';
+import { secureApi } from '../../Config/api';
+import { GET } from '../../utils/apis';
+import UploadModal from '../../Components/Submission/UploadModal';
+import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument';
+
+const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
+  const submission_id = templateData?.id;
+  const [threshold, setThreshold] = useState(templateData?.threshold || 0);
+  const [allFiles, setAllFiles] = useState([]);
+  const [totalFiles, setTotalFiles] = useState(0);
+  const [selectedFile, setSelectedFile] = useState({});
+  const [showDocument, setShowDocument] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const [dateRange, setDateRange] = useState(null);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageNo, setPageNo] = useState(1);
+  const [viewTable, setViewTable] = useState(false);
+  const [exportData, setExportData] = useState([]);
+  const [exportColumns, setExportColumns] = useState([]);
+
+  useEffect(() => {
+    getAllFiles();
+    getExportData();
+  }, [isModalOpen, fileName, dateRange, pageNo, pageSize]);
+
+  const getAllFiles = async () => {
+    if (!allFiles?.length) {
+      setLoading(true);
+    }
+
+    try {
+      const response = await secureApi.post(
+        `${GET.FILES_BY_ID}?submission_id=${submission_id}`,
+        { fileName, dateRange, pageNo, pageSize }
+      );
+      
+      setAllFiles(response?.documents || []);
+      setTotalFiles(response?.totalFiles || 0);
+      dispatch(setDocuments({ [submission_id]: response?.documents || [] }));
+    } catch (err) {
+      errorMessage(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getExportData = async () => {
+    try {
+      const response = await secureApi.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`);
+      setExportData(response?.arrData || []);
+      setExportColumns(response?.columns || []);
+    } catch (err) {
+      errorMessage(err?.response?.data?.message);
+    }
+  };
+
+  const handleDateRangeSelect = (dates) => {
+    if (!dates || dates.length < 2) {
+      setDateRange(null);
+      return;
+    }
+    
+    setDateRange({
+      start: moment(dates[0]).format('YYYY-MM-DD'),
+      end: moment(dates[1]).add(1, 'day').format('YYYY-MM-DD')
+    });
+  };
+
+  const handleThresholdChange = (value) => {
+    setThreshold(value);
+  };
+
+  const downloadCsv = async () => {
+    try {
+      const response = await secureApi.post(
+        `${GET.EXPORT_DATA_CSV}?submission_id=${submission_id}`,
+        {},
+        { responseType: 'blob' }
+      );
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'data.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      errorMessage(err?.response?.data?.message);
+    }
+  };
+
+  if (showDocument) {
     return (
-        <div
-            role='tabpanel'
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
+      <SelectedDocument
+        openModal={false}
+        disableBack={true}
+        closeModal={() => setShowDocument(false)}
+        artifactData={selectedFile}
+      />
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b">
+        <div className="flex h-16 items-center px-4 md:px-6">
+          <div className="flex items-center space-x-4">
+            <Share className="h-6 w-6" />
+            <h2 className="text-2xl font-semibold">Submission</h2>
+            <h2 className="text-2xl font-semibold text-muted-foreground">Services</h2>
+            
+            <Button 
+              variant="ghost" 
+              className="ml-16"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Upload
+            </Button>
+          </div>
+          
+          <div className="ml-auto flex items-center space-x-4">
+            <Button variant="ghost">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Help Assistant
+            </Button>
+            <Button variant="ghost">
+              <GraduationCap className="h-4 w-4 mr-2" />
+              Learn
+            </Button>
+          </div>
         </div>
-    )
-}
+      </div>
 
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired
-}
+      <div className="p-4 md:p-6 space-y-4">
+        {/* Back button and filters */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="md:col-span-1">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={goBack}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </div>
 
-const { RangePicker } = DatePicker
-const dateFormat = 'YYYY/MM/DD'
+          <div className="md:col-span-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  {dateRange ? 
+                    `${moment(dateRange.start).format('MM/DD/YYYY')} - ${moment(dateRange.end).format('MM/DD/YYYY')}` 
+                    : "Pick a date range"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={moment().toDate()}
+                  selected={dateRange}
+                  onSelect={handleDateRangeSelect}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
-const SubmissionTemplate = (props) => {
-    const { templateData, dispatch, goBack } = props
-    const submission_id = templateData?.id
-    const threshold = templateData?.threshold
-    const allFiles = useSelector((state) => state?.docReducer?.allDocuments?.[submission_id] || [])
-    const [totalFiles, setTotalFiles] = useState(0)
-    const [selectedFile, setSelectedFiles] = useState({})
-    const [showDocument, setShowDocument] = useState(false)
-    const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [fileName, setFileName] = useState('')
-    const [dateRange, setDateRange] = useState(null)
-    const [pageSize, setPageSize] = useState(10)
-    const [pageNo, setPageNo] = useState(1)
-    const [viewTable, setViewTable] = useState(false)
-    const [exportData, setExportData] = useState([])
-    const [exportColumns, setExportColumns] = useState([])
-
-    useEffect(() => {
-        getAllFiles()
-        getExportData()
-    }, [open, fileName, dateRange, pageNo, pageSize])
-
-    const getAllFiles = () => {
-        if (!allFiles?.length) {
-            setLoading(true)
-        }
-
-        let obj = {
-            fileName,
-            dateRange,
-            pageNo,
-            pageSize
-        }
-
-        secureApi.post(`${GET.FILES_BY_ID}?submission_id=${submission_id}`, obj)
-            .then((data) => {
-                dispatch(setDocuments({ [submission_id]: data?.documents || [] }))
-                setTotalFiles(data?.totalFiles || 0)
-            })
-            .catch((err) => {
-                let errMsg = err?.response?.data?.message
-                errorMessage(errMsg)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }
-
-    const getExportData = () => {
-        secureApi.post(`${GET.EXPORT_DATA}?submission_id=${submission_id}`)
-            .then((data) => {
-                setExportData([...data?.arrData])
-                setExportColumns([...data?.columns])
-            })
-            .catch((err) => {
-                let errMsg = err?.response?.data?.message
-                errorMessage(errMsg)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }
-
-    const showModal = () => {
-        setOpen(true)
-    }
-
-    const handleCancel = () => {
-        setOpen(false)
-    }
-
-    const showPDFDocument = (doc) => {
-        setSelectedFiles(doc)
-        setShowDocument(true)
-    }
-
-    const setRange = (d) => {
-        if (!d) {
-            return setDateRange(null)
-        }
-        setDateRange({
-            start: d[0].format('YYYY-MM-DD'),
-            end: moment(d[1]).add(1, 'day').format('YYYY-MM-DD')
-        })
-    }
-
-    const downloadCsv = () => {
-        axios.post(`${GET.EXPORT_DATA_CSV}?submission_id=${submission_id}`, {}, { responseType: 'blob' })
-            .then((res) => {
-                const url = window.URL.createObjectURL(new Blob([res.data]))
-                const link = document.createElement('a')
-                link.href = url
-                link.setAttribute('download', 'data.csv')
-                document.body.appendChild(link)
-                link.click()
-                link.parentNode.removeChild(link)
-            })
-            .catch((err) => {
-                let errMsg = err?.response?.data?.message
-                errorMessage(errMsg)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }
-
-    return (
-        showDocument ? <SelectedDocument openModal={false} disableBack={true} closeModal={() => setShowDocument(false)} artifactData={selectedFile} /> : <div className='template-screen'>
-            <div className='secondary_header_container'>
-                <div className='left_sec_head'>
-                    <div className='secondary_header_left'>
-                        <img width={'30px'} src={SHARE_ICON} alt='SHARE_ICON' />
-                        <h2 className='secondary_header_heading'>
-                            Submission
-                        </h2>
-                    </div>
-                    <h2 className='secondary_header_heading'>
-                        Services
-                    </h2>
-                    <Button type='text' className='secondary_header_buttons mg_lft_4rem' onClick={showModal}>
-                        <span className="material-symbols-outlined">
-                            upload_file
-                        </span>
-                        <span>
-                            UPLOAD
-                        </span>
-                    </Button>
-                </div>
-                <div className='right_sec_head'>
-                    <Button type='text' className='secondary_header_buttons'>
-                        <span className="material-symbols-outlined mg_rgt_3px">
-                            chat
-                        </span>
-                        <span>
-                            Help Assistant
-                        </span>
-                    </Button>
-                    <Button type='text' className='secondary_header_buttons'>
-                        <span className="material-symbols-outlined mg_rgt_3px">
-                            school
-                        </span>
-                        <span>
-                            Learn
-                        </span>
-                    </Button>
-                </div>
+          <div className="md:col-span-8">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by ID or File name"
+                className="pl-8"
+                onChange={(e) => setFileName(e.target.value)}
+              />
             </div>
-            {/* <Divider /> */}
-            <br />
-            <Grid container spacing={1} justifyContent={'space-between'}>
-                <Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
-                    <div className='back-arrow' onClick={goBack}>
-                        <ArrowBackIcon />
-                    </div>
-                </Grid>
-                <Grid item xl={3} lg={3} md={4} sm={5} xs={5}>
-                    <RangePicker
-                        format={dateFormat}
-                        style={{ width: '100%' }}
-                        className='ant-radius'
-                        disabledDate={disabledDate}
-                        onChange={setRange}
-                    />
-                </Grid>
-                <Grid item xl={8} lg={8} md={7} sm={6} xs={6}>
-                    <Input
-                        placeholder='Search by ID or File name'
-                        className='ant-radius'
-                        prefix={<BsSearch className='search-field-icon' />}
-                        onChange={(e) => setFileName(e?.target?.value)}
-                        style={{ maxWidth: 600 }}
-                    />
-                </Grid>
-                {/* <Grid item xl={2} lg={2} md={12} sm={4} xs={12} style={{ textAlign: 'right' }}>
-                    <div style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between' }}>
-                        <h4>Threshold</h4>
-                        <Slider
-                            value={threshold}
-                            aria-label='Default'
-                            valueLabelDisplay='auto'
-                            onChange={(e) => setThreshold(e?.target?.value)}
+          </div>
+        </div>
+
+        {/* Submission info */}
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium">
+            Submission: {convertTitle(templateData?.submission_name)}
+          </h3>
+          <div className="flex items-center space-x-4 w-64">
+            <span className="text-sm text-muted-foreground">Threshold:</span>
+            <Slider
+              value={threshold}
+              onChange={handleThresholdChange}
+              min={0}
+              max={100}
+              step={1}
+            />
+            <span className="text-sm min-w-[40px]">{threshold}%</span>
+          </div>
+        </div>
+
+        {/* Table */}
+        <Card>
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center space-x-4">
+                <h3 className="text-lg font-medium">{totalFiles} Documents</h3>
+                <span className="text-sm text-muted-foreground">
+                  Processor: {templateData?.processor_name}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                {viewTable ? (
+                  <>
+                    <Button variant="ghost" onClick={() => setViewTable(false)}>
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Back
+                    </Button>
+                    <Button onClick={downloadCsv}>
+                      Export CSV
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={() => setViewTable(true)}>
+                    View Table
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <Table>
+              <TableHeader>
+                {viewTable ? (
+                  <TableRow>
+                    {exportColumns.map((column, index) => (
+                      <TableHead key={index}>{convertTitle(column)}</TableHead>
+                    ))}
+                  </TableRow>
+                ) : (
+                  <TableRow>
+                    <TableHead>File Name</TableHead>
+                    <TableHead>Confidence</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Created Date</TableHead>
+                  </TableRow>
+                )}
+              </TableHeader>
+              <TableBody>
+                {viewTable ? (
+                  exportData.map((row, rowIndex) => (
+                    <TableRow key={rowIndex}>
+                      {row.map((cell, cellIndex) => (
+                        <TableCell key={`${rowIndex}-${cellIndex}`}>
+                          {convertTitle(cell || '-')}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  allFiles.map((file) => (
+                    <TableRow key={file.id}>
+                      <TableCell>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => {
+                                  setSelectedFile(file);
+                                  setShowDocument(true);
+                                }}
+                                className="hover:underline"
+                              >
+                                {validateLength(convertTitle(file.original_file_name), 50)}
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {convertTitle(file.original_file_name)}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {file.is_completed && file.min_confidence < threshold && (
+                          <Flag className="h-4 w-4 inline-block ml-2 text-red-500" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Progress
+                          percent={file.average_confidence}
+                          size="small"
+                          status={file.average_confidence < threshold ? "exception" : "active"}
                         />
-                    </div>
-                </Grid> */}
-            </Grid>
+                      </TableCell>
+                      <TableCell>
+                        <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
+                          ${file.is_completed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                          {file.is_completed ? 'Completed' : 'Processing'}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {moment(file.created_at).format('MMM D, YYYY, h:mm:ss A')}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
 
-            <div className='submission-div'>
-                <Grid container justifyContent={'space-between'}>
-                    <Grid item>
-                        <div className='tepm-id'>
-                            <h5>Submission: {convertTitle(templateData?.submission_name)}</h5>
-                        </div>
-                    </Grid>
-                    <Grid item>
-                        <div className='tepm-id'>
-                            <h5>Threshold: {threshold}</h5>
-                        </div>
-                    </Grid>
-                </Grid>
-
-                <Spin spinning={loading}>
-                    <div className='submission-card'>
-                        <div className='submission-card-div'>
-                            <div className='submission-main-list'>
-                                <div className='submission-heading margingless'>
-                                    <p className='submission-title mg_lf_15px'>{totalFiles || allFiles?.length} Documents</p>
-                                    <div className='processor-data'>
-                                        <p>Processor: {templateData?.processor_name}</p>
-                                        {/* <CiMenuKebab className='menuicon' /> */}
-                                    </div>
-                                </div>
-                                <Grid container justifyContent={'space-between'}>
-                                    <Grid item>
-                                        {viewTable ? <div className='back-arrow' onClick={() => setViewTable(false)}>
-                                            <ArrowBackIcon />
-                                        </div> : null}
-                                    </Grid>
-                                    <Grid item>
-                                        <div className='exp-csv-btn'>
-                                            {viewTable ? <Button
-                                                style={{ background: '#4285F4', color: '#fff', width: '120px' }}
-                                                className='date width-sub height_57px'
-                                                onClick={downloadCsv}
-                                            >Export Csv</Button> : <Button
-                                                style={{ background: '#4285F4', color: '#fff', width: '120px' }}
-                                                className='date width-sub height_57px'
-                                                onClick={() => setViewTable(true)}
-                                            >View Table</Button>}
-                                        </div>
-                                    </Grid>
-                                </Grid>
-                                <div className='submission-table-main'>
-                                    <TableContainer component={Paper} className='submission-table'>
-                                        <Table
-                                            size='small' aria-label='a dense table'
-                                        >
-                                            <TableHead>
-                                                {viewTable ? <TableRow className='submission-head'>
-                                                    {exportColumns?.map((v, i) => {
-                                                        return (
-                                                            <TableCell key={i} className='submission-table-cell submission-head-cell'>{convertTitle(v)}</TableCell>
-                                                        )
-                                                    })}
-                                                </TableRow> : <TableRow className='submission-head'>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>File Name</TableCell>
-                                                    {/* <TableCell className='submission-table-cell submission-head-cell'>Average Confidence</TableCell> */}
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Status</TableCell>
-                                                    <TableCell className='submission-table-cell submission-head-cell'>Created Date</TableCell>
-                                                </TableRow>}
-                                            </TableHead>
-                                            <TableBody>
-                                                {viewTable ? exportData?.map((v, i) => {
-                                                    return <TableRow key={i}>
-                                                        {v?.map((y, j) => {
-                                                            return (
-                                                                <TableCell key={`${i}-${j}`} className='submission-table-cell submission-row-cell'>
-                                                                    {convertTitle(y || '-')}
-                                                                </TableCell>
-                                                            )
-                                                        })}
-                                                    </TableRow>
-                                                }) : allFiles?.map((v, i) => {
-                                                    return (
-                                                        <TableRow
-                                                            key={i}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        >
-                                                            <TableCell className='submission-table-cell submission-row-cell'>
-                                                                <Link onClick={() => showPDFDocument(v)}>
-                                                                    <Tooltip placement='top' title={convertTitle(v?.original_file_name)}>
-                                                                        {validateLength(convertTitle(v?.original_file_name), 50)}
-                                                                    </Tooltip>
-                                                                </Link>
-                                                                {v?.is_completed === true && v?.min_confidence < threshold ? <img src={FLAG} className='file-flag' /> : null}
-                                                            </TableCell>
-                                                            {/* <TableCell className='submission-table-first-col submission-row-cell' component='th' scope='row'>
-                                                                <Progress
-                                                                    percent={v?.average_confidence}
-                                                                />
-                                                            </TableCell> */}
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{v?.is_completed === true ? 'Completed' : 'Processing'}</TableCell>
-                                                            <TableCell className='submission-table-cell submission-row-cell'>{moment(v?.created_at)?.format('MMM D, YYYY, h:mm:ss A')}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </div>
-                                <div className='submissions-foote'>
-                                    <Pagination
-                                        total={totalFiles || allFiles?.length || 0}
-                                        pageSize={pageSize}
-                                        current={pageNo}
-                                        itemRender={itemRender}
-                                        showQuickJumper
-                                        hideOnSinglePage
-                                        onShowSizeChange={(e) => setPageSize(e * 10)}
-                                        onChange={setPageNo}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Spin>
+            {/* Pagination */}
+            <div className="flex items-center justify-between p-4">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm text-muted-foreground">
+                  Page {pageNo} of {Math.ceil(totalFiles / pageSize)}
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPageNo(prev => prev - 1)}
+                  disabled={pageNo === 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPageNo(prev => prev + 1)}
+                  disabled={pageNo >= Math.ceil(totalFiles / pageSize)}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
-            {open ? <UploadModal closeModal={handleCancel} {...props} /> : null}
-        </div>
-    )
-}
+          </CardContent>
+        </Card>
+      </div>
 
-export default SubmissionTemplate
+      {/* Modals */}
+      {isModalOpen && (
+        <UploadModal
+          closeModal={() => setIsModalOpen(false)}
+          dispatch={dispatch}
+          templateData={templateData}
+        />
+      )}
+    </div>
+  );
+};
+
+export default SubmissionTemplate;

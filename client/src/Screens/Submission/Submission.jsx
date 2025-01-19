@@ -39,6 +39,32 @@ import { validateLength, convertTitle, disabledDate } from '../../utils/helpers'
 import { getAllSubmissions } from '../../Redux/actions/docActions';
 import SubmissionModal from '../../Components/Submission/SubmissionModal';
 import SubmissionTemplate from './SubmissionTemplate';
+import { ChevronRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+
+const SimpleBreadcrumb = ({ submissionName }) => {
+  const location = useLocation();
+  
+  return (
+    <nav className="py-2 px-4 bg-white" aria-label="Breadcrumb">
+      <ol className="flex items-center text-sm">
+        <li>
+          <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
+        </li>
+        <li className="mx-2 text-gray-500">/</li>
+        <li>
+          <Link to="/submission" className="text-[#0067b8] hover:underline">Submission</Link>
+        </li>
+        {submissionName && (
+          <>
+            <li className="mx-2 text-gray-500">/</li>
+            <li className="text-gray-600">{submissionName}</li>
+          </>
+        )}
+      </ol>
+    </nav>
+  );
+};
 
 const Submission = (props) => {
   const { dispatch } = props;
@@ -85,41 +111,47 @@ const Submission = (props) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b">
-        <div className="flex h-16 items-center px-4 md:px-6">
+    <div className="bg-white">
+      {/* Breadcrumb */}
+      <SimpleBreadcrumb submissionName={templateData?.submission_name} />
+      
+      {/* Main Title Section */}
+      <div className="border-b bg-white">
+        <div className="px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Share className="h-6 w-6" />
-            <h2 className="text-2xl font-semibold">Submission</h2>
-            <h2 className="text-2xl font-semibold text-muted-foreground">Services</h2>
-            
-            <Button 
-              variant="ghost" 
-              className="ml-16"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Create Submission
-            </Button>
+            <h1 className="text-xl">Submission</h1>
+            <span className="text-gray-500">Services</span>
+            <button className="ml-8 px-4 py-2 flex items-center space-x-2 hover:bg-gray-50 rounded">
+              <span>+</span>
+              <span>Create Submission</span>
+            </button>
           </div>
-          
-          <div className="ml-auto flex items-center space-x-4">
-            <Button variant="ghost">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Help Assistant
-            </Button>
-            <Button variant="ghost">
-              <GraduationCap className="h-4 w-4 mr-2" />
-              Learn
-            </Button>
+          <div className="flex items-center space-x-6">
+            <button className="flex items-center space-x-2">
+              <span>Help Assistant</span>
+            </button>
+            <button className="flex items-center space-x-2">
+              <span>Learn</span>
+            </button>
           </div>
         </div>
       </div>
-
+      
       {/* Filters */}
+
       <div className="p-4 md:p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div className="md:col-span-7">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by Submission name"
+                className="pl-8"
+                onChange={(e) => setFilters(prev => ({ ...prev, submissionName: e.target.value }))}
+              />
+            </div>
+          </div>
+
           <div className="md:col-span-2">
             <Select
               onValueChange={(value) => setFilters(prev => ({ ...prev, processorId: value }))}
@@ -159,16 +191,7 @@ const Submission = (props) => {
             </Popover>
           </div>
 
-          <div className="md:col-span-7">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by Submission name"
-                className="pl-8"
-                onChange={(e) => setFilters(prev => ({ ...prev, submissionName: e.target.value }))}
-              />
-            </div>
-          </div>
+
         </div>
 
         {/* Table */}

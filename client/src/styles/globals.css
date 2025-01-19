@@ -64,6 +64,40 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
+  .breadcrumb-container {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 24px;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .breadcrumb-item a {
+    color: #6b7280;
+    text-decoration: none;
+  }
+  
+  .breadcrumb-item a:hover {
+    color: #374151;
+  }
+  
+  .breadcrumb-item:last-child {
+    color: #111827;
+    font-weight: 500;
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 8px;
+    color: #9ca3af;
+  }
 }
  
 @layer base {
