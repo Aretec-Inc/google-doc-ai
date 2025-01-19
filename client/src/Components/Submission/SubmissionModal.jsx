@@ -7,9 +7,9 @@ import { Button, Input, Modal, Progress, Select, Space, Spin, Tooltip } from 'an
 import axios from 'axios'
 import React, { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import DRIVE from '../../assets/drive.svg'
-import GCP from '../../assets/gcp.svg'
-import LOCALDRIVE from '../../assets/localdrive.svg'
+import DRIVE from '../../assets/GdriveLogo.svg'
+import GCS from '../../assets/GCS.svg'
+import LOCALDRIVE from '../../assets/fileUploadIcon.png'
 import ONE_DRIVE from '../../assets/onedrive.svg'
 import AMAZON from '../../assets/S3.svg'
 import { secureApi } from '../../Config/api'
@@ -388,8 +388,8 @@ const CreateSubmission = (props) => {
                             <div className='modalname'>
                                 <h5>Select Source to Upload Files</h5>
                             </div>
-                            <div className='process-tiles' style={{ justifyContent: 'space-evenly' }}>
-                                <Grid container justifyContent={'space-between'}>
+                            <div className='process-tiles' style={{ display: 'flex', justifyContent: '' }}>
+                                <Grid container justifyContent={'space-evenly'}>
                                     <Grid item>
                                         <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
                                             <img src={LOCALDRIVE} alt="" className='upload-image' />
@@ -416,7 +416,7 @@ const CreateSubmission = (props) => {
                                 </Grid> */}
                                     <Grid item>
                                         <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
-                                            <img src={GCP} alt="" className='upload-image' />
+                                            <img src={GCS} alt="" className='upload-image' />
                                             <span>Google Cloud Storage</span>
                                         </div>
                                     </Grid>
