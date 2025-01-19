@@ -336,7 +336,21 @@ const docAI = ({
             { text, pageNumber, exact_file_name_with_ext },
             isTesting
           );
-          pageEntitiesArray.push(entityValues);
+          if (Array.isArray(entity?.properties) && entity?.properties?.length) {
+            for (let sub_entity of entity?.properties) {
+              let parent_field_name = entity?.type
+              sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              entityValues = get_form_field_values(
+                sub_entity,
+                { text, pageNumber, exact_file_name_with_ext },
+                isTesting
+              );
+              
+              pageEntitiesArray.push(entityValues);
+            }
+          } else {
+            pageEntitiesArray.push(entityValues);
+          }
         }
       }
 
