@@ -1,9 +1,9 @@
-FROM node:16 AS ui-build 
+FROM node:18 AS ui-build 
 WORKDIR /usr/src/app
 COPY client/ ./client/
 RUN cd client && yarn && yarn run build
 
-FROM node:16 as server
+FROM node:18 as server
 WORKDIR /root/
 
 COPY --from=ui-build /usr/src/app/client/build ./client/build
