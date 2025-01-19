@@ -263,7 +263,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40%]">File Name</TableHead>
-                  <TableHead className="w-[20%]">Confidence</TableHead>
+                  {/* <TableHead className="w-[20%]">Confidence</TableHead> */}
                   <TableHead className="w-[20%]">Status</TableHead>
                   <TableHead className="w-[20%]">Created Date</TableHead>
                 </TableRow>
@@ -284,7 +284,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
                         </Link>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="w-full">
                         <Progress
                           percent={file.average_confidence}
@@ -292,7 +292,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
                           size="small"
                         />
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
                         ${file.is_completed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>

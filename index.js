@@ -47,6 +47,6 @@ server.listen(PORT, () => {
     addDefaultData()
   }, 1000)
   if (process.env.NODE_ENV === 'production') {
-    configureBucketCors()
+    // configureBucketCors()
   }
 })
