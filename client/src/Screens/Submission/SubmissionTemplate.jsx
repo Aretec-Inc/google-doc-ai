@@ -183,9 +183,6 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
             <h1 className="text-xl font-medium">Submission: {convertTitle(templateData?.submission_name)}</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500">
-              Threshold: {threshold}%
-            </span>
             <Button
               onClick={() => setIsModalOpen(true)}
               className="ml-4"

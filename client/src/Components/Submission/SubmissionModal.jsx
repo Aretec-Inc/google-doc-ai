@@ -294,7 +294,6 @@ const CreateSubmission = (props) => {
         }
     ]
 
-    console.log("Schematized processors for domain-specific documents.", allProcessors)
     return (
         <div className='template-screen'>
             <Modal
@@ -360,7 +359,9 @@ const CreateSubmission = (props) => {
                                         optionFilterProp='children'
                                         value={selectedModel}
                                         onSelect={(value) => {
-                                            const selectedProcessor = [...allProcessors, ...customProcessorList][value];
+                                            const selectedProcessor = [
+                                                // ...allProcessors,
+                                                ...customProcessorList][value];
                                             setProcessor(selectedProcessor);
                                             setSelectedModel(value);
                                         }}
@@ -371,7 +372,10 @@ const CreateSubmission = (props) => {
                                             optionA.children.toLowerCase().localeCompare(optionB.children.toLowerCase())
                                         }
                                     >
-                                        {[...allProcessors, ...customProcessorList]?.map((processor, index) => (
+                                        {[
+                                            // ...allProcessors,
+                                            ...customProcessorList
+                                        ]?.map((processor, index) => (
                                             <Option key={index} value={index}>
                                                 {processor?.displayName}
                                             </Option>

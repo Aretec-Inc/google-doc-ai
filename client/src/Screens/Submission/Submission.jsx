@@ -218,7 +218,7 @@ const Submission = (props) => {
                               }}
                               className="hover:underline"
                             >
-                              {validateLength(convertTitle(submission.submission_name), 16)}
+                              {validateLength(convertTitle(submission.submission_name), 30)}
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent>
