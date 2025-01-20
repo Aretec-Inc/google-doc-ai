@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LOGO from '../../assets/Doc_ai_logo.svg';
 import { BsBell } from 'react-icons/bs';
 
 const Header = ({ setToggleHeader }) => {
+    const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
+    
     const clickToogle = () => {
         setToggleHeader((state) => !state);
     };
+
+    const handleSettingsClick = (e) => {
+        e.preventDefault();
+        setShowSettingsDropdown(!showSettingsDropdown);
+    };
+
+    // Close dropdown when clicking outside
+    React.useEffect(() => {
+        const closeDropdown = (e) => {
+            if (!e.target.closest('.settings-dropdown')) {
+                setShowSettingsDropdown(false);
+            }
+        };
+
+        document.addEventListener('click', closeDropdown);
+        return () => document.removeEventListener('click', closeDropdown);
+    }, []);
 
     return (
         <>
@@ -59,6 +78,37 @@ const Header = ({ setToggleHeader }) => {
                                 to="https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms"
                                 className="px-6 py-3 text-white hover:bg-[#003478]">
                                 Forms & Instructions</Link>
+                            <div className="settings-dropdown relative">
+                                <button
+                                    onClick={handleSettingsClick}
+                                    className="px-6 py-3 text-white hover:bg-[#003478] flex items-center"
+                                >
+                                    Settings
+                                    <span className="material-symbols-outlined ml-1 text-sm">
+                                        {showSettingsDropdown ? 'expand_less' : 'expand_more'}
+                                    </span>
+                                </button>
+                                {showSettingsDropdown && (
+                                    <div 
+                                        className="absolute top-full left-0 bg-[#002d62] border border-[#003478] min-w-[200px] z-50"
+                                        style={{
+                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
+                                            clipPath: 'inset(-20px -20px 0 -20px)'
+                                        }}
+                                    >
+                                        <Link
+                                            to="/business-rules"
+                                            className="flex items-center px-6 py-3 text-white hover:bg-[#003478] transition-colors duration-150 border-t border-[#003478] group"
+                                            onClick={() => setShowSettingsDropdown(false)}
+                                        >
+                                            <span className="material-symbols-outlined mr-2 text-sm opacity-80 group-hover:opacity-100">
+                                                rule
+                                            </span>
+                                            Business Rules
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </nav>
                         <div className="flex items-center space-x-4">
                             <div className="relative">
@@ -76,7 +126,7 @@ const Header = ({ setToggleHeader }) => {
                         </div>
                     </div>
                 </div>
-            </div >
+            </div>
         </>
     );
 };
