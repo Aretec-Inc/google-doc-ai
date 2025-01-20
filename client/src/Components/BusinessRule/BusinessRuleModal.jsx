@@ -64,7 +64,7 @@ const BusinessRuleModal = ({ closeModal, dispatch }) => {
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Input
-              placeholder="Rule Name"
+              placeholder="Ruleset Name"
               value={ruleName}
               onChange={(e) => setRuleName(e.target.value)}
             />
@@ -130,22 +130,34 @@ const BusinessRuleModal = ({ closeModal, dispatch }) => {
             </TabsContent>
 
             <TabsContent value="java">
-              <Textarea
-                placeholder="Paste your Java code here..."
-                value={javaCode}
-                onChange={(e) => setJavaCode(e.target.value)}
-                className="h-48"
-              />
+              <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                <Input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                  className="hidden"
+                  id="pdf-upload"
+                />
+                <label htmlFor="pdf-upload" className="cursor-pointer">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <p className="mt-2">Upload Java Code</p>
+                  <p className="text-sm text-gray-500">
+                    {selectedFile ? selectedFile.name : 'java file only'}
+                  </p>
+                </label>
+              </div>
               
               <div className="mt-4 flex justify-end">
                 <Button
                   onClick={() => handleSubmit('java')}
-                  disabled={!javaCode.trim() || isLoading}
+                  disabled={!selectedFile || isLoading}
                 >
                   Create Rule
                 </Button>
               </div>
             </TabsContent>
+
+
           </Tabs>
         </div>
       </DialogContent>
