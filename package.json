@@ -41,7 +41,7 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon",
     "dev-node": "NODE_ENV=development node index.js",
-    "dev-cloud": "nodemon",
+    "dev-cloud": "NODE_ENV=cloudDB nodemon",
     "deploy-app": "npm install && node deployApp.js",
     "client": "npm start --prefix ./client && npm start --prefix client",
     "heroku-postbuild": "npm install --legacy-peer-deps --prefix client && npm run build --prefix client"

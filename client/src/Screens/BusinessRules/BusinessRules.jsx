@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { MoreVertical, Plus, Search } from 'lucide-react';
 import moment from 'moment';
-import { Search, MoreVertical, Plus, Upload, Code } from 'lucide-react';
-
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Button } from "../../Components/ui/button";
+import { Card, CardContent } from "../../Components/ui/card";
+import { Input } from "../../Components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../Components/ui/dialog";
-
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../Components/ui/select";
 import {
   Table,
   TableBody,
@@ -19,27 +21,16 @@ import {
   TableHeader,
   TableRow,
 } from "../../Components/ui/table";
-import { Button } from "../../Components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../Components/ui/select";
-import { Input } from "../../Components/ui/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../../Components/ui/tooltip";
-import { Card, CardContent } from "../../Components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../Components/ui/tabs";
 
-import { validateLength, convertTitle } from '../../utils/helpers';
-import { getAllBusinessRules } from '../../Redux/actions/businessRuleActions';
 import BusinessRuleModal from '../../Components/BusinessRule/BusinessRuleModal';
+import { getAllBusinessRules } from '../../Redux/actions/businessRuleActions';
+import { convertTitle, validateLength } from '../../utils/helpers';
 import BusinessRuleDetails from './BusinessRuleDetails';
 
 // Breadcrumb Component
@@ -102,7 +93,7 @@ const BusinessRules = (props) => {
           <div className="flex items-center space-x-4">
             <h1 className="text-xl">Business Rules</h1>
             <span className="text-gray-500">Designer</span>
-            <Button 
+            <Button
               variant="outline"
               className="ml-8"
               onClick={() => setIsModalOpen(true)}
@@ -152,7 +143,7 @@ const BusinessRules = (props) => {
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </div>
-            
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -170,7 +161,7 @@ const BusinessRules = (props) => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link 
+                            <Link
                               onClick={() => {
                                 setShowDetails(true);
                                 setSelectedRule(rule);
