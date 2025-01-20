@@ -203,7 +203,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/inference_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+          json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
         }
         if (
           file_name?.includes(
@@ -211,7 +211,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/inference_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+          json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
         }
         if (
           file_name?.includes(
