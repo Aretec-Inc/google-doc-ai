@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Added useNavigate here
-import { Search, ArrowLeft, Upload, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Search, Upload } from 'lucide-react';
 import moment from 'moment';
-import { Progress } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'; // Added useNavigate here
+import allPaths from '../../Config/paths';
 
+import { Button } from "../../Components/ui/button";
+import { Calendar } from "../../Components/ui/calendar";
+import { Card, CardContent } from "../../Components/ui/card";
+import { Input } from "../../Components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../Components/ui/popover";
 import {
   Table,
   TableBody,
@@ -12,28 +21,12 @@ import {
   TableHeader,
   TableRow,
 } from "../../Components/ui/table";
-import { Button } from "../../Components/ui/button";
-import { Input } from "../../Components/ui/input";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../Components/ui/tooltip";
-import { Card, CardContent } from "../../Components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../Components/ui/popover";
-import { Calendar } from "../../Components/ui/calendar";
 
-import { errorMessage, convertTitle, validateLength } from '../../utils/helpers';
-import { setDocuments } from '../../Redux/actions/docActions';
-import { secureApi } from '../../Config/api';
-import { GET } from '../../utils/apis';
 import UploadModal from '../../Components/Submission/UploadModal';
-import SelectedDocument from '../../Components/SelectedDocument/SelectedDocument';
+import { secureApi } from '../../Config/api';
+import { setDocuments } from '../../Redux/actions/docActions';
+import { GET } from '../../utils/apis';
+import { convertTitle, errorMessage, validateLength } from '../../utils/helpers';
 
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName }) => {
@@ -62,13 +55,19 @@ const SimpleBreadcrumb = ({ submissionName }) => {
         </li>
         <li className="mx-2 text-gray-500">/</li>
         <li className="text-gray-600">{submissionName}</li>
+
       </ol>
     </nav>
   );
 };
 
-const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
-  const submission_id = templateData?.id;
+const SubmissionTemplate = ({ dispatch, goBack }) => {
+  const navigate = useNavigate();
+  // const submission_id = templateData?.id;
+  const { submissionId } = useParams();
+  const submission_id = submissionId
+  const location = useLocation();
+  const templateData = location.state?.templateData;
   const [threshold, setThreshold] = useState(templateData?.threshold || 0);
   const [allFiles, setAllFiles] = useState([]);
   const [totalFiles, setTotalFiles] = useState(0);
@@ -83,6 +82,7 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
   const [viewTable, setViewTable] = useState(false);
   const [exportData, setExportData] = useState([]);
   const [exportColumns, setExportColumns] = useState([]);
+  const [templateName, setTemplateName] = useState(convertTitle(templateData?.submission_name))
 
   useEffect(() => {
     getAllFiles();
@@ -152,15 +152,24 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
     }
   };
 
+
+  const handleDocumentShow = (fileData) => {
+    navigate(`${allPaths.SUBMISSION}/${submissionId}/${fileData.id}`, {
+      state: { artifactData: fileData, submissionName: templateName, submissionId: submissionId }
+    });
+  };
+
   if (showDocument) {
-    return (
-      <SelectedDocument
-        openModal={false}
-        disableBack={true}
-        closeModal={() => setShowDocument(false)}
-        artifactData={selectedFile}
-      />
-    );
+    handleDocumentShow(selectedFile)
+
+    // return (
+    //   <SelectedDocument
+    //     openModal={false}
+    //     disableBack={true}
+    //     closeModal={() => setShowDocument(false)}
+    //     artifactData={selectedFile}
+    //   />
+    // );
   }
 
   return (
@@ -172,15 +181,15 @@ const SubmissionTemplate = ({ templateData, dispatch, goBack }) => {
       <div className="border-b bg-white">
         <div className="py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
-              onClick={goBack}
+              onClick={handleGoBack}
               className=""
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-xl font-medium">Submission: {convertTitle(templateData?.submission_name)}</h1>
+            <h1 className="text-xl font-medium">Submission: {convertTitle(templateData?.submission_name)}</h1> */}
           </div>
           <div className="flex items-center space-x-4">
             <Button

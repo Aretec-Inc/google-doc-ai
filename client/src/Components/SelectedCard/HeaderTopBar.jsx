@@ -195,15 +195,15 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
     }
 
     return (
-        <div className='myShadowCard'>
+        <div className='' style={{ marginBottom: 10 }}>
             <div className='artifact-top'>
                 <div className='artifact-sub'>
-                    <span style={{ cursor: 'pointer', paddingTop: '9px' }} onClick={goBackFunc}>
+                    {/* <span style={{ cursor: 'pointer', paddingTop: '9px' }} onClick={goBackFunc}>
                         <AiOutlineArrowLeft style={{ fontSize: 21, color: '#0057E7' }} />
                     </span>
                     <Tooltip className='filename-topheader' title={originalName}>
                         <p style={{ marginBottom: 0, marginLeft: 10, flex: 1 }}>{highlighter(smallLengthName)}</p>
-                    </Tooltip>
+                    </Tooltip> */}
                 </div>
                 <div className='new-doc' style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <Select

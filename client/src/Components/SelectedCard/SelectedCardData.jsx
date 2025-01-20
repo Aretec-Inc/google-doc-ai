@@ -1,129 +1,131 @@
-import React from 'react'
-import { removeArtifactData, setArtifactData } from '../../Redux/actions/artifactActions'
-import { connect } from 'react-redux'
-import { Skeleton, Collapse } from 'antd'
-import { randomInteger, load_artifact_data_by_type, errorMessage } from '../../utils/pdfHelpers'
-import { fadeList, isPDF } from '../../utils/pdfConstants'
-import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index'
-import { Tabs } from 'antd'
-import './SelectedCardData.css'
-import HeaderTopBar from './HeaderTopBar'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Skeleton } from 'antd';
+import { randomInteger, load_artifact_data_by_type, errorMessage } from '../../utils/pdfHelpers';
+import { fadeList, isPDF } from '../../utils/pdfConstants';
+import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index';
+import { removeArtifactData, setArtifactData } from '../../Redux/actions/artifactActions';
+import HeaderTopBar from './HeaderTopBar';
+import './SelectedCardData.css';
+import { Link, useNavigate } from 'react-router-dom';
 
-const { TabPane } = Tabs
-const { Panel } = Collapse
 
-class SelectedCardData extends React.Component {
-    constructor(props) {
-        super(props)
-        const { freqWord, artifactData, selectedCard, adj } = this.props
+// Breadcrumb Component
+const SimpleBreadcrumb = ({ submissionName, pdfName, submissionId }) => {
 
-        this.state = {
-            detailTabs: ['General', 'Insights', 'Transcripts', 'Similar', 'General', 'Insights', 'Transcripts', 'Similar'],
-            loading: (selectedCard || artifactData) ? false : true,
-            selectedCard,
-            freqWord,
-            showComments: false,
-            file_name: '',
-            tags: [],
-            inputVisible: false,
-            inputValue: '',
-            editInputIndex: -1,
-            editInputValue: '',
-            Panel,
-            text: ` Likely `,
-            graphData: null,
-            value: 1,
-            loadingRate: false,
-            disableRate: true,
-            aggregate: 0,
-            isBookMark: false,
-            visible: false,
-            disabled: true,
-            isRefreshing: false
+    return (
+        <nav className="py-2" aria-label="Breadcrumb">
+            <ol className="flex items-center text-sm">
+                <li>
+                    <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
+                </li>
+                <li className="mx-2 text-gray-500">/</li>
+                <li>
+                    <Link
+                        to="/submission"
+                        className="text-[#0067b8] hover:underline"
+                    >
+                        Submission
+                    </Link>
+                </li>
+                <li className="mx-2 text-gray-500">/</li>
+                <li className="text-gray-600">
+                    <Link
+                        to={`/submission/${submissionId}`}
+                        className="text-[#0067b8] hover:underline"
+                    >
+                        {submissionName}
+                    </Link>
+                </li>
+                <li className="mx-2 text-gray-500">/</li>
+                <li className="text-gray-600">{pdfName}</li>
+            </ol>
+        </nav>
+    );
+};
+
+const SelectedCardData = ({
+    freqWord,
+    artifactData,
+    selectedCard: initialSelectedCard,
+    isTemplateView,
+    goBack,
+    submissionName,
+    submissionId,
+    ...props
+}) => {
+    const [loading, setLoading] = useState(!initialSelectedCard && !artifactData);
+    const [selectedCard, setSelectedCard] = useState(initialSelectedCard);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const dispatch = useDispatch();
+    const user = useSelector(state => state?.authReducer?.user);
+    const selectedKey = useSelector(state => state?.authReducer?.selectedKey);
+
+    const refreshData = async () => {
+        const fileName = selectedCard?.file_name;
+        if (!fileName) return;
+
+        setIsRefreshing(true);
+        try {
+            const data = await load_artifact_data_by_type(selectedCard);
+
+            if (data?.id) {
+                dispatch(setArtifactData(data));
+            }
+
+            if (!data?.success && data?.message) {
+                errorMessage(data.message);
+            }
+        } catch (err) {
+            const errMsg = err?.response?.data?.message;
+            if (errMsg) errorMessage(errMsg);
+        } finally {
+            setIsRefreshing(false);
         }
-    }
+    };
 
-    refreshData = () => {
-        const { selectedCard } = this.props
+    const artifact_type = selectedCard?.artifact_type;
+    const alreadyHasTabs = !isPDF(artifact_type);
+    const conditionalStyle = alreadyHasTabs ? { background: 'white', padding: 10, paddingTop: 0 } : {};
 
-        let name = selectedCard?.file_name
-        if (name) {
-            this.setState({ isRefreshing: true })
-
-            load_artifact_data_by_type(selectedCard)
-                .then((data) => {
-                    let refreshedData = data
-                    this.setState({ isRefreshing: false })
-
-                    if (refreshedData?.id) { //make sure that the data is correct and has required info
-                        this.props.setArtifactData(refreshedData)
-                    }
-
-                    if (!data?.success) {
-                        let errMsg = data?.message;
-                        errMsg && errorMessage(errMsg);
-                    }
-
-                })
-                .catch((err) => {
-                    this.setState({ isRefreshing: false })
-                    let errMsg = err?.response?.data?.message;
-                    errMsg && errorMessage(errMsg);
-                })
-        }
-    }
-
-
-    render() {
-        const { selectedCard, loading } = this.state
-        const artifact_type = selectedCard?.artifact_type
-        // console.log('ADJ ===>', adj)
-
-        const alreadyHasTabs = !isPDF(artifact_type)
-        const conditionalStyle = alreadyHasTabs ? { background: 'white', padding: 10, paddingTop: 0 } : {}
-
-        const allElements = (
-            <div
-                // className='card-box'
-                // style={{ width: width || '92%', backgroundColor: 'white', height: '80%' }}
-                data-aos={fadeList[randomInteger(0, fadeList.length - 1)]}
-            >
-                <div className='container-box container-div'>
-                    {loading ? (
-                        <Skeleton paragraph={{ rows: 5 }} />
-                    ) : (
-                        <div style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%' }}>
-                            {/* {(!isPDF(artifact_type) && selectedCard && selectedCard?.id) && <ArtifactDataCard goBack={this.props.goBack} {...this.props} selectedCard={selectedCard} />} */}
-                            <PDFVIEWER isTemplateView={this?.props?.isTemplateView} maxWidth={'100vw'} enableShadow artifactData={selectedCard} {...this.props} />
-                        </div>
-                    )}
-                </div>
-            </div >
-        )
-
-        return (
-            <div className='card-div' style={(!isPDF(artifact_type)) ? { filter: `drop-shadow(0px 0px 20px silver)` } : {}}>
-                <HeaderTopBar {...this.props} selectedCard={selectedCard || this.props.selectedCard} goBack={this.props.goBack} />
-                <div style={conditionalStyle}>
-                    {alreadyHasTabs ? allElements : allElements}
-                </div>
+    const content = (
+        <div data-aos={fadeList[randomInteger(0, fadeList.length - 1)]}>
+            <div className="container-box container-div">
+                {loading ? (
+                    <Skeleton paragraph={{ rows: 5 }} />
+                ) : (
+                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%' }}>
+                        <PDFVIEWER
+                            isTemplateView={isTemplateView}
+                            maxWidth="100vw"
+                            enableShadow
+                            artifactData={selectedCard}
+                            {...props}
+                        />
+                    </div>
+                )}
             </div>
-        )
-    }
-}
+        </div>
+    );
 
-const mapStateToProps = (state) => {
-    return {
-        user: state?.authReducer?.user,
-        selectedKey: state?.authReducer?.selectedKey
-    }
-}
+    return (
+        <div
+            className="card-div"
+            style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 20px silver)' } : {}}
+        >
+            <SimpleBreadcrumb submissionName={submissionName} pdfName={selectedCard?.file_name} submissionId={submissionId} />
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        removeArtifactData: () => dispatch(removeArtifactData()),
-        setArtifactData: (artifact) => dispatch(setArtifactData(artifact))
-    }
-}
+            <HeaderTopBar
+                {...props}
+                selectedCard={selectedCard || initialSelectedCard}
+                goBack={goBack}
+            />
+            <div style={conditionalStyle}>
+                {content}
+            </div>
+        </div>
+    );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectedCardData)
+export default SelectedCardData;

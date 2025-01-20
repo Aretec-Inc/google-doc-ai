@@ -3,10 +3,9 @@ import { useDispatch } from 'react-redux'
 import Button from 'antd/lib/button'
 import Result from 'antd/lib/result'
 import { BrowserRouter, Route, Routes, useNavigate, useLocation } from 'react-router-dom'
-import { Submission, Dashboard, Configuration, BusinessRules } from '../Screens'
+import { Submission, Dashboard, Configuration, BusinessRules, SubmissionTemplate, SelectedDocument } from '../Screens'
 import { Header, Sidenav } from '../Components'
 import { getAllProcessors, getAllSubmissions } from '../Redux/actions/docActions'
-import SelectedDocument from '../Components/SelectedDocument/SelectedDocument'
 import allPaths from './paths'
 
 let data = {
@@ -76,33 +75,17 @@ const WrapComponent = ({ Component, ...props }) => {
 }
 
 const AllRoutes = () => {
-    // const navigate = useNavigate()
-    // useEffect(() => {
-    //     if (!localStorage.getItem('accessToken')?.length) {
-    //         navigate('/login')
-    //     }
-    //     else {
-    //         console.log('has token')
-    //     }
-    // })
-
     return (
         <BrowserRouter>
-            {/* <ScrollToTop /> */}
             <Routes>
-                {/* <Route path="/" element={<Home />} /> */}
                 <Route path={allPaths?.DASHBOARD} element={<WrapComponent Component={Dashboard} />} />
                 <Route path={allPaths?.SUBMISSION} element={<WrapComponent Component={Submission} />} />
                 <Route path={allPaths?.CONFIGURATION} element={<WrapComponent Component={Configuration} />} />
                 <Route path={allPaths?.BusinessRules} element={<WrapComponent Component={BusinessRules} />} />
+                <Route path={`${allPaths?.SUBMISSION}/:submissionId`} element={<WrapComponent Component={SubmissionTemplate} />} />
+                <Route path={`${allPaths?.SUBMISSION}/:submissionId/:pdfId`} element={<WrapComponent Component={SelectedDocument} />} />
                 <Route path={'/document'} element={<WrapComponent Component={SelectedDocument} getData={() => console.log('Hello')} openModal={false} disableBack={true} closeModal={() => console.log(false)} artifactData={data} />} />
                 <Route path='/:page404' exact element={<Page404 />} />
-                {/* <Route path="/submission" element={<WrapComponent Component={Submissions} />} />
-                <Route path="/files" element={<Files />} />
-                <Route path="/flows" element={<Flow />} />
-                <Route path="/reporting" element={<WrapComponent Component={Reporting} />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/signup' element={<Signup />} /> */}
             </Routes>
         </BrowserRouter>
     )

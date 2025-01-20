@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { MoreVertical, Plus, Search } from 'lucide-react';
 import moment from 'moment';
-import { Search, MoreVertical, Plus, ChevronRight } from 'lucide-react';
-
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Button } from "../../Components/ui/button";
+import { Calendar } from "../../Components/ui/calendar";
+import { Card, CardContent } from "../../Components/ui/card";
+import { Input } from "../../Components/ui/input";
+import allPaths from '../../Config/paths'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../Components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../Components/ui/select";
 import {
   Table,
   TableBody,
@@ -12,32 +28,16 @@ import {
   TableHeader,
   TableRow,
 } from "../../Components/ui/table";
-import { Button } from "../../Components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../Components/ui/select";
-import { Calendar } from "../../Components/ui/calendar";
-import { Input } from "../../Components/ui/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../../Components/ui/tooltip";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../Components/ui/popover";
-import { Card, CardContent } from "../../Components/ui/card";
 
-import { validateLength, convertTitle, disabledDate } from '../../utils/helpers';
-import { getAllSubmissions } from '../../Redux/actions/docActions';
 import SubmissionModal from '../../Components/Submission/SubmissionModal';
+import { getAllSubmissions } from '../../Redux/actions/docActions';
+import { convertTitle, validateLength } from '../../utils/helpers';
 import SubmissionTemplate from './SubmissionTemplate';
 
 // Breadcrumb Component
@@ -65,6 +65,8 @@ const SimpleBreadcrumb = ({ submissionName }) => {
 
 const Submission = (props) => {
   const { dispatch } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
   const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || []);
   const totalSubmissions = useSelector((state) => state?.docReducer?.totalSubmissions || 0);
   const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || []);
@@ -103,8 +105,16 @@ const Submission = (props) => {
     }));
   };
 
+  const handleTemplateShow = (templateData) => {
+    // Navigate to submission route with state
+    navigate(`${allPaths.SUBMISSION}/${templateData?.id}`, {
+      state: { templateData }
+    });
+  };
+
   if (showTemplate && templateData?.id) {
-    return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />;
+    handleTemplateShow(templateData)
+    // return <SubmissionTemplate {...props} goBack={() => setShowTemplate(false)} templateData={templateData} />;
   }
 
   return (

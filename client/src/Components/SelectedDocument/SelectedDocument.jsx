@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import SelectedCardData from '../SelectedCard/SelectedCardData'
 import { Spin } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import SelectedCardData from '../SelectedCard/SelectedCardData'
 
 const SelectedDocument = (props) => {
     const { backAction, closeModal } = props
+    const location = useLocation();
+    let artifactData = location.state?.artifactData;
+    let submissionName = location.state?.submissionName;
+    let submissionId = location.state?.submissionId;
     const [hasRequiredData, setHasRequiredData] = useState(true)
-    let artifactData = useSelector(store => store?.artifactReducer?.artifactData || {})
+    // let artifactData = useSelector(store => store?.artifactReducer?.artifactData || {})
 
     artifactData = props?.artifactData || artifactData
 
@@ -32,6 +36,8 @@ const SelectedDocument = (props) => {
                             goBack={backAction || closeModal}
                             {...props}
                             selectedCard={artifactData}
+                            submissionName={submissionName}
+                            submissionId={submissionId}
                         />
                     </div>
                 </div>
