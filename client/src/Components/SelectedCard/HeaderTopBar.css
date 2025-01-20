@@ -15,8 +15,9 @@
 
 .artifact-top {
     display: flex;
-    padding: 5px 0px;
+    padding: 5px 10px;
     align-items: center;
+    justify-content: space-between;
 }
 
 .artifact-sub {

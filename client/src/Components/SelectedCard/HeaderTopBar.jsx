@@ -1,40 +1,88 @@
-import React, { useEffect, useRef } from 'react'
-import SparkMD5 from 'spark-md5'
-
-import { Modal, Select, Tooltip } from 'antd'
+import { Button, Tooltip, Select, Drawer, Table } from 'antd'
+import React, { useEffect, useState } from 'react'
 import Highlighter from 'react-highlight-words'
-import './SelectedCardData.css'
-// import { LeftOutlined } from '@ant-design/icons'
-import { CloudUploadOutlined } from '@ant-design/icons'
-import { useState } from 'react'
 import { AiOutlineArrowLeft } from "react-icons/ai"
 import { useSelector } from 'react-redux'
-import { secureApi } from '../../Config/api'
-import { ARTIFACT, BOOKMARKS_APIS } from '../../utils/apis'
-import { errorMessage, removeBookmark, successNotification, warningMessage } from '../../utils/pdfHelpers'
 import './HeaderTopBar.css'
-
-const { Option } = Select
-
-const { POST: { BOOKMARKS_ADD_BOOKMARK, BOOKMARKS_BY_USERID_AND_ARTIFACTID } } = BOOKMARKS_APIS
-
-const caseOption = ['Requires Review', 'Completed Review', 'Awaiting Information', 'Rejected']
+import './SelectedCardData.css'
 
 const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
-    const [isBookMarked, setIsBookMarked] = useState()
-    const [bookMarkId, setBookMarkId] = useState()
     let artifactData = useSelector((state) => state.artifactReducer.artifactData)
     const userLogin = useSelector((state) => state?.authReducer?.user)
     artifactData = props?.artifactData || artifactData
-    // console.log('artifact data =>',artifactData)
-    const [isBookmarkLoading, setIsBookmarkLoading] = useState(true)
-    const [updatedFile, setUpdatedFile] = useState(false)
     const [versions, setVersions] = useState(artifactData?.file_versions)
     const [artifactNames, setArtifactNames] = useState(artifactData?.file_name_versions)
     const [version, setVersion] = useState(artifactData?.file_versions?.length - 1 || 0)
-    const draggerRef = useRef(null)
     const currentProject = useSelector(store => store?.artifactReducer?.currentProject)
     const project_id = currentProject?.id
+
+    // New states for enhanced functionality
+    const [selectedRule, setSelectedRule] = useState(null)
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const [tableData, setTableData] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [loadingRules, setLoadingRules] = useState(false)
+
+    // State for business rules
+    const [businessRules, setBusinessRules] = useState([])
+
+    // Fetch business rules
+    const fetchBusinessRules = async () => {
+        setLoadingRules(true)
+        try {
+            const response = await fetch('https://google-docai-be-685246125222.us-central1.run.app/api/v1/business-rules/all-rule-set/')
+            const data = await response.json()
+
+            // Transform the data to match Select component format
+            const formattedRules = data.map(rule => ({
+                value: rule.ruleset_id,
+                label: rule.rule_name
+            }))
+
+            setBusinessRules(formattedRules)
+        } catch (error) {
+            console.error('Error fetching business rules:', error)
+            // You might want to show an error message to the user here
+        } finally {
+            setLoadingRules(false)
+        }
+    }
+
+    // Fetch rules on component mount
+    useEffect(() => {
+        fetchBusinessRules()
+    }, [])
+
+    // Update table columns definition
+    const columns = [
+        {
+            title: 'Business Rule',
+            dataIndex: 'business_rule',
+            key: 'business_rule',
+            width: '50%',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'rule_satisfied',
+            key: 'rule_satisfied',
+            width: '15%',
+            render: (satisfied) => (
+                <span style={{
+                    color: satisfied ? '#52c41a' : '#ff4d4f',
+                    fontWeight: 'bold'
+                }}>
+                    {satisfied ? 'Passed' : 'Failed'}
+                </span>
+            ),
+        },
+        {
+            title: 'Reason',
+            dataIndex: 'reason',
+            key: 'reason',
+            width: '35%',
+            render: (reason) => reason || '-',
+        }
+    ]
 
     const user = useSelector((store) => store?.authReducer?.user)
     let originalName = artifactData?.original_file_name
@@ -54,176 +102,8 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
         if (typeof goBack == 'function') {
             goBack()
         } else {
-            console.error("Mising prop ''GoBack()'' ", goBack)
+            console.error("Missing prop 'GoBack()'", goBack)
         }
-    }
-
-    const getBookMark = () => { //query params: { page, limit, userId }
-
-        let user_id = user?.id
-        let artifact_id = artifactData?.artifact_id || artifactData?.id;
-        let query = { artifact_id, user_id }
-        secureApi.post(BOOKMARKS_BY_USERID_AND_ARTIFACTID, query)
-            .then((data) => {
-                if (data?.success) {
-                    let Id = data?.data?.id
-                    let isBookMark = data?.success
-                    if (isBookMark && Id) {
-
-                        setIsBookMarked(true)
-                        setBookMarkId(Id)
-                    }
-                    else {
-                        setIsBookMarked(false)
-                        setBookMarkId(null)
-                    }
-
-                }
-                else {
-                    let errMsg = data?.message
-                    errMsg && console.log(errMsg)
-                }
-                setIsBookmarkLoading(false)
-
-            })
-            .catch((err) => {
-                let errMsg = err?.response?.data?.message
-                // errMsg && errorMessage(errMsg)
-            })
-    }
-
-    const addBookMark = () => {
-        let user_id = user?.id
-        let artifact_id = artifactData?.id
-        let bookmark = { artifact_id, user_id }
-
-        setIsBookMarked(true)
-        setIsBookmarkLoading(true)
-        // this.setState({ isBookMark: true, isBookMarkLoading: true })
-        secureApi.post(BOOKMARKS_ADD_BOOKMARK, bookmark)
-            .then((data) => {
-                if (data?.success) {
-                    successNotification(data?.message || 'Bookmarked succesfully!')
-                    getBookMark()
-
-                }
-                else {
-                    let errMsg = data?.message;
-                    errMsg && errorMessage(errMsg);
-                }
-            })
-            .catch((err) => {
-                setIsBookMarked(false)
-                setIsBookmarkLoading(false)
-                let errMsg = err?.response?.data?.message;
-                errMsg && errorMessage(errMsg);
-            })
-    }
-
-    const removeBookMark = async () => {
-        let id = bookMarkId
-        // this.setState({ isBookMark: false, isBookMarkLoading: true })
-        setIsBookMarked(false)
-        setIsBookmarkLoading(true)
-
-
-        removeBookmark(id).then(() => {
-            getBookMark()
-            setIsBookmarkLoading(false)
-            // setIsBookmarkLoading()
-            if (typeof props?.onBookMarkRemove == 'function') {
-                props.onBookMarkRemove()
-            }
-        })
-
-    }
-
-    const addOrRemoveBookMark = () => {
-
-        if (!isBookmarkLoading) {//If its not loading already.
-            if (!isBookMarked) {  //If not already bookmarked.
-                addBookMark()
-            }
-            else {
-                removeBookMark()
-            }
-        }
-        else {
-            warningMessage('Please Wait...')
-        }
-    }
-
-    const uploadUpdatedFile = (file) => {
-        let isCustom = currentProject?.template?.is_custom
-        let templateFileName = `${currentProject?.template?.id}-${currentProject?.template?.original_file_name}`
-        let tableName = `${currentProject?.name}_${currentProject?.id?.replace(/-/g, '_')}.${currentProject?.template?.template_name}`
-        let md5 = SparkMD5.hash(file.name)
-        setUpdatedFile(true)
-
-        let formData = new FormData()
-
-        formData.append('md5', md5)
-        formData.append('file', file)
-        formData.append('user_id', user.id)
-        formData.append('fileId', artifactData.id)
-        formData.append('project_id', project_id)
-        formData.append('is_custom', isCustom)
-        formData.append('template_file_name', templateFileName)
-        formData.append('project_name', currentProject?.name)
-        formData.append('table_name', tableName)
-        formData.append('user_email', user?.email)
-        formData.append('template_id', JSON.stringify(currentProject?.template?.id || null))
-        formData.append('processorId', JSON.stringify(currentProject?.template?.processor_id || null))
-
-        secureApi.post(ARTIFACT.POST.UPDATE_FILE, formData)
-            .then((data) => {
-                draggerRef.current.value = null
-                console.log('data', data)
-                setUpdatedFile(false)
-                if (data?.success) {
-                    return reduxActions.setArtifactData({ ...data?.artifact })
-                }
-                errorMessage(data?.message)
-            })
-            .catch((e) => {
-                draggerRef.current.value = null
-                console.log('e', e)
-            })
-    }
-
-    const normFile = (e) => {
-        // let types = hasTemplate ? ['application/pdf'] : allMimeTypes
-        let types = 'application/pdf'
-        let files = e?.target?.files
-
-        if (!files?.length) return
-
-        if (types.indexOf(files[0]?.type) !== -1) {
-            Modal.confirm({
-                title: 'Confirm',
-                icon: <CloudUploadOutlined />,
-                content: `Are you sure to update the file?`,
-                okText: `Confirm`,
-                cancelText: `Cancel`,
-                onOk: () => uploadUpdatedFile(files[0]),
-                onCancel: () => {
-                    draggerRef.current.value = null
-                }
-            })
-        }
-        else {
-            setUpdatedFile(false)
-            return warningMessage('Please Upload Form Only!')
-        }
-    }
-
-    const onChange = (v) => {
-        console.log('v', v)
-        setVersion(v)
-        artifactData.file_address = versions[v]
-        artifactData.original_file_address = versions[v]
-        artifactData.file_name = artifactNames[v]
-        reduxActions.setArtifactData({ ...artifactData })
     }
 
     const highlighter = (text) => (
@@ -235,9 +115,85 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
         />
     )
 
-    const icon_style = { color: 'rgb(0, 128, 247)' }
+    const handleRuleSelect = (value, option) => {
+        setSelectedRule(value) // This will be the ruleset_id
+    }
 
-    const bookMarkColor = isBookmarkLoading ? { color: 'gray' } : icon_style
+    const convertToGsUrl = (httpsUrl) => {
+        try {
+            if (!httpsUrl) return ''
+
+            // Check if the URL is a Google Storage URL
+            if (!httpsUrl.startsWith('https://storage.googleapis.com/')) {
+                return httpsUrl
+            }
+
+            // Find the position of .pdf in the URL
+            const pdfIndex = httpsUrl.toLowerCase().indexOf('.pdf')
+            if (pdfIndex === -1) return httpsUrl
+
+            // Get the URL only up to .pdf
+            const truncatedUrl = httpsUrl.substring(0, pdfIndex + 4)
+
+            // Remove the base URL and convert to gs:// format
+            const gsPath = truncatedUrl.replace('https://storage.googleapis.com/', '')
+            return `gs://${gsPath}`
+        } catch (error) {
+            console.error('Error converting URL:', error)
+            return httpsUrl
+        }
+    }
+
+    const handleRunRules = async () => {
+        if (!selectedRule || !artifactData?.file_address) {
+            console.error('Missing required parameters')
+            return
+        }
+
+        setIsDrawerOpen(true)
+        setLoading(true)
+
+        try {
+            // Convert the HTTPS URL to GS format
+            const gsUrl = convertToGsUrl(artifactData.file_address)
+
+            // Create URL with ruleset_id parameter
+            const apiUrl = `https://google-docai-be-685246125222.us-central1.run.app/api/v1/rule-execution/execute-rules?gs_url=${encodeURIComponent(gsUrl)}&ruleset_id=${encodeURIComponent(selectedRule)}`
+
+            // console.log('Executing rules with:', {
+            //     gs_url: gsUrl,
+            //     ruleset_id: selectedRule
+            // })
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to execute rules')
+            }
+
+            const data = await response.json()
+
+            // Transform the response data to match table format
+            const formattedData = Array.isArray(data) ? data.map((item, index) => ({
+                key: index.toString(),
+                business_rule: item.business_rule,
+                rule_satisfied: item.rule_satisfied,
+                reason: item.reason,
+            })) : []
+
+            setTableData(formattedData)
+        } catch (error) {
+            console.error('Error executing rules:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div className='myShadowCard'>
             <div className='artifact-top'>
@@ -249,12 +205,46 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
                         <p style={{ marginBottom: 0, marginLeft: 10, flex: 1 }}>{highlighter(smallLengthName)}</p>
                     </Tooltip>
                 </div>
-                {/* <div className='new-doc'>
-                    New Document
-                </div> */}
+                <div className='new-doc' style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <Select
+                        placeholder="Select Business Rule"
+                        style={{ width: 300 }}
+                        options={businessRules}
+                        onChange={handleRuleSelect}
+                        loading={loadingRules}
+                        disabled={loadingRules}
+                        optionLabelProp="label"
+                    />
+                    <Button
+                        type='primary'
+                        disabled={!selectedRule}
+                        onClick={handleRunRules}
+                    >
+                        Run Business Rules
+                    </Button>
+                </div>
             </div>
 
-        </div >
+            <Drawer
+                title="Business Rules Execution Results"
+                placement="right"
+                onClose={() => setIsDrawerOpen(false)}
+                open={isDrawerOpen}
+                width={800}
+            >
+                <Table
+                    columns={columns}
+                    dataSource={tableData}
+                    loading={loading}
+                    pagination={{
+                        pageSize: 10,
+                        showSizeChanger: false,
+                        showTotal: (total) => `Total ${total} rules`,
+                    }}
+                    scroll={{ y: 'calc(100vh - 250px)' }}
+                />
+            </Drawer>
+        </div>
     )
 }
 
