@@ -5,7 +5,7 @@ import { BsBell } from 'react-icons/bs';
 
 const Header = ({ setToggleHeader }) => {
     const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
-    
+
     const clickToogle = () => {
         setToggleHeader((state) => !state);
     };
@@ -89,7 +89,7 @@ const Header = ({ setToggleHeader }) => {
                                     </span>
                                 </button>
                                 {showSettingsDropdown && (
-                                    <div 
+                                    <div
                                         className="absolute top-full left-0 bg-[#002d62] border border-[#003478] min-w-[200px] z-50"
                                         style={{
                                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
@@ -121,8 +121,6 @@ const Header = ({ setToggleHeader }) => {
                                     search
                                 </span>
                             </div>
-                            <Link to="/help" className="text-white hover:text-gray-200">Help Assistant</Link>
-                            <Link to="/learn" className="text-white hover:text-gray-200">Learn</Link>
                         </div>
                     </div>
                 </div>

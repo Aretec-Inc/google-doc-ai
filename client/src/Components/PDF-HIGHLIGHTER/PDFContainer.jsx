@@ -269,15 +269,13 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                 />}
 
                 <div style={{ padding: 0, overflow: 'hidden', width: '100%' }} flex={3}>
-
-
                     <div style={{
                         height: globalHeight,
                         position: 'relative',
                         background: 'white'
                     }}>
                         <div>
-                            <div style={{ backgroundColor: '#f6f6f6', marginBottom: 15 }} className='ParentFunctionsDiv' >
+                            <div style={{ marginBottom: 0 }} className='ParentFunctionsDiv' >
                                 <FlexRowDiv style={{ justifyContent: 'space-between' }} >
                                     <FlexRowDiv  >
                                         <LongClickButton

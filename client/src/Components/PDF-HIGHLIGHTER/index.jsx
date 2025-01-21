@@ -100,7 +100,11 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
     const testingFileAddress = "https://storage.googleapis.com/elaborate-howl-285701_context_primary/templates/4904bd9c-f1fc-489f-9efc-1a5637b22d8d-DD2875_AUG_wh_filled%202%20copy%202.pdf?GoogleAccessId=bigquery-nodejs%40elaborate-howl-285701.iam.gserviceaccount.com&Expires=1631802906&Signature=GWcyvIa5a%2FBQc%2F0IPj3Dw4pO8NW9eS5MwAPfGJRhvo8gS2ICr8s8WBJvWriZEwVfXulftNVKy%2FiIG%2FDGNM3%2BVIXCN8o%2F2WtmBMXOQu3Rw3M%2F99BNePM4OPFUOpYAnHeypXrvfVOh0KYCIT9X2mFJdcadF3nDaykxd6b%2FDyw3nuBUuUw8HXDsan4OpYoERYQUEUIyDZyGoK774HeQACYeQPYFJHPiKVT2ZWWFkxThou2cGhxEPZGaqSADAB3g6ehbLh%2F3N6OhKOKxlL%2FO5Y0MNl%2BP9H3wOfvTwyjzJk7rPnzVmH4AWALNyaumeKMbR0L%2BLRp%2BBYoOWNTUZweFbV6vfw%3D%3D"
 
     const ConditionalComponent = (
-        <div style={{ filter: enableShadow ? `drop-shadow(0px 0px 10px silver)` : 'unset', ...openInModal ? {} : { maxWidth } }}>
+        <div
+            style={{
+                // filter: enableShadow ? `drop-shadow(0px 0px 10px silver)` : 'unset',
+                ...openInModal ? {} : { maxWidth }
+            }}>
             <div style={{ display: 'none', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
                 <div style={{ width: '100%' }}>
                     <Tabs redacted_file_address={redacted_file_address} showKeyPairTab={hasFormFields} showTableTab={Boolean(key_pairs?.length)} showJSONTab={Boolean(json)} onChange={(e, newvalue) => setTabIndex(newvalue)} value={tabIndex} />

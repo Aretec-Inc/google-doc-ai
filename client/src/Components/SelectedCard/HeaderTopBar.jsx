@@ -109,7 +109,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, setDrawerLoading, setRu
     }
 
     return (
-        <div className='mb-4'>
+        <div className=''>
             <div className='artifact-top'>
                 <div className='artifact-sub'>
                     {/* Commented out as per original code */}

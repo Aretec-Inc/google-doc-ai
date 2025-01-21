@@ -83,7 +83,7 @@ const BusinessRulesTable = ({ rules, loading }) => {
             //         </span>
             //     ),
             // }}
-            scroll={{ y: 'calc(100vh - 250px)' }}
+            scroll={{ y: 'calc(100vh - 150px)' }}
             rowKey={(record, index) => index}
             style={tableStyle}
         />
@@ -96,16 +96,17 @@ const BusinessRulesDrawer = ({ isOpen, rules, loading, setIsDrawerOpen }) => {
 
     return (
         <div className="absolute right-0 top-0 bottom-0 w-4/12 bg-white border-l border-gray-200 overflow-y-hidden mb-10">
-            <div className="sticky top-0 p-4 border-b border-gray-500 bg-white flex justify-between items-center">
-                <h2 className="text-lg font-semibold">Business Rules Results</h2>
+            <div className="sticky top-0 border-b border-gray-500 bg-white flex justify-between items-center"
+                style={{ padding: '9.6px' }}>
+                <h2 className="text-sm font-semibold">Business Rules Results</h2>
                 <button
                     onClick={() => setIsDrawerOpen(false)}
-                    className="p-1 hover:bg-gray-100 rounded-full"
+                    className="p-0 hover:bg-gray-100 rounded-full"
                 >
                     <X size={20} className="text-gray-600" />
                 </button>
             </div>
-            <div className="pt-2">
+            <div className="pt-0">
                 <BusinessRulesTable rules={rules} loading={loading} />
             </div>
         </div>
@@ -200,7 +201,9 @@ const SelectedCardData = ({
                 {loading ? (
                     <Skeleton paragraph={{ rows: 5 }} />
                 ) : (
-                    <div className="relative flex w-full">
+                    <div className="relative flex w-full"
+                    // style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 2px silver)' } : {}}
+                    >
                         <div className={`transition-all duration-300 ease-in-out ${isDrawerOpen ? 'w-8/12' : 'w-full'}`}>
                             <div className="flex flex-1 flex-col w-full mb-10">
                                 <PDFVIEWER
@@ -222,26 +225,40 @@ const SelectedCardData = ({
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 
     return (
-        <div
-            className="card-div"
-            style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 20px silver)' } : {}}
-        >
-            <SimpleBreadcrumb submissionName={submissionName} pdfName={selectedCard?.original_file_name} submissionId={submissionId} />
+        <div>  {/* Removed card-div class from outer container */}
+            {/* Header section without shadow */}
+            <div className="flex justify-between items-center w-full my-2">
+                <div className="flex items-center">
+                    <SimpleBreadcrumb
+                        submissionName={submissionName}
+                        pdfName={selectedCard?.original_file_name}
+                        submissionId={submissionId}
+                    />
+                </div>
+                <div className="flex items-center">
+                    <HeaderTopBar
+                        {...props}
+                        selectedCard={selectedCard || initialSelectedCard}
+                        goBack={goBack}
+                        setIsDrawerOpen={setIsDrawerOpen}
+                        setRulesResults={setRulesResults}
+                        setDrawerLoading={setDrawerLoading}
+                    />
+                </div>
+            </div>
 
-            <HeaderTopBar
-                {...props}
-                selectedCard={selectedCard || initialSelectedCard}
-                goBack={goBack}
-                setIsDrawerOpen={setIsDrawerOpen}
-                setRulesResults={setRulesResults}
-                setDrawerLoading={setDrawerLoading}
-            />
-            <div style={conditionalStyle}>
-                {content}
+            {/* Content section with original shadow */}
+            <div
+                className="card-div"
+                style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 2px silver)' } : {}}
+            >
+                <div style={conditionalStyle}>
+                    {content}
+                </div>
             </div>
         </div>
     );

@@ -42,7 +42,7 @@ const Sidebar = (props) => {
     let smallArtifactName = (original_file_name && original_file_name?.length > 30) ? original_file_name?.substr(original_file_name?.length - 30, original_file_name?.length) : original_file_name
 
     return (
-        <div style={{ minWidth: 250, maxWidth: 500, width: `80%`, overflowX: 'hidden', }}>
+        <div style={{ minWidth: 250, maxWidth: 500, width: `80%`, overflowX: 'hidden', background: 'red' }}>
             <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver`, paddingLeft: '10px' }}>
                 <Input className='input-desin'
                     disabled={isLoading}
