@@ -1,7 +1,7 @@
 import { ArrowLeft, Search, Upload } from 'lucide-react';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'; // Added useNavigate here
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import allPaths from '../../Config/paths';
 
 import { Button } from "../../Components/ui/button";
@@ -30,7 +30,7 @@ import { convertTitle, errorMessage, validateLength } from '../../utils/helpers'
 
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName }) => {
-  const navigate = useNavigate();  // Now this will work
+  const navigate = useNavigate();
 
   const handleSubmissionClick = (e) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ const SimpleBreadcrumb = ({ submissionName }) => {
   };
 
   return (
-    <nav className="py-2" aria-label="Breadcrumb">
+    <nav aria-label="Breadcrumb">
       <ol className="flex items-center text-sm">
         <li>
           <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>
@@ -55,7 +55,6 @@ const SimpleBreadcrumb = ({ submissionName }) => {
         </li>
         <li className="mx-2 text-gray-500">/</li>
         <li className="text-gray-600">{submissionName}</li>
-
       </ol>
     </nav>
   );
@@ -63,9 +62,8 @@ const SimpleBreadcrumb = ({ submissionName }) => {
 
 const SubmissionTemplate = ({ dispatch, goBack }) => {
   const navigate = useNavigate();
-  // const submission_id = templateData?.id;
   const { submissionId } = useParams();
-  const submission_id = submissionId
+  const submission_id = submissionId;
   const location = useLocation();
   const templateData = location.state?.templateData;
   const [threshold, setThreshold] = useState(templateData?.threshold || 0);
@@ -82,10 +80,9 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   const [viewTable, setViewTable] = useState(false);
   const [exportData, setExportData] = useState([]);
   const [exportColumns, setExportColumns] = useState([]);
-  const [templateName, setTemplateName] = useState(localStorage.getItem('submission_name') || convertTitle(templateData?.submission_name))
-  const [processorName, setProcessorName] = useState(localStorage.getItem('processor_name') || convertTitle(templateData?.processor_name))
+  const [templateName, setTemplateName] = useState(localStorage.getItem('submission_name') || convertTitle(templateData?.submission_name));
+  const [processorName, setProcessorName] = useState(localStorage.getItem('processor_name') || convertTitle(templateData?.processor_name));
 
-  console.log("LOCAL ST", templateName)
   useEffect(() => {
     getAllFiles();
     getExportData();
@@ -154,7 +151,6 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
     }
   };
 
-
   const handleDocumentShow = (fileData) => {
     navigate(`${allPaths.SUBMISSION}/${submissionId}/${fileData.id}`, {
       state: { artifactData: fileData, submissionName: templateName, submissionId: submissionId }
@@ -162,51 +158,27 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   };
 
   if (showDocument) {
-    handleDocumentShow(selectedFile)
-
-    // return (
-    //   <SelectedDocument
-    //     openModal={false}
-    //     disableBack={true}
-    //     closeModal={() => setShowDocument(false)}
-    //     artifactData={selectedFile}
-    //   />
-    // );
+    handleDocumentShow(selectedFile);
   }
 
   return (
     <div className="bg-white min-h-screen">
-      {/* Breadcrumb */}
-      <SimpleBreadcrumb submissionName={templateName} />
-
-      {/* Title Section */}
+      {/* Header with Breadcrumbs and Upload button on opposite sides */}
       <div className="border-b bg-white">
-        <div className="py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleGoBack}
-              className=""
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-xl font-medium">Submission: {convertTitle(templateData?.submission_name)}</h1> */}
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              className="ml-4"
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              Upload
-            </Button>
-          </div>
+        <div className="py-4 px-4 flex justify-between items-center">
+          <SimpleBreadcrumb submissionName={templateName} />
+          <Button
+            variant="outline"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Upload
+          </Button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="py-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Search and Date Filter */}
+      <div className="py-4 px-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -237,10 +209,11 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
         </Popover>
       </div>
 
-      {/* Content Section */}
-      <div className="pb-4">
+      {/* Main Content */}
+      <div className="px-4 pb-4">
         <Card>
           <CardContent className="p-0">
+            {/* Card Header */}
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center space-x-4">
                 <span className="font-medium">{totalFiles} Documents</span>
@@ -267,11 +240,11 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
               </div>
             </div>
 
+            {/* Table */}
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40%]">File Name</TableHead>
-                  {/* <TableHead className="w-[20%]">Confidence</TableHead> */}
                   <TableHead className="w-[20%]">Status</TableHead>
                   <TableHead className="w-[20%]">Created Date</TableHead>
                 </TableRow>
@@ -292,15 +265,6 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
                         </Link>
                       </div>
                     </TableCell>
-                    {/* <TableCell>
-                      <div className="w-full">
-                        <Progress
-                          percent={file.average_confidence}
-                          status={file.average_confidence < threshold ? "exception" : "active"}
-                          size="small"
-                        />
-                      </div>
-                    </TableCell> */}
                     <TableCell>
                       <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
                         ${file.is_completed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
@@ -343,7 +307,7 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
         </Card>
       </div>
 
-      {/* Modals */}
+      {/* Upload Modal */}
       {isModalOpen && (
         <UploadModal
           closeModal={() => setIsModalOpen(false)}
