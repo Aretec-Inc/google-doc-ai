@@ -76,7 +76,7 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
             ),
         },
         {
-            title: 'Reasons',
+            title: 'Reasoning',
             dataIndex: 'reason',
             key: 'reason',
             width: '40%',

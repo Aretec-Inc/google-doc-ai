@@ -114,7 +114,7 @@ const SelectedCardData = ({
             className="card-div"
             style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 20px silver)' } : {}}
         >
-            <SimpleBreadcrumb submissionName={submissionName} pdfName={selectedCard?.file_name} submissionId={submissionId} />
+            <SimpleBreadcrumb submissionName={submissionName} pdfName={selectedCard?.original_file_name} submissionId={submissionId} />
 
             <HeaderTopBar
                 {...props}
