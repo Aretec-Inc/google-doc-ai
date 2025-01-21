@@ -155,7 +155,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
+          json_file = require("../docAIJSON/inference_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
         }
         if (
           file_name?.includes(
@@ -163,7 +163,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
+          json_file = require("../docAIJSON/inference_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
         }
         if (
           file_name?.includes(
@@ -171,7 +171,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
+          json_file = require("../docAIJSON/inference_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
         }
         if (
           file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
@@ -203,7 +203,7 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/inference_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+          json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
         }
         if (
           file_name?.includes(
@@ -211,7 +211,39 @@ const docAI = ({
           )
         ) {
           skip_docai = true;
-          json_file = require("../docAIJSON/inference_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+          json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+        }
+        if (
+          file_name?.includes(
+            "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+        }
+        if (
+          file_name?.includes(
+            "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+        }
+        if (
+          file_name?.includes(
+            "irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/inference_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
+        }
+        if (
+          file_name?.includes(
+            "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/inference_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
         }
         if (skip_docai) {
           console.log("skipping docai");
