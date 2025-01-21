@@ -87,7 +87,7 @@ const SelectedCardData = ({
 
     const artifact_type = selectedCard?.artifact_type;
     const alreadyHasTabs = !isPDF(artifact_type);
-    const conditionalStyle = alreadyHasTabs ? { background: 'white', padding: 10, paddingTop: 0 } : {};
+    const conditionalStyle = alreadyHasTabs ? {paddingTop: 0 } : {};
 
     const content = (
         <div data-aos={fadeList[randomInteger(0, fadeList.length - 1)]}>
@@ -95,7 +95,7 @@ const SelectedCardData = ({
                 {loading ? (
                     <Skeleton paragraph={{ rows: 5 }} />
                 ) : (
-                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%' }}>
+                    <div style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%', marginBottom: '10px' }}>
                         <PDFVIEWER
                             isTemplateView={isTemplateView}
                             maxWidth="100vw"

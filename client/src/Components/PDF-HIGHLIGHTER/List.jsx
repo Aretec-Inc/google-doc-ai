@@ -1,9 +1,9 @@
-import { Button, List, ListItem } from '@material-ui/core';
+import { Button, CircularProgress, List, ListItem } from '@material-ui/core';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Add, ExpandLess, ExpandMore } from '@material-ui/icons/';
 import { Tooltip } from 'antd';
 import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Icon_Blue_Color } from '../../utils/pdfConstants';
 import DialogEdit from './DialogEditField';
@@ -28,7 +28,8 @@ const VirtualizedList = ({
     setShouldScrollPDF,
     refresh,
     isCompleted,
-    searchKey
+    searchKey,
+    isLoading = false
 }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [selectEditHighlight, setSelectEditHighlight] = useState(null);
@@ -43,12 +44,30 @@ const VirtualizedList = ({
     const isCurrentlyFormFields = isFormFields(typeOfHighlights);
     const is_completed = isCompleted || artifactData?.is_completed || !isCurrentlyFormFields;
 
-    const toggleExpand = (key) => {
-        setExpandedItems(prev => ({
-            ...prev,
-            [key]: !prev[key]
-        }));
-    };
+    // Modified toggle expand to handle nested paths with explicit state
+    const toggleExpand = useCallback((path) => {
+        setExpandedItems(prev => {
+            const newState = { ...prev };
+            const isCurrentlyExpanded = prev[path] !== false; // If undefined or true, consider it expanded
+
+            // Explicitly set the new state
+            newState[path] = !isCurrentlyExpanded;
+
+            // Handle child paths
+            Object.keys(prev).forEach(key => {
+                if (key.startsWith(path + '/')) {
+                    newState[key] = !isCurrentlyExpanded;
+                }
+            });
+
+            return newState;
+        });
+    }, []);
+
+    // Check if a path should be expanded with explicit false check
+    const isExpanded = useCallback((path) => {
+        return expandedItems[path] !== false; // Only treat explicit false as collapsed
+    }, [expandedItems]);
 
     const HandleTypesOfContent = (content, isHighlighted) => {
         const contentType = content?.type;
@@ -78,50 +97,82 @@ const VirtualizedList = ({
     );
 
     const groupedHighlights = useMemo(() => {
-        if (!Array.isArray(finalHighlights)) return [];
+        if (!Array.isArray(finalHighlights)) return {};
 
         const grouped = {};
         finalHighlights.forEach(data => {
-            const fieldName = data[0]?.content?.text;
-            if (!fieldName) return;
-
-            const parts = fieldName.split('/');
-            let currentLevel = grouped;
-
-            parts.forEach((part, index) => {
-                const isLastPart = index === parts.length - 1;
-                if (isLastPart) {
-                    currentLevel[part] = data;
-                } else {
-                    currentLevel[part] = currentLevel[part] || {};
-                    currentLevel = currentLevel[part];
+            try {
+                if (!data || !Array.isArray(data) || !data[0]?.content?.text) {
+                    console.warn('Invalid highlight data structure:', data);
+                    return;
                 }
-            });
+
+                const fieldName = data[0].content.text;
+                const parts = fieldName.split('/').filter(Boolean); // Remove empty parts
+
+                if (parts.length === 0) return;
+
+                let currentLevel = grouped;
+                let currentPath = '';
+
+                parts.forEach((part, index) => {
+                    // Sanitize the part to create a valid object key
+                    const safePart = part.trim().replace(/\s+/g, '_');
+                    currentPath = currentPath ? `${currentPath}/${safePart}` : safePart;
+                    const isLastPart = index === parts.length - 1;
+
+                    if (isLastPart) {
+                        // Ensure we're not overwriting existing data
+                        if (currentLevel[safePart] && currentLevel[safePart].data) {
+                            console.warn(`Duplicate entry found for path: ${currentPath}`);
+                        }
+                        currentLevel[safePart] = {
+                            data,
+                            path: currentPath
+                        };
+                    } else {
+                        // Initialize or preserve existing node
+                        if (!currentLevel[safePart]) {
+                            currentLevel[safePart] = {
+                                children: {},
+                                path: currentPath
+                            };
+                        } else if (!currentLevel[safePart].children) {
+                            currentLevel[safePart].children = {};
+                        }
+                        currentLevel = currentLevel[safePart].children;
+                    }
+                });
+            } catch (error) {
+                console.error('Error processing highlight:', error, data);
+            }
         });
 
         return grouped;
     }, [finalHighlights]);
 
-    const renderNestedStructure = (items, level = 0) => {
+    const renderNestedStructure = (items, parentPath = '') => {
         return Object.entries(items).map(([key, value]) => {
-            if (!Array.isArray(value)) {
-                const isExpanded = expandedItems[key] ?? true; // Default to expanded
+            const currentPath = parentPath ? `${parentPath}/${key}` : key;
+
+            if (!value.data) { // This is a folder
+                const expanded = isExpanded(currentPath);
                 return (
-                    <div key={key}>
+                    <div key={currentPath}>
                         <ListItem
                             button
-                            onClick={() => toggleExpand(key)}
+                            onClick={() => toggleExpand(currentPath)}
                             style={{
-                                paddingLeft: level * 10,
+                                paddingLeft: parentPath ? parentPath.split('/').length * 16 : 8,
                                 backgroundColor: '#f5f5f5',
-                                borderLeft: level > 0 ? '2px solid #eee' : 'none',
-                                marginLeft: level > 0 ? '10px' : '0',
+                                borderLeft: parentPath ? '2px solid #eee' : 'none',
+                                marginLeft: parentPath ? '10px' : '0',
                                 display: 'flex',
                                 alignItems: 'center',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
                             }}
                         >
-                            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                            {expanded ? <ExpandLess /> : <ExpandMore />}
                             <span style={{
                                 fontWeight: 'bold',
                                 marginLeft: '8px',
@@ -131,16 +182,18 @@ const VirtualizedList = ({
                                 {key}
                             </span>
                         </ListItem>
-                        {isExpanded && (
+                        {expanded && (
                             <div style={{ marginLeft: '10px' }}>
-                                {renderNestedStructure(value, level + 1)}
+                                {renderNestedStructure(value.children, currentPath)}
                             </div>
                         )}
                     </div>
                 );
             }
 
-            const id = value[0].id;
+            // This is a leaf node (actual highlight)
+            const highlightData = value.data;
+            const id = highlightData[0].id;
             const isCurrentlyHighlighted = Boolean(selectedHighLights.find(ids => ids === id));
             const allIdsWithoutThis = selectedHighLights.filter(ids => ids !== id);
 
@@ -152,7 +205,7 @@ const VirtualizedList = ({
             return (
                 <NestedListItem
                     key={id}
-                    fieldData={value}
+                    fieldData={highlightData}
                     isCurrentlyHighlighted={isCurrentlyHighlighted}
                     handleLongClick={() => {
                         setScrollsSetting();
@@ -173,7 +226,7 @@ const VirtualizedList = ({
                         setSelectEditHighlight(keyPair);
                         setShowDialog(true);
                     }}
-                    level={level}
+                    level={parentPath ? parentPath.split('/').length : 0}
                 />
             );
         });
@@ -181,7 +234,17 @@ const VirtualizedList = ({
 
     return (
         <div style={{ overflow: 'auto', overflowX: 'hidden', height, width }}>
-            {(Array.isArray(finalHighlights) && finalHighlights?.length && Boolean(is_completed)) ? (
+            {isLoading ? (
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    width: '100%'
+                }}>
+                    <CircularProgress size={40} />
+                </div>
+            ) : (Array.isArray(finalHighlights) && finalHighlights?.length && Boolean(is_completed)) ? (
                 <List>
                     {renderNestedStructure(groupedHighlights)}
                 </List>
@@ -245,7 +308,8 @@ VirtualizedList.propTypes = {
     artifactData: PropTypes.object,
     refresh: PropTypes.func,
     triggerAddKeyPair: PropTypes.bool,
-    setTriggerAddKeyPair: PropTypes.func
+    setTriggerAddKeyPair: PropTypes.func,
+    isLoading: PropTypes.bool
 };
 
 export default VirtualizedList;

@@ -43,7 +43,7 @@ const Sidebar = (props) => {
 
     return (
         <div style={{ minWidth: 250, maxWidth: 500, width: `80%`, overflowX: 'hidden', }}>
-            <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver` }}>
+            <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver`, paddingLeft: '10px' }}>
                 <Input className='input-desin'
                     disabled={isLoading}
                     startAdornment={
