@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Tooltip } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 // import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons'
-import ReactDOM from 'react-dom'
-import PDF from './PDF'
+import { IconButton, } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
-import { IconButton, } from '@material-ui/core';
-import { Icon_Blue_Color } from '../../utils/pdfConstants'
-import SideBar from './NewSidebar'
 import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
+import { Icon_Blue_Color } from '../../utils/pdfConstants';
+import SideBar from './NewSidebar';
+import PDF from './PDF';
 // import { getParagraphs } from './parseJSON'
 import { useNavigate } from 'react-router-dom';
-import LongClickButton from '../LongClickButton'
+import LongClickButton from '../LongClickButton';
 // import { Menu, Dropdown, } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import Anim from 'react-lottie';
-import './pdf.css'
+import './pdf.css';
 // import { secureApi } from '../../Config/api';
 // import { parseURL } from '../../utils/pdfHelpers';
 
@@ -274,6 +274,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     <div style={{
                         height: globalHeight,
                         position: 'relative',
+                        background: 'white'
                     }}>
                         <div>
                             <div style={{ backgroundColor: '#f6f6f6', marginBottom: 15 }} className='ParentFunctionsDiv' >

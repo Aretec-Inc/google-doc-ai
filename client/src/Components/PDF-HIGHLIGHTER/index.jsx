@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import Tabs from './Tabs'
-import PropTypes from 'prop-types'
-import { errorMessage } from '../../utils/pdfHelpers'
+import { CircularProgress, Tooltip } from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton'
 import { Replay } from '@material-ui/icons'
+import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { secureApi } from '../../Config/api'
-import PDFContainer from './PDFContainer'
-import { CircularProgress, Tooltip } from '@material-ui/core'
 import { setArtifactData } from '../../Redux/actions/artifactActions'
-import { useDispatch } from 'react-redux'
 import { GET } from '../../utils/apis'
-
+import { errorMessage } from '../../utils/pdfHelpers'
+import PDFContainer from './PDFContainer'
+import Tabs from './Tabs'
 
 const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
     const dispatch = useDispatch()
