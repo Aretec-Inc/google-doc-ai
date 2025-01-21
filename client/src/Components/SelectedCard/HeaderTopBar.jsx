@@ -59,13 +59,13 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
             title: 'Business Rule',
             dataIndex: 'business_rule',
             key: 'business_rule',
-            width: '50%',
+            width: '40%',
         },
         {
             title: 'Status',
             dataIndex: 'rule_satisfied',
             key: 'rule_satisfied',
-            width: '15%',
+            width: '10%',
             render: (satisfied) => (
                 <span style={{
                     color: satisfied ? '#52c41a' : '#ff4d4f',
@@ -76,10 +76,10 @@ const HeaderTopBar = ({ goBack, reduxActions, searchKey, ...props }) => {
             ),
         },
         {
-            title: 'Reason',
+            title: 'Reasons',
             dataIndex: 'reason',
             key: 'reason',
-            width: '35%',
+            width: '40%',
             render: (reason) => reason || '-',
         }
     ]

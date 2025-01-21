@@ -420,7 +420,7 @@ const BusinessRules = (props) => {
                 <thead>
                   <tr className="border-b bg-gray-50">
                     <th className="p-4 text-left font-medium text-gray-600">Rule Name</th>
-                    <th className="p-4 text-left font-medium text-gray-600">Business Rule</th>
+                    <th className="p-4 text-left font-medium text-gray-600">Business Rule Set</th>
                     <th className="p-4 text-left font-medium text-gray-600">Rule Statement</th>
                   </tr>
                 </thead>

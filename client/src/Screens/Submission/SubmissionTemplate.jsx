@@ -82,8 +82,10 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   const [viewTable, setViewTable] = useState(false);
   const [exportData, setExportData] = useState([]);
   const [exportColumns, setExportColumns] = useState([]);
-  const [templateName, setTemplateName] = useState(convertTitle(templateData?.submission_name))
+  const [templateName, setTemplateName] = useState(localStorage.getItem('submission_name') || convertTitle(templateData?.submission_name))
+  const [processorName, setProcessorName] = useState(localStorage.getItem('processor_name') || convertTitle(templateData?.processor_name))
 
+  console.log("LOCAL ST", templateName)
   useEffect(() => {
     getAllFiles();
     getExportData();
@@ -175,7 +177,7 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   return (
     <div className="bg-white min-h-screen">
       {/* Breadcrumb */}
-      <SimpleBreadcrumb submissionName={convertTitle(templateData?.submission_name)} />
+      <SimpleBreadcrumb submissionName={templateName} />
 
       {/* Title Section */}
       <div className="border-b bg-white">
@@ -243,7 +245,7 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
               <div className="flex items-center space-x-4">
                 <span className="font-medium">{totalFiles} Documents</span>
                 <span className="text-sm text-gray-500">
-                  Processor: {templateData?.processor_name}
+                  Processor: {processorName}
                 </span>
               </div>
               <div className="flex items-center space-x-2">

@@ -107,6 +107,8 @@ const Submission = (props) => {
 
   const handleTemplateShow = (templateData) => {
     // Navigate to submission route with state
+    localStorage.setItem('submission_name', templateData?.submission_name)
+    localStorage.setItem('processor_name', templateData?.processor_name)
     navigate(`${allPaths.SUBMISSION}/${templateData?.id}`, {
       state: { templateData }
     });
