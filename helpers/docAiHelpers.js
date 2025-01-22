@@ -222,6 +222,7 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
         }
         
         if (
@@ -231,6 +232,7 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
         }
         
         if (
@@ -240,6 +242,7 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
         }
         
         if (
@@ -249,6 +252,7 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
         }
         if (skip_docai) {
           console.log("skipping docai");
@@ -372,7 +376,7 @@ const docAI = ({
         for (const entity of entities) {
           // console.log("form field going------------", formField)
           const pageNumber =
-            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page) + 1 || 1;
+            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page || entity?.page_anchor?.page_refs?.[0]?.page) + 1 || 1;
           let entityValues = get_form_field_values(
             entity,
             { text, pageNumber, exact_file_name_with_ext },
@@ -400,7 +404,7 @@ const docAI = ({
         for (const entity of gtEntities) {
           // console.log("form field going------------", formField)
           const pageNumber =
-            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page) + 1 || 1;
+            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page || entity?.page_anchor?.page_refs?.[0]?.page) + 1 || 1;
           let entityValues = get_form_field_values(
             entity,
             { text : gtText, pageNumber, exact_file_name_with_ext },
