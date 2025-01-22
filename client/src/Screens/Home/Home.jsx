@@ -45,7 +45,6 @@ const { RangePicker } = DatePicker
 const dateFormat = 'YYYY/MM/DD'
 
 const Home = (props) => {
-
     useEffect(() => {
         console.log("HELLO")
     }, [])

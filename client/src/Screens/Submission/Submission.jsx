@@ -66,11 +66,9 @@ const SimpleBreadcrumb = ({ submissionName }) => {
 const Submission = (props) => {
   const { dispatch } = props;
   const navigate = useNavigate();
-  const location = useLocation();
   const allSubmissions = useSelector((state) => state?.docReducer?.allSubmissions || []);
   const totalSubmissions = useSelector((state) => state?.docReducer?.totalSubmissions || 0);
   const allProcessors = useSelector((state) => state?.docReducer?.allProcessors || []);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showTemplate, setShowTemplate] = useState(false);
   const [loading, setLoading] = useState(false);

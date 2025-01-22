@@ -8,7 +8,6 @@ import React from 'react';
 import LongClickButton from '../LongClickButton';
 
 const isEmpty = value => value === null || value === undefined;
-const IS_GROUND_TRUTH = true;
 const NestedListItem = ({
     fieldData,
     isCurrentlyHighlighted,
@@ -18,7 +17,8 @@ const NestedListItem = ({
     HandleTypesOfContent,
     isEditable,
     showEditDialog,
-    level = 0
+    level = 0,
+    toggleValue
 }) => {
     const fieldName = fieldData[0];
     const fieldValue = fieldData[1];
@@ -26,7 +26,6 @@ const NestedListItem = ({
     const key_pair = fieldName?.key_pair || fieldValue?.key_pair;
     const confidence = round(parseFloat(fieldValue?.key_pair?.confidence) * 100);
     const gt_value = fieldValue?.key_pair?.gt_value;
-
     const additionalFontStyle = { color: 'white', fontWeight: 'bold' };
     const additionalStyles = isCurrentlyHighlighted ? { background: `#d93025`, ...additionalFontStyle } : {};
 
@@ -114,7 +113,7 @@ const NestedListItem = ({
                                         {fieldValueContent && HandleTypesOfContent(fieldValueContent, isCurrentlyHighlighted)}
                                     </span>
                                 </Tooltip>
-                                {IS_GROUND_TRUTH ? <Tooltip title={`Ground Truth Value: ${gt_value}`}>
+                                {toggleValue ? <Tooltip title={`Ground Truth Value: ${gt_value}`}>
                                     <span
                                         style={{
                                             flex: '1 1 20%',

@@ -29,7 +29,8 @@ const VirtualizedList = ({
     refresh,
     isCompleted,
     searchKey,
-    isLoading = false
+    isLoading = false,
+    toggleValue
 }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [selectEditHighlight, setSelectEditHighlight] = useState(null);
@@ -227,6 +228,7 @@ const VirtualizedList = ({
                         setShowDialog(true);
                     }}
                     level={parentPath ? parentPath.split('/').length : 0}
+                    toggleValue={toggleValue}
                 />
             );
         });

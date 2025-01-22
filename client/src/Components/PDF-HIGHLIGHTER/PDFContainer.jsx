@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd';
+import { Switch, Tooltip } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 // import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons'
 import { IconButton, } from '@material-ui/core';
@@ -55,6 +55,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     const dimension = selectedPDFPage?.dimension
     const heightDiffPercent = parseFloat(dimension?.heightDiffPercent)
     const currentPageHighlights = selectedHighlights ? selectedHighlights : []
+    const [toggleValue, setToggleValue] = useState(false)
 
     const setScale = (num) => {
         setRealScale(num)
@@ -236,7 +237,9 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     const FlexRowDiv = (props) => (<div {...props} style={{ display: 'flex', flexDirection: 'row', ...props.style, alignItems: 'center' }} />)
     const justify = scale > 1.5 ? 'flex-start' : 'center'
 
-
+    const handleToggleChange = (checked) => {
+        setToggleValue(checked)
+    }
 
     // let responseiveGrid = bodyWidth < 670 ? 2 : bodyWidth < 1000 ? 3 : bodyWidth < 2000 ? 4 : bodyWidth < 3000 ? 6 : 8
     let globalHeight = `100%`
@@ -265,6 +268,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     globalHeight={globalHeight}
                     height={pageHeight}
                     highlights={currentPageHighlights}
+                    toggleValue={toggleValue}
                     {...props}
                 />}
 
@@ -277,7 +281,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                         <div>
                             <div style={{ marginBottom: 0 }} className='ParentFunctionsDiv' >
                                 <FlexRowDiv style={{ justifyContent: 'space-between' }} >
-                                    <FlexRowDiv  >
+                                    <FlexRowDiv>
                                         <LongClickButton
                                             Button={(props) => (
                                                 <Tooltip title='Zoom Out - Long click for full Zoom out'>
@@ -303,6 +307,15 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             )}
                                             onLongClick={() => onLongClickZoom(true)}
                                             onShortClick={() => onShortClickZoom(true)}
+                                        />
+                                    </FlexRowDiv>
+                                    <FlexRowDiv>
+                                        <span style={{ marginRight: '8px', fontSize: '14px' }}>Ground Truth</span>
+                                        <Switch
+                                            checked={toggleValue}
+                                            onChange={handleToggleChange}
+                                            checkedChildren="On"
+                                            unCheckedChildren="Off"
                                         />
                                     </FlexRowDiv>
                                     <FlexRowDiv>
@@ -414,7 +427,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

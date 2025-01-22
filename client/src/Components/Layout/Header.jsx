@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, } from 'react-router-dom';
 import LOGO from '../../assets/Doc_ai_logo.svg';
 import { BsBell } from 'react-icons/bs';
 
 const Header = ({ setToggleHeader }) => {
+    const navigate = useNavigate()
     const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
 
     const clickToogle = () => {
@@ -16,7 +17,7 @@ const Header = ({ setToggleHeader }) => {
     };
 
     // Close dropdown when clicking outside
-    React.useEffect(() => {
+    useEffect(() => {
         const closeDropdown = (e) => {
             if (!e.target.closest('.settings-dropdown')) {
                 setShowSettingsDropdown(false);
@@ -40,7 +41,7 @@ const Header = ({ setToggleHeader }) => {
                             >
                                 menu
                             </span>
-                            <img src={LOGO} alt="Context" className="h-8" />
+                            <img onClick={() => navigate('/')} src={LOGO} alt="Context" className="h-8" style={{ cursor: 'pointer' }} />
                         </div>
                         <div className="flex items-center space-x-6 text-white">
                             <Link to="/help" className="text-sm hover:text-gray-200">Help</Link>
@@ -69,46 +70,25 @@ const Header = ({ setToggleHeader }) => {
                     <div className="flex justify-between items-center">
                         <nav className="flex">
                             <Link to="/" className="px-1 py-3 text-white hover:bg-[#003478]">Dashboard</Link>
-                            <Link to="/submission" className="pl-6 py-3 text-white hover:bg-[#003478]">Submission</Link>
+                            <Link to="/submission" className="ml-6 py-3 text-white hover:bg-[#003478]">Submission</Link>
                             <Link
                                 onClick={(event) => {
                                     event.preventDefault();
                                     window.open("https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms", "_blank");
                                 }}
                                 to="https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms"
-                                className="pl-6 py-3 text-white hover:bg-[#003478]">
-                                Forms & Instructions</Link>
-                            <div className="settings-dropdown relative">
-                                <button
-                                    onClick={handleSettingsClick}
-                                    className="pl-6 py-3 text-white hover:bg-[#003478] flex items-center"
-                                >
-                                    Settings
-                                    <span className="material-symbols-outlined ml-1 text-sm">
-                                        {showSettingsDropdown ? 'expand_less' : 'expand_more'}
-                                    </span>
-                                </button>
-                                {showSettingsDropdown && (
-                                    <div
-                                        className="absolute top-full left-0 bg-[#002d62] border border-[#003478] min-w-[200px] z-50"
-                                        style={{
-                                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
-                                            clipPath: 'inset(-20px -20px 0 -20px)'
-                                        }}
-                                    >
-                                        <Link
-                                            to="/business-rules"
-                                            className="flex items-center pl-6 py-3 text-white hover:bg-[#003478] transition-colors duration-150 border-t border-[#003478] group"
-                                            onClick={() => setShowSettingsDropdown(false)}
-                                        >
-                                            <span className="material-symbols-outlined mr-2 text-sm opacity-80 group-hover:opacity-100">
-                                                rule
-                                            </span>
-                                            Business Rules
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
+                                className="ml-6 py-3 text-white hover:bg-[#003478]">
+                                Forms & Instructions
+                            </Link>
+                            <Link
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    window.open("https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms", "_blank");
+                                }}
+                                to="https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms"
+                                className="ml-6 py-3 text-white hover:bg-[#003478]">
+                                HITL console
+                            </Link>
                         </nav>
                         <div className="flex items-center space-x-4">
                             <div className="relative">

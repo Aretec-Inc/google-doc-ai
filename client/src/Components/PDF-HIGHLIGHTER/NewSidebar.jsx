@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { IconButton, InputAdornment, Input } from '@material-ui/core'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import CloseIcon from '@material-ui/icons/Close'
+import { Switch } from 'antd'
 import PropTypes from 'prop-types'
 import List from './List'
 
 const Sidebar = (props) => {
-    let { globalHeight, search, setSearch, highlights, isLoading, artifactData } = props
+    let { globalHeight, search, setSearch, highlights, isLoading, artifactData, toggleValue } = props
     const original_file_name = artifactData?.original_file_name
     const [searchResults, setSearchResults] = useState('')
 
@@ -42,8 +43,8 @@ const Sidebar = (props) => {
     let smallArtifactName = (original_file_name && original_file_name?.length > 30) ? original_file_name?.substr(original_file_name?.length - 30, original_file_name?.length) : original_file_name
 
     return (
-        <div style={{ minWidth: 250, maxWidth: 500, width: `80%`, overflowX: 'hidden', background: 'red' }}>
-            <div style={{ height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver`, paddingLeft: '10px' }}>
+        <div style={{ minWidth: 250, maxWidth: 500, width: `80%`, overflowX: 'hidden' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: globalHeight, width: '100%', background: 'white', boxShadow: ` 0px 0px 25px silver`, paddingLeft: '10px' }}>
                 <Input className='input-desin'
                     disabled={isLoading}
                     startAdornment={
@@ -65,9 +66,10 @@ const Sidebar = (props) => {
                     name="filter"
                     autoComplete="on"
                     placeholder={"Filter"} />
-                {!isLoading && <List searchResults={searchResults} {...props} />}
+
+                {!isLoading && <List searchResults={searchResults} toggleValue={toggleValue} {...props} />}
             </div>
-        </div>
+        </div >
     )
 }
 
