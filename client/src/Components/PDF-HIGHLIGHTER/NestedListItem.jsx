@@ -8,7 +8,7 @@ import React from 'react';
 import LongClickButton from '../LongClickButton';
 
 const isEmpty = value => value === null || value === undefined;
-
+const IS_GROUND_TRUTH = true;
 const NestedListItem = ({
     fieldData,
     isCurrentlyHighlighted,
@@ -25,6 +25,7 @@ const NestedListItem = ({
     const fieldValueContent = fieldValue?.content;
     const key_pair = fieldName?.key_pair || fieldValue?.key_pair;
     const confidence = round(parseFloat(fieldValue?.key_pair?.confidence) * 100);
+    const gt_value = fieldValue?.key_pair?.gt_value;
 
     const additionalFontStyle = { color: 'white', fontWeight: 'bold' };
     const additionalStyles = isCurrentlyHighlighted ? { background: `#d93025`, ...additionalFontStyle } : {};
@@ -86,7 +87,7 @@ const NestedListItem = ({
                                     <span
                                         style={{
                                             ...isCurrentlyHighlighted ? { color: '#f5f5f5' } : null,
-                                            flex: '1 1 45%',
+                                            flex: '1 1 50%',
                                             overflow: 'hidden',
                                             overflowX: 'hidden',
                                             textOverflow: 'ellipsis',
@@ -96,13 +97,12 @@ const NestedListItem = ({
                                         className='KEYOFVALUEPAIR'
                                     >
                                         {highlighter(fieldName?.content?.text?.split('/').pop() || fieldName?.content?.text)}
-                                        {/* {highlighter(fieldName?.content?.text)} */}
                                     </span>
                                 </Tooltip>
                                 <Tooltip title={HandleTypesOfContent(fieldValueContent, true)}>
                                     <span
                                         style={{
-                                            flex: '1 1 45%',
+                                            flex: '1 1 30%',
                                             overflow: 'hidden',
                                             overflowX: 'hidden',
                                             textOverflow: 'ellipsis',
@@ -114,10 +114,10 @@ const NestedListItem = ({
                                         {fieldValueContent && HandleTypesOfContent(fieldValueContent, isCurrentlyHighlighted)}
                                     </span>
                                 </Tooltip>
-                                {/* <Tooltip title={`Confidence: ${confidence}%`}>
+                                {IS_GROUND_TRUTH ? <Tooltip title={`Ground Truth Value: ${gt_value}`}>
                                     <span
                                         style={{
-                                            flex: '0 0 50px',
+                                            flex: '1 1 20%',
                                             textAlign: 'right',
                                             fontSize: '12px',
                                             color: isCurrentlyHighlighted ? 'white' : '#666',
@@ -125,9 +125,9 @@ const NestedListItem = ({
                                         }}
                                         className='value_confidence'
                                     >
-                                        {confidence}%
+                                        {gt_value ? gt_value : '-'}
                                     </span>
-                                </Tooltip> */}
+                                </Tooltip> : null}
                             </div>
                         </div>
                     )}
