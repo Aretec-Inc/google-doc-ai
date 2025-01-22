@@ -84,6 +84,28 @@ exports.insert_form_key_pair_with_values = async ({ VALUES, formKeyPairTableName
     }
 }
 
+exports.insert_gt_form_key_pair_with_values = async ({ VALUES, formKeyPairTableName }) => {
+    try {
+        if (VALUES) {
+            VALUES = VALUES?.replace(/\\'/gi, "''")
+
+            const sqlQuery = `INSERT INTO ${formKeyPairTableName} (file_name, field_name, field_value, time_stamp, validated_field_name, validated_field_value, updated_date, confidence, updated_by, key_x1, key_x2, key_y1, key_y2, value_x1, value_x2, value_y1, value_y2, page_number, id, type, field_name_confidence, field_value_confidence, column_name) VALUES${VALUES}`
+            // console.log("KEYPAIR ************ **** * * ** * * * * * ** * \n\n\n\n", sqlQuery, "\n\n\n\n")
+
+            // Run the query
+            return runQuery(postgresDB, sqlQuery)
+            // return this.runBigQuery(sqlQuery)
+        }
+        else {
+            throw new Error({ code: "MISSING_VALUES", message: `Opps..! something wen't wrong`, developerInfo: { VALUES, message: 'VALUES param missing' } })
+        }
+    }
+    catch (e) {
+        console.error(e)
+        throw e
+    }
+}
+
 exports.pdf_document = ({ file_name, pages_count, entities_count, text }) => {
 
     const f_name = `'${file_name}'`

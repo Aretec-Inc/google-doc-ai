@@ -93,6 +93,7 @@ const docAI = ({
       // Read the file into memory.
 
       let document = {};
+      let gtDocument = {};
       if (extract_from_json) {
         console.log("JSON IS GIVEN !!!! ");
         if (!jsonIsObject) {
@@ -141,6 +142,7 @@ const docAI = ({
         // Recognizes text entities in the PDF document
         let skip_docai = false;
         let json_file = {};
+        let gt_json_file = {};
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.pdf"
@@ -148,7 +150,9 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.pdf"
@@ -156,7 +160,9 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.pdf"
@@ -164,7 +170,9 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.pdf"
@@ -172,31 +180,41 @@ const docAI = ({
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
+          gt_json_file = require("../gtDocAIJSON/gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
         }
+        
         if (
           file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
+          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
         }
+        
         if (
           file_name?.includes("f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.pdf")
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
+          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
         }
+        
         if (
           file_name?.includes("f941sb_f09e9682-9763-4202-8f3f-336320575038.pdf")
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
+          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
         }
+        
         if (
           file_name?.includes("f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.pdf")
         ) {
           skip_docai = true;
           json_file = require("../docAIJSON/inference-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
+          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
@@ -205,6 +223,7 @@ const docAI = ({
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
@@ -213,22 +232,7 @@ const docAI = ({
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
         }
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
-        }
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
-        }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.pdf"
@@ -237,6 +241,7 @@ const docAI = ({
           skip_docai = true;
           json_file = require("../docAIJSON/inference_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
         }
+        
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
@@ -248,6 +253,7 @@ const docAI = ({
         if (skip_docai) {
           console.log("skipping docai");
           document = json_file;
+          gtDocument = gt_json_file;
         } else {
           const [result] = await docAiClient.processDocument(request);
           document = result?.document;
@@ -278,11 +284,14 @@ const docAI = ({
       // return document
       // Get all of the document text as one big string
       const { text } = document;
+      const gtText = gtDocument?.text;
 
       // Read the text recognition output from the processor
       console.log("The document contains the following paragraphs:");
       const pages = document.pages || [];
       let entities = document.entities || [];
+
+      let gtEntities = gtDocument.entities || [];
       // const [page1] = pages;
       // const { paragraphs } = page1;
 
@@ -357,6 +366,7 @@ const docAI = ({
       }
 
       let pageEntitiesArray = [];
+      let gtPageEntitiesArray = [];
 
       if (Array.isArray(entities)) {
         for (const entity of entities) {
@@ -386,6 +396,34 @@ const docAI = ({
         }
       }
 
+      if (Array.isArray(gtEntities)) {
+        for (const entity of gtEntities) {
+          // console.log("form field going------------", formField)
+          const pageNumber =
+            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page) + 1 || 1;
+          let entityValues = get_form_field_values(
+            entity,
+            { text : gtText, pageNumber, exact_file_name_with_ext },
+            isTesting
+          );
+          if (Array.isArray(entity?.properties) && entity?.properties?.length) {
+            for (let sub_entity of entity?.properties) {
+              let parent_field_name = entity?.type
+              sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              entityValues = get_form_field_values(
+                sub_entity,
+                { text : gtText, pageNumber, exact_file_name_with_ext },
+                isTesting
+              );
+              
+              gtPageEntitiesArray.push(entityValues);
+            }
+          } else {
+            gtPageEntitiesArray.push(entityValues);
+          }
+        }
+      }
+
       console.log("entityValues==>", pageEntitiesArray);
       // if (Array.isArray(entities) && entities?.length) {
       //     if (hasExtraProperties) {
@@ -405,6 +443,7 @@ const docAI = ({
           ?.toString();
       // let formFieldsValues = arrayToString(pageFormFieldsArray)
       let formFieldsValues = arrayToString(pageEntitiesArray);
+      let gtFormFieldsValues = arrayToString(gtPageEntitiesArray);
       // let formEntities = arrayToString(entitiesArray)
 
       console.log("insert_form_key_pair_with_values start");
@@ -413,6 +452,14 @@ const docAI = ({
           ? insertToDB.insert_form_key_pair_with_values({
               formKeyPairTableName,
               VALUES: formFieldsValues,
+            })
+          : null;
+
+      let insert_gt_form_fields =
+        !isTesting && gtFormFieldsValues?.length
+          ? insertToDB.insert_gt_form_key_pair_with_values({
+              formKeyPairTableName:`${schema}.gt_schema_form_key_pair`,
+              VALUES: gtFormFieldsValues,
             })
           : null;
 
@@ -431,6 +478,7 @@ const docAI = ({
           finalResult = await Promise.allSettled([
             ...pagesArray,
             insert_form_fields,
+            insert_gt_form_fields,
           ]);
           failedRequests = finalResult?.filter(
             (res) => res.status !== "fulfilled"

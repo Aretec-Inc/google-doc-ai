@@ -173,17 +173,44 @@ let getTheFormFieldsByPageNumber = (fields, number) => {
     return Array.isArray(fieldsByNumber) && fieldsByNumber.map(handleKeyPair)
 }
 
+function addGtValues(inferenceArray, groundTruthArray) {
+    return inferenceArray.map(inferenceItem => {
+      // Find matching ground truth item by field_name
+      const matchingGtItem = groundTruthArray.find(
+        gtItem => gtItem.field_name === inferenceItem.field_name
+      );
+      
+      if (!matchingGtItem) {
+        return inferenceItem;
+      }
+    //   console.log('matchingGtItem.field_value-->',matchingGtItem.field_value)
+    //   console.log('matchingGtItem.field_value-->',inferenceItem.field_value)
+      // Only add gt_value if field_values are different
+      if (inferenceItem.field_value !== matchingGtItem.field_value) {
+        console.log('matchingGtItem.field_value-->',matchingGtItem.field_value)
+        return {
+          ...inferenceItem,
+          gt_value: matchingGtItem.field_value
+        };
+      }
+      
+      return inferenceItem;
+    });
+  }
+
+  
 const generateDataFromBigQuery = (req, res) => {
     return new Promise(async (resolve, reject) => {
         const file_name = req?.query?.file_name || req?.query?.file_name || req?.body?.file_name
         const sqlQuery_pdf_documents = `SELECT * FROM ${schema}.pdf_documents WHERE file_name='${file_name}'`
         const sqlQuery_form_key_pair = `SELECT * FROM ${schema}.schema_form_key_pairs WHERE file_name='${file_name}' order by confidence`
+        const sqlQuery_gt_form_key_pair = `SELECT * FROM ${schema}.gt_schema_form_key_pair WHERE file_name='${file_name}' order by confidence`
         const sqlQuery_pdf_pages = `SELECT * FROM ${schema}.pdf_pages WHERE file_name='${file_name}'`
 
-        let queries = [runQuery(postgresDB, sqlQuery_pdf_documents), runQuery(postgresDB, sqlQuery_form_key_pair), runQuery(postgresDB, sqlQuery_pdf_pages)]
+        let queries = [runQuery(postgresDB, sqlQuery_pdf_documents), runQuery(postgresDB, sqlQuery_form_key_pair),runQuery(postgresDB, sqlQuery_gt_form_key_pair), runQuery(postgresDB, sqlQuery_pdf_pages)]
 
         const result = await Promise.allSettled(queries)
-        const [pdf_document, form_key_pair, pdf_pages] = result
+        const [pdf_document, form_key_pair, gt_form_key_pair , pdf_pages] = result
 
         let pdf_text = ``
         if (pdf_document && pdf_document?.status == "fulfilled") {
@@ -205,7 +232,10 @@ const generateDataFromBigQuery = (req, res) => {
 
             if (form_key_pair && form_key_pair?.status == "fulfilled") {
                 let unique_key_pairs = getUniqueArrayOfObjects(getUniqueArrayOfObjects(form_key_pair?.value?.flat(), "id"), "field_name")
-                key_pairs = unique_key_pairs
+                let gt_unique_key_pairs = getUniqueArrayOfObjects(getUniqueArrayOfObjects(gt_form_key_pair?.value?.flat(), "id"), "field_name")
+                // console.log('inference_kp==>',unique_key_pairs)
+                // console.log('gt_kp==>',gt_unique_key_pairs)
+                key_pairs = addGtValues(unique_key_pairs , gt_unique_key_pairs)
             }
 
             parsedPages = pages.map(page => {
