@@ -174,30 +174,48 @@ let getTheFormFieldsByPageNumber = (fields, number) => {
 }
 
 function addGtValues(inferenceArray, groundTruthArray) {
-    return inferenceArray.map(inferenceItem => {
-      // Find matching ground truth item by field_name
+    // First, handle inference items as before but with slightly modified logic
+    const combinedArray = inferenceArray.map(inferenceItem => {
       const matchingGtItem = groundTruthArray.find(
         gtItem => gtItem.field_name === inferenceItem.field_name
       );
       
       if (!matchingGtItem) {
-        return inferenceItem;
-      }
-    //   console.log('matchingGtItem.field_value-->',matchingGtItem.field_value)
-    //   console.log('matchingGtItem.field_value-->',inferenceItem.field_value)
-      // Only add gt_value if field_values are different
-      if (inferenceItem.field_value !== matchingGtItem.field_value) {
-        console.log('matchingGtItem.field_value-->',matchingGtItem.field_value)
         return {
           ...inferenceItem,
-          gt_value: matchingGtItem.field_value
+          exists_in: 'inference_only'
+        };
+      }
+  
+      if (inferenceItem.field_value !== matchingGtItem.field_value) {
+        return {
+          ...inferenceItem,
+          gt_value: matchingGtItem.field_value,
+          exists_in: 'both'
         };
       }
       
-      return inferenceItem;
+      return {
+        ...inferenceItem,
+        exists_in: 'both'
+      };
     });
+  
+    // Then, add ground truth items that don't exist in inference
+    const remainingGtItems = groundTruthArray
+      .filter(gtItem => !inferenceArray.some(
+        inferenceItem => inferenceItem.field_name === gtItem.field_name
+      ))
+      .map(gtItem => ({
+        ...gtItem,
+        field_name: gtItem.field_name,
+        field_value: null,  // or any default value you prefer
+        gt_value: gtItem.field_value,
+        exists_in: 'ground_truth_only'
+      }));
+  
+    return [...combinedArray, ...remainingGtItems];
   }
-
   
 const generateDataFromBigQuery = (req, res) => {
     return new Promise(async (resolve, reject) => {
