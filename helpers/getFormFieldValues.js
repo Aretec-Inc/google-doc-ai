@@ -6,12 +6,34 @@ module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext }, isTes
     const valueType = d && (d?.valueType || d?.value_type)
 
     // Handle both camelCase and snake_case formats
-    const fieldValue = get_info(d, text, pageNumber, valueType)
-    const fNameText = d?.type
-    const fValueText = d?.mentionText || d?.mention_text
+  
+    const fieldType =  d?.type 
+    const fieldName = get_info((d.fieldName || d?.field_name || d), text, pageNumber, valueType, fieldType)
+
+    let theFieldValue = d.fieldValue || d || {}
+
+    let normalizedValue = theFieldValue?.normalizedValue?.text
+    let hasNormalizedValue = typeof normalizedValue == "string"
+
+    if (hasNormalizedValue) {
+        theFieldValue.textAnchor = { content: normalizedValue }
+    }
+
+    const fieldValue = get_info(theFieldValue, text, pageNumber, valueType)
+   
+    const fNameText = d?.type || fieldName?.content?.text
+    const fValueText = d?.mentionText || d?.mention_text || fieldValue?.content?.text
 
     const fValueRect = fieldValue?.rect
+    const fNameRect = fieldName?.rect
     const fValueConfidence = fieldValue?.confidence
+    const fNameConfidence = fieldName?.confidence
+
+  
+    const fN_x1 = fNameRect?.x1
+    const fN_x2 = fNameRect?.x2
+    const fN_y1 = fNameRect?.y1
+    const fN_y2 = fNameRect?.y2
 
     // Extract coordinates, checking both formats
     const fV_x1 = fValueRect?.x1 || fValueRect?.x_1
@@ -24,10 +46,10 @@ module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext }, isTes
         field_name: fNameText || "",
         field_value: fValueText || "",
         confidence: fValueConfidence || 0,
-        key_x1: null,
-        key_x2: null,
-        key_y1: null,
-        key_y2: null,
+        key_x1: fN_x1,
+        key_x2: fN_x2,
+        key_y1: fN_y1,
+        key_y2: fN_y2,
         value_x1: fV_x1,
         value_x2: fV_x2,
         value_y1: fV_y1,

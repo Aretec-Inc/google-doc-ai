@@ -4,6 +4,7 @@ const insertToDB = require("./insertToDB");
 const get_form_field_values = require("./getFormFieldValues");
 const { default: axios } = require("axios");
 const { runQuery } = require("./postgresQueries");
+const fs = require('fs').promises;
 const { postgresDB, schema, docAiClient, projectId } = require("../config");
 
 const cleanFieldName = (name, dontTrim) => {
@@ -261,6 +262,16 @@ const docAI = ({
         } else {
           const [result] = await docAiClient.processDocument(request);
           document = result?.document;
+          try {
+            await fs.writeFile(
+              'response.json', 
+              JSON.stringify(document, null, 2),
+              'utf8'
+            );
+            console.log('Successfully wrote response.json');
+          } catch (error) {
+            console.error('Error writing response.json:', error);
+          }
         }
         let obj = {};
         for (var e of document?.entities) {
@@ -339,22 +350,22 @@ const docAI = ({
       await Promise.all(pagesArray);
 
       let pageFormFieldsArray = [];
-      // console.log('**************************************')
-      // for (let i = 0; i < pages.length; i++) {
-      //     let page = pages?.[i]
-      //     let pageNumber = page?.pageNumber
+      console.log('**************************************')
+      for (let i = 0; i < pages.length; i++) {
+          let page = pages?.[i]
+          let pageNumber = page?.pageNumber || page?.page_number
 
-      //     console.log('pageNumber', pageNumber)
+          console.log('pageNumber', pageNumber)
 
-      //     const formFields = page?.formFields
-      //     console.log('formFields==>',formFields)
-      //     if (Array.isArray(formFields)) {
-      //         for (const formField of formFields) {
-      //             let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)
-      //             pageFormFieldsArray.push(formfieldValues)
-      //         }
-      //     }
-      // }
+          const formFields = page?.formFields || page?.form_fields
+          console.log('formFields==>',formFields)
+          if (Array.isArray(formFields)) {
+              for (const formField of formFields) {
+                  let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)
+                  pageFormFieldsArray.push(formfieldValues)
+              }
+          }
+      }
 
       let entitiesArray = [];
       let extraProperties =
@@ -448,6 +459,7 @@ const docAI = ({
       // let formFieldsValues = arrayToString(pageFormFieldsArray)
       let formFieldsValues = arrayToString(pageEntitiesArray);
       let gtFormFieldsValues = arrayToString(gtPageEntitiesArray);
+      let pageFormFieldsValues = arrayToString(pageFormFieldsArray);
       // let formEntities = arrayToString(entitiesArray)
 
       console.log("insert_form_key_pair_with_values start");
@@ -467,6 +479,14 @@ const docAI = ({
             })
           : null;
 
+      let insert_page_form_fields =
+        !isTesting && pageFormFieldsValues?.length
+          ? insertToDB.insert_gt_form_key_pair_with_values({
+              formKeyPairTableName,
+              VALUES: pageFormFieldsValues,
+            })
+          : null;
+
       console.log("insert_form_key_pair_with_values end");
 
       console.log("insert_form_key_pair_with_values start");
@@ -483,6 +503,7 @@ const docAI = ({
             ...pagesArray,
             insert_form_fields,
             insert_gt_form_fields,
+            insert_page_form_fields,
           ]);
           failedRequests = finalResult?.filter(
             (res) => res.status !== "fulfilled"
@@ -560,7 +581,7 @@ const docAIv3 = async (obj) => {
 
   // let queryProcessorId = req?.query?.processorId
   let bodyProcessorId = obj?.processorId;
-  let defaultProcessorId = "aebf936ce61ab3b1";
+  let defaultProcessorId = "478e2c892dc83bbc";
 
   const location = !isFalsyValue(bodyLocation) ? bodyLocation : defaultLocation;
   const processorId = !isFalsyValue(bodyProcessorId)
