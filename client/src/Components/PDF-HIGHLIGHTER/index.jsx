@@ -11,7 +11,7 @@ import { errorMessage } from '../../utils/pdfHelpers'
 import PDFContainer from './PDFContainer'
 import Tabs from './Tabs'
 
-const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...props }) => {
+const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', hitlEnabled, ...props }) => {
     const dispatch = useDispatch()
     const [json, setJson] = useState(null)
     const [parsedData, setParsedData] = useState([])
@@ -127,6 +127,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                     highlights={tabIndex == 5 ? [] : parsedData}
                     isLoading={loading}
                     redacted={tabIndex == 5}
+                    hitlEnabled={hitlEnabled}
                     {...props}
                 />
             )}

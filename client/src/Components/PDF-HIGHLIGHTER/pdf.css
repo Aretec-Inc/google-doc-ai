@@ -114,3 +114,24 @@ button {
     color: #3a7ce0;
     padding-left: 6px;
 }
+
+.my-pdf-page {
+    position: relative;
+}
+
+.annotationLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.OCR_RECT {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.OCR_RECT:hover {
+    stroke: #4285f4;
+    stroke-width: 2px;
+}

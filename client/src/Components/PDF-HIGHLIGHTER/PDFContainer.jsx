@@ -1,23 +1,23 @@
-import { Switch, Tooltip } from 'antd';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { DownOutlined } from '@ant-design/icons';
 import { IconButton, } from '@material-ui/core';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import { Switch, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import Anim from 'react-lottie';
+import { useNavigate } from 'react-router-dom';
 import { Icon_Blue_Color } from '../../utils/pdfConstants';
+import LongClickButton from '../LongClickButton';
 import SideBar from './NewSidebar';
 import PDF from './PDF';
-import { useNavigate } from 'react-router-dom';
-import LongClickButton from '../LongClickButton';
-import { DownOutlined } from '@ant-design/icons';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Anim from 'react-lottie';
 import './pdf.css';
-const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, ...props }) => {
+const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, hitlEnabled, ...props }) => {
 
     const PageWrapper = useRef(null)
     const history = useNavigate()
@@ -226,6 +226,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     height={pageHeight}
                     highlights={currentPageHighlights}
                     toggleValue={toggleValue}
+                    hitlEnabled={hitlEnabled}
                     {...props}
                 />}
 
@@ -379,6 +380,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                     resizing={resizing}
                                     onDocumentLoadSuccess={onDocumentLoadSuccess}
                                     toggleValue={toggleValue}
+                                    hitlEnabled={hitlEnabled}
                                 />
                             </div>
                         </div>
