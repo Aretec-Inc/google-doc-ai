@@ -1,8 +1,9 @@
-import { Skeleton, Table } from 'antd';
-import { X } from 'lucide-react';
+// SelectedCardData.jsx
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Table, Skeleton } from 'antd';
+import { X } from 'lucide-react';
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index';
 import { setArtifactData } from '../../Redux/actions/artifactActions';
 import { fadeList, isPDF } from '../../utils/pdfConstants';
@@ -10,20 +11,16 @@ import { errorMessage, load_artifact_data_by_type, randomInteger } from '../../u
 import HeaderTopBar from './HeaderTopBar';
 import './SelectedCardData.css';
 
-
+// Business Rules Table Component
 const BusinessRulesTable = ({ rules, loading }) => {
     const columns = [
         {
             title: 'Business Rule',
             dataIndex: 'business_rule',
             key: 'business_rule',
-            width: '40%',
+            width: '45%',
             render: (text) => (
-                <span style={{
-                    fontSize: '10px',
-                    padding: '1px 2px',
-                    display: 'block'
-                }}>
+                <span className="text-xs p-1 block">
                     {text}
                 </span>
             )
@@ -32,16 +29,10 @@ const BusinessRulesTable = ({ rules, loading }) => {
             title: 'Status',
             dataIndex: 'rule_satisfied',
             key: 'rule_satisfied',
-            width: '20%',
+            width: '15%',
             align: 'center',
             render: (satisfied) => (
-                <span style={{
-                    color: satisfied ? '#52c41a' : '#ff4d4f',
-                    fontWeight: 'bold',
-                    fontSize: '10px',
-                    padding: '1px 2px',
-                    display: 'block'
-                }}>
+                <span className={`text-xs font-bold p-1 block ${satisfied ? 'text-green-500' : 'text-red-500'}`}>
                     {satisfied ? 'Passed' : 'Failed'}
                 </span>
             ),
@@ -50,48 +41,30 @@ const BusinessRulesTable = ({ rules, loading }) => {
             title: 'Reasoning',
             dataIndex: 'reason',
             key: 'reason',
-            width: '40%',
+            width: '45%',
             render: (reason) => (
-                <span style={{
-                    fontSize: '10px',
-                    padding: '1px 2px',
-                    display: 'block'
-                }}>
+                <span className="text-xs p-1 block">
                     {reason || '-'}
                 </span>
             )
         }
     ];
 
-    const tableStyle = {
-        fontSize: '10px'
-    };
-
     return (
         <Table
-            size='small'
+            size="small"
             columns={columns}
             dataSource={rules}
             loading={loading}
             pagination={false}
-            // pagination={{
-            //     pageSize: 10,
-            //     showSizeChanger: false,
-            //     showTotal: (total) => (
-            //         <span style={{ fontSize: '10px' }}>
-            //             Total {total} rules
-            //         </span>
-            //     ),
-            // }}
-            scroll={{ y: 'calc(100vh - 150px)' }}
-            rowKey={(record, index) => index}
-            style={tableStyle}
+            scroll={{ y: 'calc(100vh - 180px)' }}
+            rowKey={(record) => record.key}
         />
     );
 };
 
-
-const BusinessRulesDrawer = ({ isOpen, rules, loading, setIsDrawerOpen }) => {
+// Business Rules Drawer Component
+const BusinessRulesDrawer = ({ isOpen, rules, loading, setIsDrawerOpen, artifactData, setRulesResults }) => {
     if (!isOpen) return null;
 
     return (
@@ -107,7 +80,12 @@ const BusinessRulesDrawer = ({ isOpen, rules, loading, setIsDrawerOpen }) => {
                 </button>
             </div>
             <div className="pt-0">
-                <BusinessRulesTable rules={rules} loading={loading} />
+                <BusinessRulesTable
+                    rules={rules}
+                    loading={loading}
+                    artifactData={artifactData}
+                    setRulesResults={setRulesResults}
+                />
             </div>
         </div>
     );
@@ -115,7 +93,6 @@ const BusinessRulesDrawer = ({ isOpen, rules, loading, setIsDrawerOpen }) => {
 
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName, pdfName, submissionId }) => {
-
     return (
         <nav className="py-2" aria-label="Breadcrumb">
             <ol className="flex items-center text-sm">
@@ -124,19 +101,13 @@ const SimpleBreadcrumb = ({ submissionName, pdfName, submissionId }) => {
                 </li>
                 <li className="mx-2 text-gray-500">/</li>
                 <li>
-                    <Link
-                        to="/submission"
-                        className="text-[#0067b8] hover:underline"
-                    >
+                    <Link to="/submission" className="text-[#0067b8] hover:underline">
                         Submission
                     </Link>
                 </li>
                 <li className="mx-2 text-gray-500">/</li>
                 <li className="text-gray-600">
-                    <Link
-                        to={`/submission/${submissionId}`}
-                        className="text-[#0067b8] hover:underline"
-                    >
+                    <Link to={`/submission/${submissionId}`} className="text-[#0067b8] hover:underline">
                         {submissionName}
                     </Link>
                 </li>
@@ -147,6 +118,7 @@ const SimpleBreadcrumb = ({ submissionName, pdfName, submissionId }) => {
     );
 };
 
+// Main SelectedCardData Component
 const SelectedCardData = ({
     freqWord,
     artifactData,
@@ -159,20 +131,16 @@ const SelectedCardData = ({
 }) => {
     const [loading, setLoading] = useState(!initialSelectedCard && !artifactData);
     const [selectedCard, setSelectedCard] = useState(initialSelectedCard);
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [rulesResults, setRulesResults] = useState([]);
     const [drawerLoading, setDrawerLoading] = useState(false);
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state?.authReducer?.user);
-    const selectedKey = useSelector(state => state?.authReducer?.selectedKey);
 
     const refreshData = async () => {
         const fileName = selectedCard?.file_name;
         if (!fileName) return;
 
-        setIsRefreshing(true);
         try {
             const data = await load_artifact_data_by_type(selectedCard);
 
@@ -186,8 +154,6 @@ const SelectedCardData = ({
         } catch (err) {
             const errMsg = err?.response?.data?.message;
             if (errMsg) errorMessage(errMsg);
-        } finally {
-            setIsRefreshing(false);
         }
     };
 
@@ -201,9 +167,7 @@ const SelectedCardData = ({
                 {loading ? (
                     <Skeleton paragraph={{ rows: 5 }} />
                 ) : (
-                    <div className="relative flex w-full"
-                    // style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 2px silver)' } : {}}
-                    >
+                    <div className="relative flex w-full">
                         <div className={`transition-all duration-300 ease-in-out ${isDrawerOpen ? 'w-8/12' : 'w-full'}`}>
                             <div className="flex flex-1 flex-col w-full mb-10">
                                 <PDFVIEWER
@@ -220,17 +184,17 @@ const SelectedCardData = ({
                             rules={rulesResults}
                             loading={drawerLoading}
                             setIsDrawerOpen={setIsDrawerOpen}
-                            className={`${isDrawerOpen ? 'w-4/12' : 'w-0'}`}
+                            artifactData={selectedCard || initialSelectedCard}
+                            setRulesResults={setRulesResults}
                         />
                     </div>
                 )}
             </div>
-        </div >
+        </div>
     );
 
     return (
-        <div>  {/* Removed card-div class from outer container */}
-            {/* Header section without shadow */}
+        <div>
             <div className="flex justify-between items-center w-full my-2">
                 <div className="flex items-center">
                     <SimpleBreadcrumb
@@ -241,7 +205,6 @@ const SelectedCardData = ({
                 </div>
                 <div className="flex items-center">
                     <HeaderTopBar
-                        {...props}
                         selectedCard={selectedCard || initialSelectedCard}
                         goBack={goBack}
                         setIsDrawerOpen={setIsDrawerOpen}
@@ -251,7 +214,6 @@ const SelectedCardData = ({
                 </div>
             </div>
 
-            {/* Content section with original shadow */}
             <div
                 className="card-div"
                 style={!isPDF(artifact_type) ? { filter: 'drop-shadow(0px 0px 2px silver)' } : {}}

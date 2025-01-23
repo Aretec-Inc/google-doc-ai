@@ -83,9 +83,9 @@ const Header = ({ setToggleHeader }) => {
                             <Link
                                 onClick={(event) => {
                                     event.preventDefault();
-                                    window.open("https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms", "_blank");
+                                    window.open("https://hitl-console-779369970183.us-central1.run.app/dashboard", "_blank");
                                 }}
-                                to="https://www.irs.gov/businesses/small-businesses-self-employed/employment-tax-forms"
+                                to="https://hitl-console-779369970183.us-central1.run.app/dashboard"
                                 className="ml-6 py-3 text-white hover:bg-[#003478]">
                                 HITL console
                             </Link>
