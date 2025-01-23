@@ -10,6 +10,7 @@ import 'cropperjs/dist/cropper.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js'
 const fallBackPDF = 'https://cors-anywhere786.herokuapp.com/https://storage.googleapis.com/context_primary/Forms/NotProcessed/doc_pdf_entity.pdf'
+
 const PDFTEST = (
   {
     triggerAddKeyPair,
@@ -24,7 +25,8 @@ const PDFTEST = (
     resizing,
     setSelectedHighLights,
     selectedHighLights,
-    highlights, heightDiffPercent,
+    highlights,
+    heightDiffPercent,
     tabIndex,
     setShouldScrollSidebar,
     shouldScrollPDF,
@@ -46,22 +48,20 @@ const PDFTEST = (
   const imgLink = useMemo(() => imgLinks?.[pageNumStr], [imgLinks, pageNumStr])
   const pageWidth = props?.pageWidth || 800
   const pageHeight = (pageWidth + (pageWidth * (heightDiffPercent) / 100))
-  const finalPageWidth = cropperRef?.current?.width || (pageWidth * scale) //final width of canvas
-  const finalPageHeight = cropperRef?.current?.height || (pageHeight * scale)//final height of canvas
+  const finalPageWidth = cropperRef?.current?.width || (pageWidth * scale)
+  const finalPageHeight = cropperRef?.current?.height || (pageHeight * scale)
+
   const calculateRect = (data) => {
     let rect = data.rect
-
     const { x1, y1, x2, y2 } = rect
-    const x1Result = Math.round((pageWidth * (x1))) // scale
-    const y1Resut = Math.round((pageHeight * (y1)))//scale 
-
-    const x2Result = Math.round((pageWidth * (x2))) //* scale
-    const y2Result = Math.round((pageHeight * (y2))) + 2//* scale
+    const x1Result = Math.round((pageWidth * (x1)))
+    const y1Resut = Math.round((pageHeight * (y1)))
+    const x2Result = Math.round((pageWidth * (x2)))
+    const y2Result = Math.round((pageHeight * (y2))) + 2
     const width = x2Result - x1Result
     const height = y2Result - y1Resut
     const percentHeight = (height / pageHeight) * 100
     const percentWidth = (width / pageWidth) * 100
-
     const percentX = ((x1Result / pageWidth) * 100)
     const percentY = ((y1Resut / pageHeight) * 100)
     return { x1, y1, x2, y2, x1Result, y1Resut, x2Result, y2Result, width, height, percentHeight, percentWidth, percentY, percentX, ...data }
@@ -87,29 +87,33 @@ const PDFTEST = (
     const percentY = ((y1Resut / pageHeight) * 100)
     const calcResult = { x1, y1, x2, y2, x1Result, y1Resut, width, height, percentHeight, percentWidth, percentY, percentX, ...data }
     return calcResult
-
   }
 
-  const calculatedHighlights = useMemo(() => (
-    highlights.map((ary, i) => {
-      return ary.map((data) => {
+  const calculatedHighlights = useMemo(() => {
+    const filteredHighlights = highlights.map((ary) => {
+      return ary.filter(data => {
+        const existIn = data?.key_pair?.exists_in;
+        // Apply visibility condition
+        return toggleValue || (!toggleValue && existIn !== 'ground_truth_only');
+      }).map((data) => {
         let isCustom = data?.key_pair?.type == "custom"
         if (isCustom) {
           return calculateCustomRect(data)
         } else {
           return calculateRect(data)
         }
+      });
+    }).filter(ary => ary.length > 0) // Remove empty arrays after filtering
+      .sort((a, b) => b?.[0]?.width - a?.[0]?.width)
+      .sort((a, b) => b?.[0]?.height - a?.[0]?.height)
 
-      })
-    }).filter(Boolean)?.sort((a, b) => b?.[0]?.width - a?.[0]?.width).sort((a, b) => b?.[0]?.height - a?.[0]?.height)//render Small first, sort by small width/
-  )
-    , [highlights, resizing, scale, pageNumber, tabIndex, props?.pageWidth])
+    return filteredHighlights;
+  }, [highlights, resizing, scale, pageNumber, tabIndex, props?.pageWidth, toggleValue, pageWidth, pageHeight])
 
   const getCanvasImageUrl = (canvas) => {
     try {
       const imgDataURL = canvas.toDataURL("image/png");
       setImgLinks({ [pageNumStr]: imgDataURL })
-
     }
     catch (ex) {
       console.log(ex)
@@ -122,25 +126,22 @@ const PDFTEST = (
       const canvas = container?.querySelector?.('.my-pdf-page canvas')
       getCanvasImageUrl(canvas)
     }
-  }, [pageNumber, containerRef, rendered])
+  }, [pageNumber, containerRef, rendered, imgLinks, pageNumStr])
 
   let setRectInKeyPairs = (rectObj, id) => {
     let thisKeyPair = addedKeyPairs.find(d => d?.id == id)
     let allKeyPWithoutThis = addedKeyPairs.filter(d => d?.id !== id)
-
     let prevObj = thisKeyPair
     let updatedObj = Object.assign(prevObj || {}, rectObj)
-
     setAddedKeyPairs([...allKeyPWithoutThis, updatedObj])
   }
 
   const onCropDone = () => {
     setPostingImg(true)
-    setTimeout(() => {//to make loading visible, otherwise it feels like freez.
-
+    setTimeout(() => {
       const imageElement = cropperRef?.current;
       const cropper = imageElement?.cropper;
-      const croppedData = cropper.getData()//rectangle.
+      const croppedData = cropper.getData()
       const canvasData = cropper.getCanvasData()
 
       const croppedImage = cropper.getCroppedCanvas({
@@ -162,7 +163,6 @@ const PDFTEST = (
       }
 
       setRectInKeyPairs({ [`${cropSetting?.field}`]: rect }, cropSetting?.id)
-
       setPostingImg(false)
       setTriggerAddKeyPair(true)
       setIsCropping(false)
@@ -170,7 +170,7 @@ const PDFTEST = (
     }, 1)
   }
 
-  const setCropOptions = (obj) => { //must contain id of field and wither its field_name (fRect) or field_vale rect (vRect)
+  const setCropOptions = (obj) => {
     setCropSetting(obj)
     setIsCropping(true)
     setTriggerAddKeyPair(false)
@@ -183,7 +183,6 @@ const PDFTEST = (
         style={{ overflow: 'auto' }}
         onLoadSuccess={onDocumentLoadSuccess}
       >
-
         <div>
           <Page
             onRenderSuccess={() => {
@@ -195,7 +194,6 @@ const PDFTEST = (
             className='my-pdf-page'
             height={pageHeight}
             width={pageWidth}
-
             pageNumber={parseInt((pageNumber && pageNumber > 0) ? pageNumber : 1)}
           >
             <div className='annotationLayer' style={{ position: 'absolute', top: 0 }} >
@@ -205,9 +203,8 @@ const PDFTEST = (
                     return dataa.map(({ content, percentX, percentY, percentWidth, percentHeight, width, id }, index) => {
                       let isCurrentlyHighlighted = Boolean(selectedHighLights.filter(ids => ids === id)[0])
                       let isLastHighlight = Boolean(selectedHighLights[selectedHighLights.length - 1] == id)
-
                       let allIdsWithoutThis = selectedHighLights.filter(ids => ids !== id)
-                      var timeOut = null
+
                       const setScrollsSetting = () => {
                         setShouldScrollPDF(false)
                         setShouldScrollSidebar(true)
@@ -220,11 +217,9 @@ const PDFTEST = (
 
                       const longClick = () => {
                         setScrollsSetting()
-
-                        if (isCurrentlyHighlighted) { //If its already highlighted remove it.
+                        if (isCurrentlyHighlighted) {
                           setSelectedHighLights(allIdsWithoutThis)
-                        }
-                        else {//Add it to highlight
+                        } else {
                           setSelectedHighLights([...selectedHighLights, id])
                         }
                       }
@@ -258,36 +253,35 @@ const PDFTEST = (
                         />
                       )
                     })
-                  })
-                  }
+                  })}
                 </g>
               </svg>
-              {isCropping && (<div style={{ position: 'absolute', width: pageWidth * scale, height: pageHeight * scale, zIndex: 10 }}>
-
-                <Popconfirm
-                  title="Select the area and click on Done."
-                  visible={true}
-                  onConfirm={onCropDone}
-                  okButtonProps={{ loading: postingImg }}
-                  okText="Done"
-                  onCancel={() => {
-                    setIsCropping(false)
-                    setTriggerAddKeyPair(true)
-                  }}
-                >
-                  <div></div>
-                  <Cropper
-                    src={imgLink}
-                    style={{ height: pageHeight * scale, width: pageWidth * scale }}
-                    width={pageWidth * scale}
-                    height={pageHeight * scale}
-                    guides={true}
-                    ref={cropperRef}
-                    zoomOnWheel={false}
-                  />
-                </Popconfirm>
-
-              </div>)}
+              {isCropping && (
+                <div style={{ position: 'absolute', width: pageWidth * scale, height: pageHeight * scale, zIndex: 10 }}>
+                  <Popconfirm
+                    title="Select the area and click on Done."
+                    visible={true}
+                    onConfirm={onCropDone}
+                    okButtonProps={{ loading: postingImg }}
+                    okText="Done"
+                    onCancel={() => {
+                      setIsCropping(false)
+                      setTriggerAddKeyPair(true)
+                    }}
+                  >
+                    <div></div>
+                    <Cropper
+                      src={imgLink}
+                      style={{ height: pageHeight * scale, width: pageWidth * scale }}
+                      width={pageWidth * scale}
+                      height={pageHeight * scale}
+                      guides={true}
+                      ref={cropperRef}
+                      zoomOnWheel={false}
+                    />
+                  </Popconfirm>
+                </div>
+              )}
             </div>
           </Page>
         </div>
@@ -342,7 +336,8 @@ PDFTEST.propTypes = {
   setTriggerAddKeyPair: PropTypes.func,
   availableKeyPairs: PropTypes.array,
   refresh: PropTypes.func,
-  artifactData: PropTypes.object
+  artifactData: PropTypes.object,
+  toggleValue: PropTypes.bool
 }
 
 export default PDFTEST
