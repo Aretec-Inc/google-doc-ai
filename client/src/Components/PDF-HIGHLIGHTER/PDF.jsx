@@ -10,27 +10,6 @@ import 'cropperjs/dist/cropper.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js'
 const fallBackPDF = 'https://cors-anywhere786.herokuapp.com/https://storage.googleapis.com/context_primary/Forms/NotProcessed/doc_pdf_entity.pdf'
-
-// let pageWidth = page.dimension.width
-// let pageHeight = page.dimension.height
-
-
-// const getLocalSignatures = () => {
-//   try {
-//     return JSON.parse(localStorage.getItem('signature'))
-//   } catch (e) {
-//     return null
-//   }
-// }
-// const setLocalSignatures = (signature) => {
-//   try {
-//     let sig = JSON.stringify(signature)
-//     localStorage.setItem('signature', sig)
-//   } catch (e) {
-//     console.log(e)
-//   }
-// }
-
 const PDFTEST = (
   {
     triggerAddKeyPair,
@@ -49,40 +28,26 @@ const PDFTEST = (
     tabIndex,
     setShouldScrollSidebar,
     shouldScrollPDF,
-    setShouldScrollPDF, ...props
+    setShouldScrollPDF,
+    toggleValue,
+    ...props
   }
 ) => {
   const containerRef = useRef()
-  // const imageRef = useRef()
   const cropperRef = useRef()
-
   const [isCropping, setIsCropping] = useState(false)
   const scale = props?.scale
-  // const [highlights, setHighlights] = useState(highlightss())
-  // const [thispageHeight, setPageHeight] = useState(1051 / 2)
-  // const [isLongClicked, setIsLongClicked] = useState(false)
-  // const [showModal, setShowModal] = useState(false)
-  // const [downloading, setDownloading] = useState(false)
   const [addedKeyPairs, setAddedKeyPairs] = useState([])
-
   const [rendered, setRendered] = useState(false)
   const [imgLinks, setImgLinks] = useState('')
   const [postingImg, setPostingImg] = useState(false)
-
   const [cropSetting, setCropSetting] = useState()
-  // const [isFirstCrop, setisFirstCrop] = useState(true)
   const pageNumStr = `Page${pageNumber}`
-
   const imgLink = useMemo(() => imgLinks?.[pageNumStr], [imgLinks, pageNumStr])
-  // const [signatures, setSignatures] = useState(getLocalSignatures() ? getLocalSignatures() : [])
-  // const semiFinalHeight = (props?.pageHeight ? props?.pageHeight : thispageHeight) * scale
   const pageWidth = props?.pageWidth || 800
   const pageHeight = (pageWidth + (pageWidth * (heightDiffPercent) / 100))
-  //const pageHeight= semiFinalHeight>heightExtractedFromWidth?semiFinalHeight:heightExtractedFromWidth
   const finalPageWidth = cropperRef?.current?.width || (pageWidth * scale) //final width of canvas
   const finalPageHeight = cropperRef?.current?.height || (pageHeight * scale)//final height of canvas
-
-
   const calculateRect = (data) => {
     let rect = data.rect
 
@@ -104,39 +69,27 @@ const PDFTEST = (
 
   const calculateCustomRect = (data) => {
     let rect = data.rect
-    // console.log("DATAAA", data)
     const isFieldName = Boolean(data?.isKey)
-
     const keypair = data?.key_pair
-
-
     const rectW = parseFloat(isFieldName ? 0 : keypair?.value_width)
     const rectH = parseFloat(isFieldName ? 0 : keypair?.value_height)
-
-    // const { x1, y1, x2, y2 } = rect
-
     const x1 = isFieldName ? 0 : rect?.x1
     const x2 = isFieldName ? 0 : rect?.x1
     const y1 = isFieldName ? 0 : rect?.y1
     const y2 = isFieldName ? 0 : rect?.y1
-
     const x1Result = parseFloat(x1) * pageWidth
     const y1Resut = parseFloat(y1) * pageHeight
     const width = rectW * pageWidth
     const height = rectH * pageHeight
     const percentHeight = (height / pageHeight) * 100
     const percentWidth = (width / pageWidth) * 100
-
     const percentX = ((x1Result / pageWidth) * 100)
     const percentY = ((y1Resut / pageHeight) * 100)
-
     const calcResult = { x1, y1, x2, y2, x1Result, y1Resut, width, height, percentHeight, percentWidth, percentY, percentX, ...data }
-    //console.log("calcResult", data, calcResult)
     return calcResult
 
   }
 
-  // console.log("added keypairs....", addedKeyPairs)
   const calculatedHighlights = useMemo(() => (
     highlights.map((ary, i) => {
       return ary.map((data) => {
@@ -151,29 +104,6 @@ const PDFTEST = (
     }).filter(Boolean)?.sort((a, b) => b?.[0]?.width - a?.[0]?.width).sort((a, b) => b?.[0]?.height - a?.[0]?.height)//render Small first, sort by small width/
   )
     , [highlights, resizing, scale, pageNumber, tabIndex, props?.pageWidth])
-
-
-  // useEffect(() => {
-  //   if (signatures && signatures.length) {
-  //     setLocalSignatures(signatures)
-  //   }
-  // }, [signatures])
-
-  // let DownloadPDF = async () => {
-
-  //   ///(PDF_URL, { imgURL, layout }, pageNumber)
-  //   setDownloading(true)
-  //   const sign = signatures?.[0]
-  //   const layout = sign?.layout
-  //   const height = parseInt(layout?.height) * scale
-  //   const width = parseInt(layout?.width) * scale
-  //   const x = parseFloat(layout?.y) / pageHeight
-  //   const y = parseFloat(layout?.x) / pageWidth
-
-  //   let newLayout = { height, width, x, y }
-  //   await DownloadPDFWithSignature(file_address, Object.assign({}, sign, { layout: newLayout }), (pageNumber - 1))
-  //   setDownloading(false)
-  // }
 
   const getCanvasImageUrl = (canvas) => {
     try {
@@ -210,8 +140,6 @@ const PDFTEST = (
 
       const imageElement = cropperRef?.current;
       const cropper = imageElement?.cropper;
-      //
-      // let isSame = OBJ?.x == rectangle?.x && OBJ?.y == rectangle?.y && OBJ?.width == rectangle?.w && OBJ?.height == rectangle?.h
       const croppedData = cropper.getData()//rectangle.
       const canvasData = cropper.getCanvasData()
 
@@ -258,7 +186,6 @@ const PDFTEST = (
 
         <div>
           <Page
-            // canvasRef={d => console.log("canvasRef", d)}
             onRenderSuccess={() => {
               if (!rendered?.[pageNumStr]) {
                 setRendered({ [`${pageNumStr}`]: true })
@@ -271,67 +198,7 @@ const PDFTEST = (
 
             pageNumber={parseInt((pageNumber && pageNumber > 0) ? pageNumber : 1)}
           >
-            {/* {blocks.map((d,i) => {
-
-                        return ( */}
             <div className='annotationLayer' style={{ position: 'absolute', top: 0 }} >
-
-              {/* {signatures && ( */}
-              {/* <div className='layout' style={{ height: (pageHeight * scale), width: (pageWidth * scale), position: 'absolute', overflow: 'hidden' }} > */}
-
-              {/* {signatures.map(({ imgURL, layout }, i) => {
-                    const y = layout?.y ? layout.y : 0
-                    const x = layout?.x ? layout.x : 0
-                    const width = layout?.width ? layout.width : 0
-                    const height = layout?.height ? layout.height : 0
-
-
-                    return (
-                      <Rnd
-                        className='SignatureBoxRND'
-                        bounds='parent'
-                        lockAspectRatio={true}
-
-                        key={`${i}_sign`}
-                        size={{ width: (parseInt(width) * scale), height: (parseInt(height) * scale) }}
-                        position={{ x, y }}
-                        onDragStop={(e, d) => {
-                          let signature = signatures[i]
-                          let newLayout = Object.assign({}, signature.layout, { x: d.x, y: d.y })
-                          let newSignatureOBJ = Object.assign({}, signature, { layout: newLayout })
-
-                          setSignatures([newSignatureOBJ])
-
-                        }}
-                        onResizeStop={(e, direction, ref, delta, position) => {
-
-                          let signature = signatures[i]
-                          let newLayout = Object.assign({},
-                            signature.layout,
-                            {
-                              width: ref.style.width,
-                              height: ref.style.height,
-                              ...position,
-                            })
-
-                          let newSignatureOBJ = Object.assign({}, signature, { layout: newLayout })
-
-                          setSignatures([newSignatureOBJ])
-                        }}
-                        style={{
-                          background: `url(${imgURL})`,
-
-                        }}
-                      >
-
-                      </Rnd>
-                    )
-
-
-                  })} */}
-
-              {/* </div>)} */}
-              {/* {!resizing  ? ( */}
               <svg style={{ position: 'absolute' }} width={pageWidth * scale} mode='canvas' height={(pageHeight * scale)}>
                 <g className='bounding-boxes'>
                   {!triggerAddKeyPair && calculatedHighlights.map((dataa, i) => {
@@ -422,12 +289,6 @@ const PDFTEST = (
 
               </div>)}
             </div>
-            {/* )
-                    })} */}
-            {/* <div style={{ height: 200, width: 300, background: 'rgba(0,0,0,.3)', position: 'absolute', top: y1, left: x1, color: 'white' }}>
-
-                        top:{highlightss[1].y1} , left:{highlightss[1].x1}
-                    </div> */}
           </Page>
         </div>
       </Document>

@@ -1,6 +1,5 @@
 import { Switch, Tooltip } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-// import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons'
 import { IconButton, } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
@@ -11,18 +10,13 @@ import ReactDOM from 'react-dom';
 import { Icon_Blue_Color } from '../../utils/pdfConstants';
 import SideBar from './NewSidebar';
 import PDF from './PDF';
-// import { getParagraphs } from './parseJSON'
 import { useNavigate } from 'react-router-dom';
 import LongClickButton from '../LongClickButton';
-// import { Menu, Dropdown, } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Anim from 'react-lottie';
 import './pdf.css';
-// import { secureApi } from '../../Config/api';
-// import { parseURL } from '../../utils/pdfHelpers';
-
 const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, ...props }) => {
 
     const PageWrapper = useRef(null)
@@ -99,43 +93,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     useEffect(() => {
         setResizing(true)
         resetSize()
-        // if(pageNumber>numPages){
-        //     setPageNumber(numPages)
-        // }
-        // if(pageNumber<1){
-        //     setPageNumber(1)
-        // }
     }, [PageWrapper, pageNumber, numPages])
-
-
-    // useEffect(() => {
-    //     const [scaleParam, pageParam, searchParam] = ['scale', 'page', 's']
-    //     let timeoutForParams = null;
-    //     clearTimeout(timeoutForParams) //clear anytimer if exist.
-
-
-    //     timeoutForParams = setTimeout(() => { //This will help us changing url only when user has completed channging pages, scaling or searching. 
-    //         if (!isFirstLoad) {
-    //             history.replace(`?${scaleParam}=${scale}&${pageParam}=${pageNumber}&${searchParam}=${search}`)
-    //         }
-    //         else {
-    //             let query = history.location.search
-    //             let getParam = (param) => new URLSearchParams(`${query}`).get(param);
-
-    //             let querySearch = getParam(searchParam)
-    //             let queryScale = parseFloat(getParam(scaleParam))
-    //             let queryPage = parseInt(getParam(pageParam))
-    //             if (querySearch && querySearch.length) setSearch(querySearch);
-    //             if (queryScale) setScale(queryScale > maxZoom ? maxZoom : queryScale);
-    //             if (queryPage && typeof queryPage == 'number')
-    //                 setPageNumber(queryPage > numPages ? numPages : queryPage < 1 ? 1 : queryPage);
-    //         }
-    //         setIsFirstLoad(false)
-
-    //     }, 500)
-
-    //     return () => clearTimeout(timeoutForParams)
-    // }, [scale, pageNumber, search])
 
     useEffect(() => {
 
@@ -241,7 +199,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         setToggleValue(checked)
     }
 
-    // let responseiveGrid = bodyWidth < 670 ? 2 : bodyWidth < 1000 ? 3 : bodyWidth < 2000 ? 4 : bodyWidth < 3000 ? 6 : 8
     let globalHeight = `100%`
     let faltuArray = new Array(numPages).fill(1)
 
@@ -421,6 +378,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                     pageNumber={pageNumber}
                                     resizing={resizing}
                                     onDocumentLoadSuccess={onDocumentLoadSuccess}
+                                    toggleValue={toggleValue}
                                 />
                             </div>
                         </div>

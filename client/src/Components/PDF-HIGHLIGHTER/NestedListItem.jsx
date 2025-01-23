@@ -1,4 +1,3 @@
-// NestedListItem.js
 import { IconButton, ListItem } from '@material-ui/core';
 import { CheckCircle, Edit } from '@material-ui/icons/';
 import { Tooltip } from 'antd';
@@ -8,6 +7,7 @@ import React from 'react';
 import LongClickButton from '../LongClickButton';
 
 const isEmpty = value => value === null || value === undefined;
+
 const NestedListItem = ({
     fieldData,
     isCurrentlyHighlighted,
@@ -23,17 +23,23 @@ const NestedListItem = ({
     const fieldName = fieldData[0];
     const fieldValue = fieldData[1];
     const fieldValueContent = fieldValue?.content;
+    const existIn = fieldValue?.key_pair?.exists_in;
     const key_pair = fieldName?.key_pair || fieldValue?.key_pair;
     const confidence = round(parseFloat(fieldValue?.key_pair?.confidence) * 100);
     const gt_value = fieldValue?.key_pair?.gt_value;
     const additionalFontStyle = { color: 'white', fontWeight: 'bold' };
-    const additionalStyles = isCurrentlyHighlighted ? { background: `#d93025`, ...additionalFontStyle } : {};
+    const additionalStyles = isCurrentlyHighlighted ? { background: '#d93025', ...additionalFontStyle } : {};
 
     const indentStyle = {
         paddingLeft: `${level * 10}px`,
         borderLeft: level > 0 ? '2px solid #eee' : 'none',
         marginLeft: level > 0 ? '10px' : '0'
     };
+
+    // Main visibility condition
+    if (!(toggleValue || (!toggleValue && existIn !== 'ground_truth_only'))) {
+        return null;
+    }
 
     return (
         <ListItem
@@ -45,7 +51,6 @@ const NestedListItem = ({
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '0px 10px',
-                // minHeight: '50px',
                 width: '100%',
                 ...indentStyle,
                 boxSizing: 'border-box',
@@ -60,7 +65,7 @@ const NestedListItem = ({
                 display: 'flex',
                 overflow: 'hidden',
                 overflowX: 'hidden',
-                minWidth: 0 // Important for flex items to shrink below their content size
+                minWidth: 0
             }}>
                 <LongClickButton
                     Button={(props) => (
@@ -69,10 +74,8 @@ const NestedListItem = ({
                                 ...isCurrentlyHighlighted ? additionalFontStyle : null,
                                 display: 'flex',
                                 width: '100%',
-                                // padding: '0 15px',
                                 overflow: 'hidden',
                                 overflowX: 'hidden',
-
                             }}
                             {...props}
                         >
@@ -85,7 +88,7 @@ const NestedListItem = ({
                                 <Tooltip title={fieldName?.content?.text?.split('/').pop() || fieldName?.content?.text}>
                                     <span
                                         style={{
-                                            ...isCurrentlyHighlighted ? { color: '#f5f5f5' } : null,
+                                            ...(isCurrentlyHighlighted && { color: '#f5f5f5' }),
                                             flex: '1 1 50%',
                                             overflow: 'hidden',
                                             overflowX: 'hidden',
@@ -98,35 +101,39 @@ const NestedListItem = ({
                                         {highlighter(fieldName?.content?.text?.split('/').pop() || fieldName?.content?.text)}
                                     </span>
                                 </Tooltip>
-                                <Tooltip title={HandleTypesOfContent(fieldValueContent, true)}>
-                                    <span
-                                        style={{
-                                            flex: '1 1 30%',
-                                            overflow: 'hidden',
-                                            overflowX: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                            minWidth: 0
-                                        }}
-                                        className='VALUEOFVALUEPAIR'
-                                    >
-                                        {fieldValueContent && HandleTypesOfContent(fieldValueContent, isCurrentlyHighlighted)}
-                                    </span>
-                                </Tooltip>
-                                {toggleValue ? <Tooltip title={`Ground Truth Value: ${gt_value}`}>
-                                    <span
-                                        style={{
-                                            flex: '1 1 20%',
-                                            textAlign: 'right',
-                                            fontSize: '12px',
-                                            color: isCurrentlyHighlighted ? 'white' : '#666',
-                                            whiteSpace: 'nowrap'
-                                        }}
-                                        className='value_confidence'
-                                    >
-                                        {gt_value ? gt_value : '-'}
-                                    </span>
-                                </Tooltip> : null}
+                                {fieldValueContent && (
+                                    <Tooltip title={HandleTypesOfContent(fieldValueContent, true)}>
+                                        <span
+                                            style={{
+                                                flex: '1 1 30%',
+                                                overflow: 'hidden',
+                                                overflowX: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                minWidth: 0
+                                            }}
+                                            className='VALUEOFVALUEPAIR'
+                                        >
+                                            {HandleTypesOfContent(fieldValueContent, isCurrentlyHighlighted)}
+                                        </span>
+                                    </Tooltip>
+                                )}
+                                {toggleValue && (
+                                    <Tooltip title={`Ground Truth Value: ${gt_value}`}>
+                                        <span
+                                            style={{
+                                                flex: '1 1 20%',
+                                                textAlign: 'right',
+                                                fontSize: '12px',
+                                                color: isCurrentlyHighlighted ? 'white' : '#666',
+                                                whiteSpace: 'nowrap'
+                                            }}
+                                            className='value_confidence'
+                                        >
+                                            {gt_value || '-'}
+                                        </span>
+                                    </Tooltip>
+                                )}
                             </div>
                         </div>
                     )}
@@ -169,7 +176,8 @@ NestedListItem.propTypes = {
     HandleTypesOfContent: PropTypes.func.isRequired,
     isEditable: PropTypes.bool,
     showEditDialog: PropTypes.func.isRequired,
-    level: PropTypes.number
+    level: PropTypes.number,
+    toggleValue: PropTypes.bool
 };
 
 NestedListItem.defaultProps = {
