@@ -168,7 +168,7 @@ const SelectedCardData = ({
                 ) : (
                     <div className="relative flex w-full">
                         <div className={`transition-all duration-300 ease-in-out ${isDrawerOpen ? 'w-8/12' : 'w-full'}`}>
-                            <div className="flex flex-1 flex-col w-full mb-10">
+                            <div className="flex flex-1 flex-col w-full mb-10 mt-4">
                                 <PDFVIEWER
                                     isTemplateView={isTemplateView}
                                     maxWidth="100vw"
@@ -194,7 +194,7 @@ const SelectedCardData = ({
 
     return (
         <div>
-            <div className="flex justify-between items-center w-full my-2">
+            <div className="flex justify-between items-center w-full mt-14">
                 <div className="flex items-center">
                     <SimpleBreadcrumb
                         submissionName={submissionName}

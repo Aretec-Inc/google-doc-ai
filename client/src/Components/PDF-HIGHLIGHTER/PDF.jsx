@@ -119,7 +119,7 @@ const HighlightNavigator = ({
   const totalPairs = Math.floor(lowConfHighlights.length / 2);
 
   return (
-    <div className="fixed left-1/2 transform -translate-x-1/2 mt-32 z-50 bg-white shadow-lg rounded-lg p-4 flex items-center gap-4">
+    <div className="fixed left-1/2 transform -translate-x-1/2 mt-6 z-50 bg-white shadow-lg rounded-lg p-4 flex items-center gap-4">
       <button
         onClick={handlePrevious}
         disabled={currentIndex < 2}
@@ -140,7 +140,7 @@ const HighlightNavigator = ({
         {potential_issue && (
           <div className="text-sm">
             <span>
-              Expected Value: {expected_value}
+              Suggested Value: {expected_value}
             </span>
           </div>
         )}
