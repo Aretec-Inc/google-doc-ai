@@ -37,7 +37,7 @@ const formLoop = async (arr) => {
         await docAIv3(v)
         console.log('end', v?.fileId)
     }
-
+    
     console.log('after loop')
 
     // let myPromises = arr.map(v => {

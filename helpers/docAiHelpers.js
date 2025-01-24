@@ -681,6 +681,9 @@ const docAIv3 = async (obj) => {
       let query = `UPDATE ${schema}.documents SET is_completed=${true} WHERE file_name='${justFileName}'`;
       await runQuery(postgresDB, query);
     }
+    // call here
+    callOcrHitlFindings(gcs_input_uri)
+
     let obj = {
       success: true,
       result,
@@ -700,5 +703,31 @@ const docAIv3 = async (obj) => {
     return obj;
   }
 };
+
+async function callOcrHitlFindings(gsUrl) {
+  try {
+      const baseUrl = process.env.PYTHON_URL || 'http://localhost:8000';
+      const encodedUrl = encodeURIComponent(gsUrl);
+      const response = await fetch(
+          `${baseUrl}/api/v1/field-findings/ocr-hitl-findings?gs_url=${encodedUrl}`,
+          {
+              method: 'POST',
+              headers: {
+                  'accept': 'application/json'
+              }
+          }
+      );
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+  } catch (error) {
+      console.error('Error calling OCR HITL Findings API:', error);
+      throw error;
+  }
+}
 
 module.exports = docAIv3;
