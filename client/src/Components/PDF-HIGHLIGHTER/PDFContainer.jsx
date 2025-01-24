@@ -17,7 +17,7 @@ import LongClickButton from '../LongClickButton';
 import SideBar from './NewSidebar';
 import PDF from './PDF';
 import './pdf.css';
-const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, hitlEnabled, ...props }) => {
+const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, ...props }) => {
 
     const PageWrapper = useRef(null)
     const history = useNavigate()
@@ -50,6 +50,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     const heightDiffPercent = parseFloat(dimension?.heightDiffPercent)
     const currentPageHighlights = selectedHighlights ? selectedHighlights : []
     const [toggleValue, setToggleValue] = useState(false)
+    const [toggleValueHITL, setToggleValueHITL] = useState(true);
 
     const setScale = (num) => {
         setRealScale(num)
@@ -199,6 +200,10 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         setToggleValue(checked)
     }
 
+    const handleToggleHITLChange = (checked) => {
+        setToggleValueHITL(checked)
+    }
+
     let globalHeight = `100%`
     let faltuArray = new Array(numPages).fill(1)
 
@@ -226,7 +231,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                     height={pageHeight}
                     highlights={currentPageHighlights}
                     toggleValue={toggleValue}
-                    hitlEnabled={hitlEnabled}
                     {...props}
                 />}
 
@@ -268,15 +272,21 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                         />
                                     </FlexRowDiv>
                                     <FlexRowDiv>
-                                        <span style={{ marginRight: '8px', fontSize: '14px' }}>Ground Truth</span>
+                                        <span style={{ marginRight: '8px', fontSize: '14px' }}>Intelligent HITL</span>
+                                        <Switch
+                                            style={{ marginRight: '8px' }}
+                                            checked={toggleValueHITL}
+                                            onChange={handleToggleHITLChange}
+                                            checkedChildren="On"
+                                            unCheckedChildren="Off"
+                                        />
+                                        <span style={{ marginRight: '8px', marginleft: '8px', fontSize: '14px' }}>Ground Truth</span>
                                         <Switch
                                             checked={toggleValue}
                                             onChange={handleToggleChange}
                                             checkedChildren="On"
                                             unCheckedChildren="Off"
                                         />
-                                    </FlexRowDiv>
-                                    <FlexRowDiv>
                                         <LongClickButton
                                             Button={(props) => (
                                                 <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}   >
@@ -380,7 +390,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                     resizing={resizing}
                                     onDocumentLoadSuccess={onDocumentLoadSuccess}
                                     toggleValue={toggleValue}
-                                    hitlEnabled={hitlEnabled}
+                                    toggleValueHITL={toggleValueHITL}
                                 />
                             </div>
                         </div>

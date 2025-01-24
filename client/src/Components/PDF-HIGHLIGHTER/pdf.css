@@ -76,7 +76,6 @@
 }
 
 .OCR_RECT:hover {
-    /* stroke: red; */
     fill-opacity: 0.3;
     fill: lightcoral;
 }
@@ -91,7 +90,6 @@ button {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    /* width: 50%; */
     width: 110px;
 
     color: gray

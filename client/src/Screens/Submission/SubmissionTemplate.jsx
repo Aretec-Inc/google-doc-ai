@@ -152,7 +152,6 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   };
 
   const handleDocumentShow = (fileData) => {
-    console.log("FILE DATA ==>", fileData)
     navigate(`${allPaths.SUBMISSION}/${submissionId}/${fileData.id}`, {
       state: { artifactData: fileData, submissionName: templateName, submissionId: submissionId }
     });

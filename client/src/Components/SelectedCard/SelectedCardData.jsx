@@ -134,7 +134,6 @@ const SelectedCardData = ({
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [rulesResults, setRulesResults] = useState([]);
     const [drawerLoading, setDrawerLoading] = useState(false);
-    const [hitlEnabled, setHitlEnabled] = useState(false);
     const dispatch = useDispatch();
 
     const refreshData = async () => {
@@ -161,11 +160,6 @@ const SelectedCardData = ({
     const alreadyHasTabs = !isPDF(artifact_type);
     const conditionalStyle = alreadyHasTabs ? { paddingTop: 0 } : {};
 
-    const handleHITLChange = (enabled) => {
-        setHitlEnabled(enabled);
-        console.log("HITL", enabled)
-    };
-
     const content = (
         <div data-aos={fadeList[randomInteger(0, fadeList.length - 1)]}>
             <div className="container-box container-div">
@@ -180,7 +174,6 @@ const SelectedCardData = ({
                                     maxWidth="100vw"
                                     enableShadow
                                     artifactData={selectedCard}
-                                    hitlEnabled={hitlEnabled}
                                     {...props}
                                 />
                             </div>
@@ -216,7 +209,6 @@ const SelectedCardData = ({
                         setIsDrawerOpen={setIsDrawerOpen}
                         setRulesResults={setRulesResults}
                         setDrawerLoading={setDrawerLoading}
-                        onHITLChange={handleHITLChange}
                     />
                 </div>
             </div>

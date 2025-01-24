@@ -25,7 +25,6 @@ const HeaderTopBar = ({
     const [selectedRule, setSelectedRule] = useState(null);
     const [businessRules, setBusinessRules] = useState([]);
     const [loadingRules, setLoadingRules] = useState(false);
-    const [hitlEnabled, setHitlEnabled] = useState(false);
     // URL conversion utility
     const convertToGsUrl = (httpsUrl) => {
         try {
@@ -149,12 +148,6 @@ const HeaderTopBar = ({
         fetchRuleResults();
     };
 
-    const handleHITLChange = () => {
-        const newHitlValue = !hitlEnabled;
-        setHitlEnabled(newHitlValue);
-        onHITLChange?.(newHitlValue);
-    };
-
     return (
         <div className="flex items-center gap-2">
             <Select
@@ -179,16 +172,6 @@ const HeaderTopBar = ({
                 className="inline-flex items-center px-3 py-1 text-sm font-medium text-black rounded hover:bg-gray-200"
             >
                 View Business Rules
-            </Button>
-            <Button
-                variant="outline"
-                onClick={handleHITLChange}
-                className={`inline-flex items-center px-3 py-1 text-sm font-medium rounded ${hitlEnabled
-                    ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                    : 'text-black hover:bg-gray-200'
-                    }`}
-            >
-                HITL
             </Button>
         </div>
     );
