@@ -115,7 +115,6 @@ const Header = ({ setToggleHeader }) => {
                 </div>
             </div>
 
-            {/* Spacer div to push content below header */}
             <div className="h-[112px]" />
         </>
     );

@@ -164,7 +164,7 @@ const SubmissionTemplate = ({ dispatch, goBack }) => {
   return (
     <div className="bg-white min-h-screen">
       {/* Header with Breadcrumbs and Upload button on opposite sides */}
-      <div className="border-b bg-white">
+      <div className="border-b bg-white mt-10">
         <div className="py-4 px-4 flex justify-between items-center">
           <SimpleBreadcrumb submissionName={templateName} />
           <Button
