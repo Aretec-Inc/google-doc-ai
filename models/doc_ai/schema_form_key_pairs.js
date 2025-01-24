@@ -54,7 +54,9 @@ module.exports = (sequelize, DataTypes, schema) => {
     name_width: DataTypes.FLOAT,
     name_height: DataTypes.FLOAT,
     value_width: DataTypes.FLOAT,
-    value_height: DataTypes.FLOAT
+    value_height: DataTypes.FLOAT,
+    expected_value: DataTypes.STRING(2000),
+    potential_issue: DataTypes.STRING(5000),
   }, {
     sequelize,
     modelName: `${schema}_schema_form_key_pairs`,
