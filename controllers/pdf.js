@@ -176,7 +176,7 @@ let getTheFormFieldsByPageNumber = (fields, number) => {
 function addGtValues(inferenceArray, groundTruthArray) {
     // First, handle inference items as before but with slightly modified logic
     const combinedArray = inferenceArray.map(inferenceItem => {
-      const matchingGtItem = groundTruthArray.find(
+      const matchingGtItem = groundTruthArray?.find(
         gtItem => gtItem.field_name === inferenceItem.field_name
       );
       
@@ -202,8 +202,7 @@ function addGtValues(inferenceArray, groundTruthArray) {
     });
   
     // Then, add ground truth items that don't exist in inference
-    const remainingGtItems = groundTruthArray
-      .filter(gtItem => !inferenceArray.some(
+    const remainingGtItems = groundTruthArray?.filter(gtItem => !inferenceArray.some(
         inferenceItem => inferenceItem.field_name === gtItem.field_name
       ))
       .map(gtItem => ({
@@ -213,7 +212,10 @@ function addGtValues(inferenceArray, groundTruthArray) {
         gt_value: gtItem.field_value,
         exists_in: 'ground_truth_only'
       }));
-  
+    
+    if (!remainingGtItems){
+        return combinedArray
+    }
     return [...combinedArray, ...remainingGtItems];
   }
   

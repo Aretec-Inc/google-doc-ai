@@ -246,6 +246,7 @@ const docAI = ({
           gt_json_file = require("../gtDocAIJSON/gt_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
         }
         
+ 
         if (
           file_name?.includes(
             "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
@@ -255,6 +256,26 @@ const docAI = ({
           json_file = require("../docAIJSON/inference_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
           gt_json_file = require("../gtDocAIJSON/gt_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
         }
+
+        if (
+          file_name?.includes(
+            "941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_pred.json");
+          gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
+        }
+        if (
+          file_name?.includes(
+            "pdf_form_data_4.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/pdf_form_data_4.json");
+          // gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
+        }
+
         if (skip_docai) {
           console.log("skipping docai");
           document = json_file;

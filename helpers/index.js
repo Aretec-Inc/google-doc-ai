@@ -100,7 +100,7 @@ const validateData = (data) => data ? "'" + data?.replace?.(/'|"/gi, '') + "'" :
 
 const getUniqueArrayOfObjects = (ary, objectPropertName) => {
     let cleanProperty = (property) => typeof property == 'string' ? property?.trim().toLowerCase() : property
-    return ary.filter((elem, index) => {
+    return ary?.filter((elem, index) => {
         let filteredByProperty = ary?.findIndex(obj => {
             let obj1V = obj?.[objectPropertName]
             let obj2V = elem?.[objectPropertName]
