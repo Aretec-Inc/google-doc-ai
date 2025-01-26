@@ -3,9 +3,102 @@ const download_pdf = require("./downloadFileFromStorage");
 const insertToDB = require("./insertToDB");
 const get_form_field_values = require("./getFormFieldValues");
 const { default: axios } = require("axios");
+const { Storage } = require('@google-cloud/storage');
 const { runQuery } = require("./postgresQueries");
 const fs = require('fs').promises;
+const path = require('path');
 const { postgresDB, schema, docAiClient, projectId } = require("../config");
+
+const rajat_project = 'rajat-demo-354311'
+const storage = new Storage({
+  projectId: rajat_project,
+  keyFilename: 'rajat_service_key.json'
+});
+
+async function downloadFromGCS( gcsUrl) {
+  try {
+    // Parse GCS URL (format: gs://bucket-name/path/to/file)
+    const gcsPath = gcsUrl.replace('gs://', '');
+    const [bucketName, ...pathParts] = gcsPath.split('/');
+    const sourceFilename = pathParts.join('/');
+    
+    // Use the base filename as destination
+    const destinationFilename = path.basename(sourceFilename);
+
+    const bucket = storage.bucket(bucketName);
+    const file = bucket.file(sourceFilename);
+
+    // Download options
+    const options = {
+      destination: destinationFilename
+    };
+
+    await file.download(options);
+    console.log(`Downloaded ${sourceFilename} to ${destinationFilename}`);
+    return destinationFilename;
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    return null
+    // throw error;
+  }
+}
+const getGCSJsonPaths = (pdfFileName) => {
+  const GCS_BUCKET = 'irs_dai_demo_01_2025';
+  const STATIC_JSON_PATH = 'static_json';
+  const GT_JSON_PATH = 'ground_truth_json';
+
+  // Handle special case for pdf_form_data
+
+    return {
+      inference: `gs://${GCS_BUCKET}/${STATIC_JSON_PATH}/inference_${pdfFileName.replace('.pdf', '.json')}`,
+      groundTruth: `gs://${GCS_BUCKET}/${GT_JSON_PATH}/gt_${pdfFileName.replace('.pdf', '.json')}`
+    };
+  
+};
+
+const getJsonPaths = (pdfFileName) => {
+  // Handle special case for pdf_form_data
+  if (pdfFileName.startsWith('pdf_form_data')) {
+    return {
+      inference: `../docAIJSON/${pdfFileName.replace('.pdf', '.json')}`,
+      groundTruth: {}
+    };
+  }
+
+  // Extract UUID from filename
+  const uuidMatch = pdfFileName.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+  if (!uuidMatch) {
+    throw new Error('No UUID found in filename');
+  }
+  const uuid = uuidMatch[0];
+
+  // Handle incubator handwritten case
+  if (pdfFileName.includes('incubator_handwritten')) {
+    return {
+      inference: `../docAIJSON/f941_${uuid}_pred.json`,
+      groundTruth: `../gtDocAIJSON/f941_${uuid}_gt.json`
+    };
+  }
+
+  // Handle f941sb case
+  if (pdfFileName.includes('f941sb')) {
+    return {
+      inference: `../docAIJSON/inference-f941sb_${uuid}.json`,
+      groundTruth: `../gtDocAIJSON/groundtruth-f941sb_${uuid}.json`
+    };
+  }
+
+  // Handle regular irs_demo case
+  const fileNumberMatch = pdfFileName.match(/0+(\d+)-f941/);
+  const fileNumber = fileNumberMatch ? fileNumberMatch[1] : '';
+  
+  return {
+    inference: `../docAIJSON/inference_${fileNumber.padStart(7, '0')}-f941_${uuid}.json`,
+    groundTruth: `../gtDocAIJSON/gt_${fileNumber.padStart(7, '0')}-f941_${uuid}.json`
+  };
+};
+
+
 
 const cleanFieldName = (name, dontTrim) => {
   /**
@@ -144,142 +237,155 @@ const docAI = ({
         let skip_docai = false;
         let json_file = {};
         let gt_json_file = {};
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000044-f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000026-f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000003-f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000006-f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
+        // }
         
-        if (
-          file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
-          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
-        }
+        // if (
+        //   file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
+        // }
         
-        if (
-          file_name?.includes("f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.pdf")
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
-          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
-        }
+        // if (
+        //   file_name?.includes("f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.pdf")
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
+        // }
         
-        if (
-          file_name?.includes("f941sb_f09e9682-9763-4202-8f3f-336320575038.pdf")
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
-          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
-        }
+        // if (
+        //   file_name?.includes("f941sb_f09e9682-9763-4202-8f3f-336320575038.pdf")
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
+        // }
         
-        if (
-          file_name?.includes("f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.pdf")
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
-          gt_json_file = require("../gtDocAIJSON/groundtruth-f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
-        }
+        // if (
+        //   file_name?.includes("f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.pdf")
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000075-f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000011-f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
+        // }
         
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
+        // }
         
  
-        if (
-          file_name?.includes(
-            "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/inference_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
-          gt_json_file = require("../gtDocAIJSON/gt_0000022-f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
+        // }
 
-        if (
-          file_name?.includes(
-            "941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_pred.json");
-          gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
-        }
-        if (
-          file_name?.includes(
-            "pdf_form_data_4.pdf"
-          )
-        ) {
-          skip_docai = true;
-          json_file = require("../docAIJSON/pdf_form_data_4.json");
-          // gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
-        }
+        // if (
+        //   file_name?.includes(
+        //     "941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.pdf"
+        //   )
+        // ) {
+        //   skip_docai = true;
+        //   json_file = require("../docAIJSON/inference_941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.json");
+        //   gt_json_file = require("../gtDocAIJSON/gt_941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.json");
+        // }
+        const uuidRegex = /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})-/;
+        const filename_without_id = file_name.replace(uuidRegex, '');
 
+        console.log('filename_without_id',filename_without_id);
+       
+        let json_file_obj = getGCSJsonPaths(filename_without_id)
+        console.log('json_file_obj==>',json_file_obj)
+        if(json_file_obj?.inference)
+        {
+          let json_file_name = await downloadFromGCS(json_file_obj?.inference)
+          console.log('json_file_name-->',json_file_name)
+          json_file = require(`../${json_file_name}`);
+
+        }
+        if(json_file_obj?.groundTruth)
+        {
+          let gt_json_file_name = await downloadFromGCS(json_file_obj?.groundTruth)
+          gt_json_file = require(`../${gt_json_file_name}`);
+        }
+        if(json_file)
+        {
+          skip_docai = true
+        }
         if (skip_docai) {
           console.log("skipping docai");
           document = json_file;
-          gtDocument = gt_json_file;
+          gtDocument = gt_json_file || {};
         } else {
           const [result] = await docAiClient.processDocument(request);
           document = result?.document;
@@ -520,12 +626,23 @@ const docAI = ({
       let failedRequests = [];
       try {
         if (!isTesting) {
-          finalResult = await Promise.allSettled([
-            ...pagesArray,
-            insert_form_fields,
-            insert_gt_form_fields,
-            insert_page_form_fields,
-          ]);
+          if(skip_docai)
+          {
+
+            finalResult = await Promise.allSettled([
+              ...pagesArray,
+              insert_form_fields,
+              insert_gt_form_fields,
+              insert_page_form_fields,
+            ]);
+          }
+          else{
+            finalResult = await Promise.allSettled([
+              ...pagesArray,
+              insert_form_fields,
+              insert_page_form_fields,
+            ]);
+          }
           failedRequests = finalResult?.filter(
             (res) => res.status !== "fulfilled"
           );
@@ -690,7 +807,7 @@ const docAIv3 = async (obj) => {
       processorName,
     });
 
-    console.log("result", result);
+    console.log("result", JSON.stringify(result));
 
     await updateAttempts();
 
