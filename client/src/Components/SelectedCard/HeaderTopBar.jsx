@@ -10,7 +10,6 @@ const HeaderTopBar = ({
     setRulesResults,
     setDrawerLoading,
     artifactData: propArtifactData,
-    onHITLChange,
     ...props
 }) => {
     // Redux state

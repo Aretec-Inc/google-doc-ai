@@ -288,7 +288,7 @@ const CreateSubmission = (props) => {
             type: "FORM_PARSER_PROCESSOR"
         },
         {
-            displayName: "Form 941 Schedule D",
+            displayName: "Form 941 Schedule R",
             id: "478e2c892dc83bbc",
             state: "ENABLED",
             type: "FORM_PARSER_PROCESSOR"

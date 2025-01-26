@@ -50,7 +50,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     const heightDiffPercent = parseFloat(dimension?.heightDiffPercent)
     const currentPageHighlights = selectedHighlights ? selectedHighlights : []
     const [toggleValue, setToggleValue] = useState(false)
-    const [toggleValueHITL, setToggleValueHITL] = useState(true);
+    const [toggleValueHITL, setToggleValueHITL] = useState(false);
 
     const setScale = (num) => {
         setRealScale(num)
