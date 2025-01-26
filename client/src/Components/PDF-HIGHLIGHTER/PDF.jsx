@@ -92,19 +92,20 @@ const HighlightNavigator = ({
   };
 
   if (!lowConfHighlights || lowConfHighlights.length === 0) {
-    return (
-      <div className="fixed left-1/2 transform -translate-x-1/2 mt-32 z-50 bg-white shadow-lg rounded-lg p-4">
-        <div className="text-center">
-          <div className="font-medium">No low confidence items found</div>
-        </div>
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 bg-white rounded-full shadow hover:bg-gray-100 p-1"
-        >
-          <X size={16} />
-        </button>
-      </div>
-    );
+    return null
+    // (
+    //   <div className="fixed left-1/2 transform -translate-x-1/2 mt-32 z-50 bg-white shadow-lg rounded-lg p-4">
+    //     <div className="text-center">
+    //       <div className="font-medium">No low confidence items found</div>
+    //     </div>
+    //     <button
+    //       onClick={onClose}
+    //       className="absolute top-2 right-2 bg-white rounded-full shadow hover:bg-gray-100 p-1"
+    //     >
+    //       <X size={16} />
+    //     </button>
+    //   </div>
+    // );
   }
 
   const currentHighlight = lowConfHighlights[currentIndex];

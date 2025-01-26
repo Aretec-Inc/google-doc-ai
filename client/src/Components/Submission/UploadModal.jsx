@@ -7,8 +7,9 @@ import { POST } from '../../utils/apis'
 import { errorMessage, warningMessage, validateLength, convertTitle, successMessage } from '../../utils/helpers'
 import GCSUpload from './GCSUpload'
 import S3Upload from './S3Upload'
-import LOCALDRIVE from '../../assets/localdrive.svg'
-import DRIVE from '../../assets/drive.svg'
+import DRIVE from '../../assets/GdriveLogo.svg'
+import GCS from '../../assets/GCS.svg'
+import LOCALDRIVE from '../../assets/fileUploadIcon.png'
 import AMAZON from '../../assets/S3.svg'
 import ONE_DRIVE from '../../assets/onedrive.svg'
 import GCP from '../../assets/gcp.svg'
@@ -180,35 +181,35 @@ const CreateSubmission = (props) => {
                         <h5>Select Source to Upload Files</h5>
                     </div>
                     <div className='process-tiles'>
-                        <Grid container justifyContent={'space-between'}>
+                        <Grid container justifyContent={'space-evenly'}>
                             <Grid item>
                                 <div className='process-tiles-main' onClick={() => draggerRef.current.click()}>
                                     <img src={LOCALDRIVE} alt="" className='upload-image' />
                                     <span>Local Drive</span>
                                 </div>
                             </Grid>
-                            <Grid item>
+                            {/* <Grid item>
                                 <div className='process-tiles-main' onClick={() => setShowS3(true)}>
                                     <img src={AMAZON} alt="" className='upload-image' />
                                     <span>Amazon</span>
                                 </div>
-                            </Grid>
+                            </Grid> */}
                             <Grid item>
                                 <div className='process-tiles-main'>
                                     <img src={DRIVE} alt="" className='upload-image' />
                                     <span>Drive</span>
                                 </div>
                             </Grid>
-                            <Grid item>
+                            {/* <Grid item>
                                 <div className='process-tiles-main'>
                                     <img src={ONE_DRIVE} alt="" className='upload-image' />
                                     <span>OneDrive</span>
                                 </div>
-                            </Grid>
+                            </Grid> */}
                             <Grid item>
                                 <div className='process-tiles-main' onClick={() => setShowGCS(true)}>
-                                    <img src={GCP} alt="" className='upload-image' />
-                                    <span>Google Cloud Storage</span>
+                                    <img src={GCS} alt="" className='upload-image' />
+                                    <span>GCS</span>
                                 </div>
                             </Grid>
                         </Grid>
