@@ -276,6 +276,16 @@ const docAI = ({
           // gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
         }
 
+        if (
+          file_name?.includes(
+            "pdf_form_data_9.pdf"
+          )
+        ) {
+          skip_docai = true;
+          json_file = require("../docAIJSON/test.json");
+          // gt_json_file = require("../gtDocAIJSON/f941_01635692-7c08-4cf2-9112-042fbbde59eb_gt.json");
+        }
+
         if (skip_docai) {
           console.log("skipping docai");
           document = json_file;
