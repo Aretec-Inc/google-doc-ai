@@ -485,7 +485,7 @@ const docAI = ({
           console.log('pageNumber', pageNumber)
 
           const formFields = page?.formFields || page?.form_fields
-          console.log('formFields==>',formFields)
+    
           if (Array.isArray(formFields)) {
               for (const formField of formFields) {
                   let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)

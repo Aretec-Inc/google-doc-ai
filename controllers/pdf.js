@@ -177,7 +177,7 @@ function addGtValues(inferenceArray, groundTruthArray) {
     // First, handle inference items as before but with slightly modified logic
     const combinedArray = inferenceArray.map(inferenceItem => {
       const matchingGtItem = groundTruthArray?.find(
-        gtItem => gtItem.field_name === inferenceItem.field_name
+        gtItem => (gtItem.field_name === inferenceItem.field_name && gtItem.page_number === inferenceItem.page_number)
       );
       
       if (!matchingGtItem) {
@@ -203,7 +203,7 @@ function addGtValues(inferenceArray, groundTruthArray) {
   
     // Then, add ground truth items that don't exist in inference
     const remainingGtItems = groundTruthArray?.filter(gtItem => !inferenceArray.some(
-        inferenceItem => inferenceItem.field_name === gtItem.field_name
+        inferenceItem => (inferenceItem.field_name === gtItem.field_name && inferenceItem.page_number === gtItem.page_number)
       ))
       .map(gtItem => ({
         ...gtItem,
@@ -253,11 +253,9 @@ const generateDataFromBigQuery = (req, res) => {
             if (form_key_pair && form_key_pair?.status == "fulfilled") {
                 let unique_key_pairs = getUniqueArrayOfObjects(form_key_pair?.value?.flat(), "id")
                 let gt_unique_key_pairs = getUniqueArrayOfObjects(gt_form_key_pair?.value?.flat(), "id")
-                // console.log('inference_kp==>',unique_key_pairs)
-                // console.log('gt_kp==>',gt_unique_key_pairs)
-                // key_pairs = gt_unique_key_pairs
+      
                 key_pairs = addGtValues(unique_key_pairs , gt_unique_key_pairs)
-                console.log('gt_unique_key_pairs===>',gt_unique_key_pairs)
+             
             }
 
             parsedPages = pages.map(page => {
