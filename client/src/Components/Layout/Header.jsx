@@ -95,7 +95,7 @@ const Header = ({ setToggleHeader }) => {
                                     to="https://hitl-console-779369970183.us-central1.run.app/dashboard"
                                     className="ml-6 py-3 text-white hover:bg-[#003478]"
                                 >
-                                    HITL console
+                                    Business Rules console
                                 </Link>
                             </nav>
                             <div className="flex items-center space-x-4">
