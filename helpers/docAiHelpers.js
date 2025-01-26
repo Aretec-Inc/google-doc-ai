@@ -43,9 +43,9 @@ async function downloadFromGCS( gcsUrl) {
   }
 }
 const getGCSJsonPaths = (pdfFileName) => {
-  const GCS_BUCKET = 'irs_dai_demo_01_2025';
-  const STATIC_JSON_PATH = 'static_json';
-  const GT_JSON_PATH = 'ground_truth_json';
+  const GCS_BUCKET = 'irs-docai-demo-app-ref-files';
+  const STATIC_JSON_PATH = 'irs-form-941x-files/inference';
+  const GT_JSON_PATH = 'irs-form-941x-files/groundtruth';
 
   // Handle special case for pdf_form_data
 
