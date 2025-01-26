@@ -26,7 +26,7 @@ const BusinessRulesDrawer = ({
         },
         {
             key: '2',
-            label: 'HITL',
+            label: 'Intelligent HITL',
             children: (
                 <HITLNavigator
                     highlights={highlights}
