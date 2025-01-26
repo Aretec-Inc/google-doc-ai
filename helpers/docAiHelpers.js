@@ -370,13 +370,26 @@ const docAI = ({
         {
           let json_file_name = await downloadFromGCS(json_file_obj?.inference)
           console.log('json_file_name-->',json_file_name)
-          json_file = require(`../${json_file_name}`);
+          try
+          {
+            json_file = require(`../${json_file_name}`);
+          }
+          catch(error){
+            json_file = null
+          }
 
         }
         if(json_file_obj?.groundTruth)
         {
           let gt_json_file_name = await downloadFromGCS(json_file_obj?.groundTruth)
-          gt_json_file = require(`../${gt_json_file_name}`);
+          try
+          {
+            gt_json_file = require(`../${gt_json_file_name}`);
+          }
+          catch(e)
+          {
+            gt_json_file = null
+          }
         }
         if(json_file)
         {
@@ -523,7 +536,9 @@ const docAI = ({
           if (Array.isArray(entity?.properties) && entity?.properties?.length) {
             for (let sub_entity of entity?.properties) {
               let parent_field_name = entity?.type
-              sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              if(!sub_entity['type']?.includes(`${parent_field_name}/`)){
+                sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              }
               entityValues = get_form_field_values(
                 sub_entity,
                 { text, pageNumber, exact_file_name_with_ext },
