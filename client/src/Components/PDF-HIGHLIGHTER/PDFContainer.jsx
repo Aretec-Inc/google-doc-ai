@@ -50,6 +50,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     const heightDiffPercent = parseFloat(dimension?.heightDiffPercent)
     const currentPageHighlights = selectedHighlights ? selectedHighlights : []
     const [toggleValue, setToggleValue] = useState(false)
+    const [toggleValueDataValidation, setToggleValueDataValidation] = useState(false)
     const [toggleValueHITL, setToggleValueHITL] = useState(false);
 
     const setScale = (num) => {
@@ -200,9 +201,9 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         setToggleValue(checked)
     }
 
-    // const handleToggleHITLChange = (checked) => {
-    //     setToggleValueHITL(checked)
-    // }
+    const handleToggleChangeDataValidation = (checked) => {
+        setToggleValueDataValidation(checked)
+    }
 
     const handleToggleHITLChange = (checked) => {
         setToggleValueHITL(checked);
@@ -295,6 +296,14 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             onChange={handleToggleChange}
                                             checkedChildren="On"
                                             unCheckedChildren="Off"
+                                            style={{ marginRight: 10 }}
+                                        />
+                                        <span style={{ marginRight: '8px', marginleft: '10px', fontSize: '14px' }}>Data Validation</span>
+                                        <Switch
+                                            checked={toggleValueDataValidation}
+                                            onChange={handleToggleChangeDataValidation}
+                                            checkedChildren="Yes"
+                                            unCheckedChildren="No"
                                         />
                                         <LongClickButton
                                             Button={(props) => (
