@@ -166,9 +166,9 @@ const SelectedCardData = ({
                 {loading ? (
                     <Skeleton paragraph={{ rows: 5 }} />
                 ) : (
-                    <div className="relative flex w-full">
+                    <div className="relative flex w-full mt-6">
                         <div className={`transition-all duration-300 ease-in-out ${isDrawerOpen ? 'w-8/12' : 'w-full'}`}>
-                            <div className="flex flex-1 flex-col w-full mb-10 mt-4">
+                            <div className="flex flex-1 flex-col w-full mb-10">
                                 <PDFVIEWER
                                     isTemplateView={isTemplateView}
                                     maxWidth="100vw"
