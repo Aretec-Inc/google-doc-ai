@@ -106,63 +106,63 @@ const HighlightNavigator = ({
   const currentPairNumber = Math.floor(currentIndex / 2) + 1;
   const totalPairs = Math.floor(lowConfHighlights.length / 2);
 
-  return (
-    <div className="fixed left-1/2 transform -translate-x-1/2 mt-6 z-50 bg-white shadow-lg rounded-lg p-4 flex items-center gap-4">
-      <button
-        onClick={handlePrevious}
-        disabled={currentIndex < 2}
-        className={`p-2 rounded-full ${currentIndex < 2 ? 'text-gray-400' : 'hover:bg-gray-100'}`}
-      >
-        <ChevronLeft size={20} />
-      </button>
+  // return (
+  //   <div className="fixed left-1/2 transform -translate-x-1/2 mt-6 z-50 bg-white shadow-lg rounded-lg p-4 flex items-center gap-4">
+  //     <button
+  //       onClick={handlePrevious}
+  //       disabled={currentIndex < 2}
+  //       className={`p-2 rounded-full ${currentIndex < 2 ? 'text-gray-400' : 'hover:bg-gray-100'}`}
+  //     >
+  //       <ChevronLeft size={20} />
+  //     </button>
 
-      <div className="text-left">
-        <div className="text-sm font-bold">
-          Field Name: {currentHighlight?.content?.text?.split('/').pop() || currentHighlight?.content?.text || 'No text available'}
-        </div>
-        <div className="text-sm">
-          <span>
-            Confidence: {confidence.toFixed(1) * 100}%
-          </span>
-        </div>
-        {potential_issue && (
-          <div className="text-sm">
-            <span>
-              Suggested Value: {expected_value}
-            </span>
-          </div>
-        )}
-        {potential_issue && (
-          <div className="text-sm">
-            <span>
-              Potential Issue:
-            </span>
-            <span className="text-red-500 font-medium">
-              &nbsp;{potential_issue}
-            </span>
-          </div>
-        )}
-        <div className="text-center text-sm text-gray-500">
-          {currentPairNumber} of {totalPairs}
-        </div>
-      </div>
+  //     <div className="text-left">
+  //       <div className="text-sm font-bold">
+  //         Field Name: {currentHighlight?.content?.text?.split('/').pop() || currentHighlight?.content?.text || 'No text available'}
+  //       </div>
+  //       <div className="text-sm">
+  //         <span>
+  //           Confidence: {confidence.toFixed(1) * 100}%
+  //         </span>
+  //       </div>
+  //       {potential_issue && (
+  //         <div className="text-sm">
+  //           <span>
+  //             Suggested Value: {expected_value}
+  //           </span>
+  //         </div>
+  //       )}
+  //       {potential_issue && (
+  //         <div className="text-sm">
+  //           <span>
+  //             Potential Issue:
+  //           </span>
+  //           <span className="text-red-500 font-medium">
+  //             &nbsp;{potential_issue}
+  //           </span>
+  //         </div>
+  //       )}
+  //       <div className="text-center text-sm text-gray-500">
+  //         {currentPairNumber} of {totalPairs}
+  //       </div>
+  //     </div>
 
-      <button
-        onClick={handleNext}
-        disabled={currentIndex >= lowConfHighlights.length - 2}
-        className={`p-2 rounded-full ${currentIndex >= lowConfHighlights.length - 2 ? 'text-gray-400' : 'hover:bg-gray-100'}`}
-      >
-        <ChevronRight size={20} />
-      </button>
+  //     <button
+  //       onClick={handleNext}
+  //       disabled={currentIndex >= lowConfHighlights.length - 2}
+  //       className={`p-2 rounded-full ${currentIndex >= lowConfHighlights.length - 2 ? 'text-gray-400' : 'hover:bg-gray-100'}`}
+  //     >
+  //       <ChevronRight size={20} />
+  //     </button>
 
-      <button
-        onClick={onClose}
-        className="absolute top-2 right-2 bg-white rounded-full shadow hover:bg-gray-100 p-1"
-      >
-        <X size={16} />
-      </button>
-    </div>
-  );
+  //     <button
+  //       onClick={onClose}
+  //       className="absolute top-2 right-2 bg-white rounded-full shadow hover:bg-gray-100 p-1"
+  //     >
+  //       <X size={16} />
+  //     </button>
+  //   </div>
+  // );
 };
 
 

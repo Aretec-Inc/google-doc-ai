@@ -200,9 +200,18 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         setToggleValue(checked)
     }
 
+    // const handleToggleHITLChange = (checked) => {
+    //     setToggleValueHITL(checked)
+    // }
+
     const handleToggleHITLChange = (checked) => {
-        setToggleValueHITL(checked)
-    }
+        setToggleValueHITL(checked);
+        // Pass the event up to SelectedCardData
+        if (props.onHITLToggle) {
+            props.onHITLToggle(checked, currentPageHighlights);
+        }
+    };
+
 
     let globalHeight = `100%`
     let faltuArray = new Array(numPages).fill(1)
@@ -402,14 +411,16 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 }
 
 PDFContainer.defaultProps = {
-    highlights: {}
+    highlights: {},
+    onHITLToggle: () => null
 }
 
 PDFContainer.propTypes = {
     highlights: PropTypes.array, //PropTypes.arrayOf(PropTypes.object)
     file_address: PropTypes.string,
     isLoading: PropTypes.bool,
-    artifactData: PropTypes.object
+    artifactData: PropTypes.object,
+    onHITLToggle: PropTypes.func
 }
 
 export default PDFContainer
