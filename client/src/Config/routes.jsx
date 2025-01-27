@@ -22,7 +22,7 @@ let data = {
     folder_name: "Form",
     id: "f7bcc597-5fca-40c4-a586-078d202e233c",
     is_completed: true,
-    is_validate: null,
+    is_validate: false,
     md5: null,
     original_file_name: "pp.pdf",
     original_file_address: null,

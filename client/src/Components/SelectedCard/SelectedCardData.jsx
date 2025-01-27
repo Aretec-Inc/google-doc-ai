@@ -229,15 +229,13 @@
 
 
 // SelectedCardData.jsx
+import { Table, Tabs } from 'antd';
+import { X } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Table, Skeleton, Tabs } from 'antd';
-import { X } from 'lucide-react';
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index';
-import { setArtifactData } from '../../Redux/actions/artifactActions';
-import { fadeList, isPDF } from '../../utils/pdfConstants';
-import { errorMessage, load_artifact_data_by_type, randomInteger } from '../../utils/pdfHelpers';
+import { errorMessage } from '../../utils/pdfHelpers';
 import HeaderTopBar from './HeaderTopBar';
 import './SelectedCardData.css';
 
@@ -245,63 +243,91 @@ const { TabPane } = Tabs;
 
 // Business Rules Table Component
 const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2" }) => {
-    const columns = activeTab === "1" ? {
-        // HITL columns
-        columns: [
+    // Transform HITL data for vertical layout and filter odd rows
+    const transformHitlDataToVertical = (data) => {
+        // Filter odd-numbered rows first
+        const filteredData = data.filter((_, index) => index % 2 === 0);
+
+        // Create vertical layout structure
+        const verticalColumns = filteredData.map((_, colIndex) => ({
+            title: `Record ${colIndex + 1}`,
+            dataIndex: `record_${colIndex}`,
+            key: `record_${colIndex}`,
+            width: '200px',
+            render: (text) => (
+                <span className="text-xs p-1 block">
+                    {text || '-'}
+                </span>
+            )
+        }));
+
+        // Create rows data
+        const verticalRows = [
             {
-                title: 'Field Name',
-                dataIndex: 'content',
-                key: 'content',
-                width: '30%',
-                render: (content) => (
-                    <span className="text-xs p-1 block">
-                        {content?.text?.split('/').pop() || content?.text || 'No text available'}
-                    </span>
-                )
+                key: 'fieldName',
+                label: 'Field Name',
+                ...filteredData.reduce((acc, record, idx) => ({
+                    ...acc,
+                    [`record_${idx}`]: record.content?.text?.split('/').pop() || record.content?.text || 'No text available'
+                }), {})
             },
             {
-                title: 'Confidence',
-                dataIndex: 'confidence',
                 key: 'confidence',
-                width: '20%',
-                render: (_, record) => {
-                    const confidence = Number(
-                        record?.key_pair?.confidence ||
-                        record?.confidence ||
-                        record?.score
-                    ) || 0;
-                    return (
-                        <span className="text-xs p-1 block">
-                            {(confidence * 100).toFixed(1)}%
-                        </span>
-                    );
-                }
+                label: 'Confidence',
+                ...filteredData.reduce((acc, record, idx) => ({
+                    ...acc,
+                    [`record_${idx}`]: `${(Number(record?.key_pair?.confidence || record?.confidence || record?.score) * 100 || 0).toFixed(1)}%`
+                }), {})
             },
             {
-                title: 'Potential Issue',
-                dataIndex: 'potential_issue',
-                key: 'potential_issue',
-                width: '25%',
-                render: (_, record) => (
-                    <span className="text-xs p-1 block text-red-500">
-                        {record?.key_pair?.potential_issue || record?.potential_issue || '-'}
-                    </span>
-                )
+                key: 'potentialIssue',
+                label: 'Potential Issue',
+                ...filteredData.reduce((acc, record, idx) => ({
+                    ...acc,
+                    [`record_${idx}`]: record?.key_pair?.potential_issue || record?.potential_issue || '-'
+                }), {})
             },
             {
-                title: 'Expected Value',
-                dataIndex: 'expected_value',
-                key: 'expected_value',
-                width: '25%',
-                render: (_, record) => (
-                    <span className="text-xs p-1 block">
-                        {record?.key_pair?.expected_value || record?.expected_value || '-'}
-                    </span>
-                )
+                key: 'expectedValue',
+                label: 'Expected Value',
+                ...filteredData.reduce((acc, record, idx) => ({
+                    ...acc,
+                    [`record_${idx}`]: record?.key_pair?.gt_value || record?.gt_value || '-'
+                }), {})
+            },
+            {
+                key: 'extractedValue',
+                label: 'Extracted Value',
+                ...filteredData.reduce((acc, record, idx) => ({
+                    ...acc,
+                    [`record_${idx}`]: record?.key_pair?.field_value || record?.field_value || '-'
+                }), {})
             }
-        ]
-    } : {
-        // Business Rules columns
+        ];
+
+        return {
+            columns: [
+                {
+                    title: 'Field',
+                    dataIndex: 'label',
+                    key: 'label',
+                    width: '150px',
+                    fixed: 'left',
+                    render: (text) => (
+                        <span className="text-xs font-medium p-1 block">
+                            {text}
+                        </span>
+                    )
+                },
+                ...verticalColumns
+            ],
+            rows: verticalRows
+        };
+    };
+
+    const hitlLayout = transformHitlDataToVertical(hitlData);
+
+    const businessRulesColumns = {
         columns: [
             {
                 title: 'Business Rule',
@@ -343,17 +369,16 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2" }) 
     return (
         <Table
             size="small"
-            columns={columns.columns}
-            dataSource={activeTab === "1" ? hitlData : rules}
+            columns={activeTab === "1" ? hitlLayout.columns : businessRulesColumns.columns}
+            dataSource={activeTab === "1" ? hitlLayout.rows : rules}
             loading={loading}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 230px)' }}
-            rowKey={(record) => record.key || record.id}
+            scroll={activeTab === "1" ? { x: 'max-content' } : { y: 'calc(100vh - 230px)' }}
+            rowKey={(record) => record.key}
         />
     );
 };
 
-// Business Rules Drawer Component
 // Business Rules Drawer Component
 const BusinessRulesDrawer = ({
     isOpen,
@@ -376,7 +401,7 @@ const BusinessRulesDrawer = ({
                     className="w-full "
                     size="small"
                 >
-                    <TabPane tab="HITL" key="1" />
+                    <TabPane tab="Intelligent HITL" key="1" />
                     <TabPane tab="Business Rules" key="2" />
                 </Tabs>
                 <button

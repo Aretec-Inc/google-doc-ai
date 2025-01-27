@@ -267,7 +267,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             onShortClick={() => onShortClickZoom(false)}
                                         />
                                         <Tooltip title='Current Zoom'>
-                                            <span style={{ fontSize: 11, fontWeight: 'bold' }}> {Math.floor(parseFloat(scale * 100))}%</span>
+                                            <span style={{ fontSize: 11, fontWeight: 'bold' }}> {Math.floor(parseFloat(scale * 70))}%</span>
                                         </Tooltip>
                                         <LongClickButton
                                             Button={(props) => (
@@ -298,13 +298,13 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             unCheckedChildren="Off"
                                             style={{ marginRight: 10 }}
                                         />
-                                        <span style={{ marginRight: '8px', marginleft: '10px', fontSize: '14px' }}>Data Validation</span>
+                                        {/* <span style={{ marginRight: '8px', marginleft: '10px', fontSize: '14px' }}>Review Complete</span>
                                         <Switch
                                             checked={toggleValueDataValidation}
                                             onChange={handleToggleChangeDataValidation}
                                             checkedChildren="Yes"
                                             unCheckedChildren="No"
-                                        />
+                                        /> */}
                                         <LongClickButton
                                             Button={(props) => (
                                                 <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}   >

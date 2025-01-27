@@ -167,6 +167,36 @@ const createSubmmission = async (req, res) => {
     }
 }
 
+const updateDataValidation = async (req, res) => {
+    try {
+        const { submissionId, dataValidation } = req.body
+
+        if (!submissionId) {
+            return successFalse(res, 'Please Provide submission ID!', 500)
+        }
+
+        let sqlQuery = `UPDATE ${schema}.documents SET is_validate='${dataValidation}' where id='${submissionId}'`
+
+        // Run the query
+        runQuery(postgresDB, sqlQuery)
+            .then(async (row) => {
+                let obj = {
+                    success: true,
+                    message: 'Reviewed Successfully!'
+                }
+                return apiResponse(res, 201, obj)
+            })
+            .catch((e) => {
+                console.log('e', e)
+                return successFalse(res, e?.message)
+            })
+    }
+    catch (e) {
+        console.log('e', e)
+        return successFalse(res, e?.message)
+    }
+}
+
 const generateUploadSignedUrl = async (req, res) => {
     try {
         let { fileOriginalName, contentType } = req.query
@@ -860,5 +890,6 @@ module.exports = {
     downloadAndUploadFiles,
     getS3BucketData,
     downloadAndUploadS3Files,
-    getDashboardData
+    getDashboardData,
+    updateDataValidation
 }

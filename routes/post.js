@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Multer = require('multer')
-const { createSubmmission, generateUploadSignedUrl, uploadDocuments, updateKeyPairs, validateServiceKeyGCS, getBucketData, downloadAndUploadFiles, getS3BucketData, downloadAndUploadS3Files, getDashboardData } = require('../controllers/post')
+const { createSubmmission, generateUploadSignedUrl, uploadDocuments, updateKeyPairs, validateServiceKeyGCS, getBucketData, downloadAndUploadFiles, getS3BucketData, downloadAndUploadS3Files, getDashboardData, updateDataValidation } = require('../controllers/post')
 
 const multer = Multer({
     dest: 'uploads/'
@@ -25,5 +25,7 @@ router.post('/get-s3-bucket-data', getS3BucketData)
 router.post('/download-and-upload-s3-files', downloadAndUploadS3Files)
 
 router.post('/get-dashboard-data', getDashboardData)
+
+router.post('/update-data-validation', updateDataValidation)
 
 module.exports = router

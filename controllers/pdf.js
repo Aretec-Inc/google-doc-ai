@@ -3,7 +3,7 @@ const { runQuery, isNull, getUniqueArrayOfObjects } = require('../helpers')
 const { postgresDB, schema } = require('../config')
 
 const getDocumentData = async (file_name) => {
-    let myQuery = `SELECT id, file_name, file_address as template_file_address, user_id, original_file_name, is_completed, number_of_attempts, file_address, submission_id FROM ${schema}.documents where file_name='${file_name}'`
+    let myQuery = `SELECT id, file_name, file_address as template_file_address, user_id, original_file_name, is_completed, number_of_attempts, file_address, submission_id, is_validate FROM ${schema}.documents where file_name='${file_name}'`
 
     const document = await runQuery(postgresDB, myQuery)
     return document
@@ -176,49 +176,49 @@ let getTheFormFieldsByPageNumber = (fields, number) => {
 function addGtValues(inferenceArray, groundTruthArray) {
     // First, handle inference items as before but with slightly modified logic
     const combinedArray = inferenceArray.map(inferenceItem => {
-      const matchingGtItem = groundTruthArray?.find(
-        gtItem => (gtItem.field_name === inferenceItem.field_name && gtItem.page_number === inferenceItem.page_number)
-      );
-      
-      if (!matchingGtItem) {
+        const matchingGtItem = groundTruthArray?.find(
+            gtItem => (gtItem.field_name === inferenceItem.field_name && gtItem.page_number === inferenceItem.page_number)
+        );
+
+        if (!matchingGtItem) {
+            return {
+                ...inferenceItem,
+                exists_in: 'inference_only'
+            };
+        }
+
+        if (inferenceItem.field_value !== matchingGtItem.field_value) {
+            return {
+                ...inferenceItem,
+                gt_value: matchingGtItem.field_value,
+                exists_in: 'both'
+            };
+        }
+
         return {
-          ...inferenceItem,
-          exists_in: 'inference_only'
+            ...inferenceItem,
+            exists_in: 'both'
         };
-      }
-  
-      if (inferenceItem.field_value !== matchingGtItem.field_value) {
-        return {
-          ...inferenceItem,
-          gt_value: matchingGtItem.field_value,
-          exists_in: 'both'
-        };
-      }
-      
-      return {
-        ...inferenceItem,
-        exists_in: 'both'
-      };
     });
-  
+
     // Then, add ground truth items that don't exist in inference
     const remainingGtItems = groundTruthArray?.filter(gtItem => !inferenceArray.some(
         inferenceItem => (inferenceItem.field_name === gtItem.field_name && inferenceItem.page_number === gtItem.page_number)
-      ))
-      .map(gtItem => ({
-        ...gtItem,
-        field_name: gtItem.field_name,
-        field_value: null,  // or any default value you prefer
-        gt_value: gtItem.field_value,
-        exists_in: 'ground_truth_only'
-      }));
-    
-    if (!remainingGtItems){
+    ))
+        .map(gtItem => ({
+            ...gtItem,
+            field_name: gtItem.field_name,
+            field_value: null,  // or any default value you prefer
+            gt_value: gtItem.field_value,
+            exists_in: 'ground_truth_only'
+        }));
+
+    if (!remainingGtItems) {
         return combinedArray
     }
     return [...combinedArray, ...remainingGtItems];
-  }
-  
+}
+
 const generateDataFromBigQuery = (req, res) => {
     return new Promise(async (resolve, reject) => {
         const file_name = req?.query?.file_name || req?.query?.file_name || req?.body?.file_name
@@ -227,10 +227,10 @@ const generateDataFromBigQuery = (req, res) => {
         const sqlQuery_gt_form_key_pair = `SELECT * FROM ${schema}.gt_schema_form_key_pair WHERE file_name='${file_name}' order by value_y1 asc`
         const sqlQuery_pdf_pages = `SELECT * FROM ${schema}.pdf_pages WHERE file_name='${file_name}'`
 
-        let queries = [runQuery(postgresDB, sqlQuery_pdf_documents), runQuery(postgresDB, sqlQuery_form_key_pair),runQuery(postgresDB, sqlQuery_gt_form_key_pair), runQuery(postgresDB, sqlQuery_pdf_pages)]
+        let queries = [runQuery(postgresDB, sqlQuery_pdf_documents), runQuery(postgresDB, sqlQuery_form_key_pair), runQuery(postgresDB, sqlQuery_gt_form_key_pair), runQuery(postgresDB, sqlQuery_pdf_pages)]
 
         const result = await Promise.allSettled(queries)
-        const [pdf_document, form_key_pair, gt_form_key_pair , pdf_pages] = result
+        const [pdf_document, form_key_pair, gt_form_key_pair, pdf_pages] = result
 
         let pdf_text = ``
         if (pdf_document && pdf_document?.status == "fulfilled") {
@@ -253,9 +253,9 @@ const generateDataFromBigQuery = (req, res) => {
             if (form_key_pair && form_key_pair?.status == "fulfilled") {
                 let unique_key_pairs = getUniqueArrayOfObjects(form_key_pair?.value?.flat(), "id")
                 let gt_unique_key_pairs = getUniqueArrayOfObjects(gt_form_key_pair?.value?.flat(), "id")
-      
-                key_pairs = addGtValues(unique_key_pairs , gt_unique_key_pairs)
-             
+
+                key_pairs = addGtValues(unique_key_pairs, gt_unique_key_pairs)
+
             }
 
             parsedPages = pages.map(page => {

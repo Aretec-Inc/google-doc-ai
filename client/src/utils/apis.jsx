@@ -29,7 +29,8 @@ const POST = {
     DOWNLOAD_AND_UPLOAD_FILES: `${api}/download-and-upload-files`,
     GET_S3_BUCKET_DATA: `${api}/get-s3-bucket-data`,
     DOWNLOAD_AND_UPLOAD_S3_FILES: `${api}/download-and-upload-s3-files`,
-    DASHBOARD_DATA: `${api}/get-dashboard-data`
+    DASHBOARD_DATA: `${api}/get-dashboard-data`,
+    UPDATE_DATA_VALIDATION: `${api}/update-data-validation`,
 }
 
 
