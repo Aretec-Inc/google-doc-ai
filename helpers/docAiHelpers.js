@@ -42,6 +42,145 @@ async function downloadFromGCS( gcsUrl) {
     // throw error;
   }
 }
+
+async function pollGoogleStorageUrl(gsUrl) {
+  // Configuration
+  const POLL_INTERVAL = 5000; // 5 seconds
+  const TIMEOUT = 120000;     // 2 minutes
+  const startTime = Date.now();
+
+  // Parse bucket and filename from gsUrl
+  let bucket, filename;
+  if (gsUrl.startsWith('gs://')) {
+      const parts = gsUrl.replace('gs://', '').split('/');
+      bucket = parts[0];
+      filename = parts.slice(1).join('/');
+  } else {
+      const parts = gsUrl.split('/');
+      bucket = parts[0];
+      filename = parts.slice(1).join('/');
+  }
+
+  // Helper function to check if file exists
+  async function checkFile() {
+      try {
+          const bucketObj = storage.bucket(bucket);
+          const file = bucketObj.file(filename);
+          const [exists] = await file.exists();
+          return exists;
+      } catch (error) {
+          console.error('Error checking file:', error);
+          return false;
+      }
+  }
+
+  // Main polling loop
+  while (Date.now() - startTime < TIMEOUT) {
+      try {
+          console.log(`Checking file: ${bucket}/${filename}`);
+          const exists = await checkFile();
+          
+          if (exists) {
+              console.log('File found!');
+              return `gs://${bucket}/${filename}`;
+          }
+          
+          console.log('File not found, waiting before next check...');
+          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+      } catch (error) {
+          console.error('Error during polling:', error);
+          
+          // If it's a temporary issue, continue polling
+          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+      }
+  }
+
+  console.log('Timeout reached, file not found');
+  return null;
+}
+
+async function transferFiles(sourceUrl, destinationUrl) {
+  try {
+      // Validate input URLs
+      if (!sourceUrl.startsWith('gs://') || !destinationUrl.startsWith('gs://')) {
+          throw new Error('Invalid URL format. Both URLs must start with gs://');
+      }
+
+      // Parse source URL
+      const sourceParams = parseGcsUrl(sourceUrl);
+      
+      // Parse destination URL
+      const destParams = parseGcsUrl(destinationUrl);
+
+      // Initialize Storage clients for both projects
+      const sourceStorage = new Storage();
+
+      // Get source bucket and file
+      const sourceBucket = sourceStorage.bucket(sourceParams.bucketName);
+      const sourceFile = sourceBucket.file(sourceParams.filePath);
+
+      // Get destination bucket and create write stream
+      const destBucket = storage.bucket(destParams.bucketName);
+      const destFile = destBucket.file(destParams.filePath);
+
+      // Create read stream from source
+      const readStream = sourceFile.createReadStream();
+
+      // Create write stream to destination
+      const writeStream = destFile.createWriteStream();
+
+      // Handle potential errors
+      readStream.on('error', (error) => {
+          throw new Error(`Error reading from source: ${error.message}`);
+      });
+
+      writeStream.on('error', (error) => {
+          throw new Error(`Error writing to destination: ${error.message}`);
+      });
+
+      // Return promise that resolves when transfer is complete
+      return new Promise((resolve, reject) => {
+          writeStream.on('finish', () => {
+              console.log(`Successfully transferred ${sourceUrl} to ${destinationUrl}`);
+              resolve();
+          });
+
+          writeStream.on('error', reject);
+          
+          // Pipe the read stream to the write stream
+          readStream.pipe(writeStream);
+      });
+  } catch (error) {
+      console.error('Transfer failed:', error);
+      throw error;
+  }
+}
+
+/**
+* Helper function to parse GCS URL into bucket name and file path
+* @param {string} gcsUrl - GCS URL to parse
+* @returns {{ bucketName: string, filePath: string }}
+*/
+function parseGcsUrl(gcsUrl) {
+  // Remove 'gs://' prefix
+  const urlWithoutPrefix = gcsUrl.replace('gs://', '');
+  
+  // Split into bucket name and file path
+  const [bucketName, ...pathParts] = urlWithoutPrefix.split('/');
+  
+  // Join the remaining parts to form the file path
+  const filePath = pathParts.join('/');
+  
+  if (!bucketName || !filePath) {
+      throw new Error(`Invalid GCS URL format: ${gcsUrl}`);
+  }
+  
+  return {
+      bucketName,
+      filePath
+  };
+}
+
 const getGCSJsonPaths = (pdfFileName) => {
   const GCS_BUCKET = 'irs-docai-demo-app-ref-files';
   const STATIC_JSON_PATH = 'irs-form-941x-files/inference';
@@ -400,8 +539,51 @@ const docAI = ({
           document = json_file;
           gtDocument = gt_json_file || {};
         } else {
-          const [result] = await docAiClient.processDocument(request);
-          document = result?.document;
+          let custom_docai = true
+          let destination_url = ''
+          let destination_json_url = ''
+          if(processorName =='Form 941'){
+            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941/${file_name}`
+            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941/${file_name.replace('.pdf', '.json')}`
+          }
+          else if(processorName =='Form 941 Schedule B'){
+            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_b/${file_name}`
+             destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_b/${file_name.replace('.pdf', '.json')}`
+          }
+          else if(processorName =='Form 941 Schedule R'){
+           destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_r/${file_name}`
+           destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_r/${file_name.replace('.pdf', '.json')}`
+          }
+      
+          if(custom_docai)
+          {
+            console.log('processor name==>',processorName)
+            let source_url = `gs://${bucket_name}/${file_name}`
+            
+            await transferFiles(source_url,destination_url)
+            destination_json_url = await pollGoogleStorageUrl(destination_json_url)
+            console.log('destination_json_url-->',destination_json_url)
+            if(!destination_json_url)
+            {
+              return reject({
+                "status": "pending"
+              })
+            }
+            let json_file_name = await downloadFromGCS(destination_json_url)
+            
+            try
+            {
+              json_file = require(`../${json_file_name}`);
+            }
+            catch(error){
+              json_file = null
+            }
+            document = json_file;
+          }
+          else{
+            const [result] = await docAiClient.processDocument(request);
+            document = result?.document;
+          }
           try {
             await fs.writeFile(
               'response.json', 
