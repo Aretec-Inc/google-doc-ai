@@ -192,7 +192,8 @@ const Sidebar = (props) => {
                 maxWidth: 500,
                 width: '80%',
                 overflowX: 'hidden',
-                position: 'relative'
+                position: 'relative',
+                height: 'calc(100vh - 250px)'
             }}
         >
             <div style={{
@@ -202,7 +203,7 @@ const Sidebar = (props) => {
                 width: '100%',
                 background: 'white',
                 boxShadow: '0px 0px 25px silver',
-                paddingLeft: '10px'
+                paddingLeft: '0px'
             }}>
                 <Input
                     className='input-desin'

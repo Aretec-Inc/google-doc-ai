@@ -219,7 +219,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 
     return (
         <div style={{ background: '#f6f6f6' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', maxHeight: '95vh', minHeight: '75vh', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', border:'1px solid #dbdbdb' }}>
                 {!redacted && <SideBar
                     isTemplateView={isTemplateView}
                     triggerAddKeyPair={triggerAddKeyPair}
@@ -359,13 +359,13 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                         </div>
 
                         <div style={{
-                            height: 'calc(100% - 75px)',
+                            // height: 'calc(100% - 75px)',
                             overflow: 'auto',
                             filter: `drop-shadow(0px 0px 15px silver)`,
                             margin: 10,
                             padding: 10,
                             display: 'flex',
-                            minHeight: 400
+                            // minHeight: 400
                         }}>
                             <div ref={PageWrapper} style={{
                                 display: 'flex',
