@@ -159,8 +159,6 @@ const HeaderTopBar = ({
         fetchRuleResults();
     };
 
-    console.log("ARTIFACT DATA ===>", artifactData)
-
     const triggerReview = () => {
         setReviewButton('Reviewed')
         let obj = {

@@ -219,7 +219,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
 
     return (
         <div style={{ background: '#f6f6f6' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', border:'1px solid #dbdbdb' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', border: '1px solid #dbdbdb' }}>
                 {!redacted && <SideBar
                     isTemplateView={isTemplateView}
                     triggerAddKeyPair={triggerAddKeyPair}
@@ -298,13 +298,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             unCheckedChildren="Off"
                                             style={{ marginRight: 10 }}
                                         />
-                                        {/* <span style={{ marginRight: '8px', marginleft: '10px', fontSize: '14px' }}>Review Complete</span>
-                                        <Switch
-                                            checked={toggleValueDataValidation}
-                                            onChange={handleToggleChangeDataValidation}
-                                            checkedChildren="Yes"
-                                            unCheckedChildren="No"
-                                        /> */}
                                         <LongClickButton
                                             Button={(props) => (
                                                 <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}   >

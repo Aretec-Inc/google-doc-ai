@@ -229,13 +229,15 @@
 
 
 // SelectedCardData.jsx
-import { Table, Tabs } from 'antd';
-import { X } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Table, Skeleton, Tabs } from 'antd';
+import { X } from 'lucide-react';
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index';
-import { errorMessage } from '../../utils/pdfHelpers';
+import { setArtifactData } from '../../Redux/actions/artifactActions';
+import { fadeList, isPDF } from '../../utils/pdfConstants';
+import { errorMessage, load_artifact_data_by_type, randomInteger } from '../../utils/pdfHelpers';
 import HeaderTopBar from './HeaderTopBar';
 import './SelectedCardData.css';
 
@@ -243,142 +245,127 @@ const { TabPane } = Tabs;
 
 // Business Rules Table Component
 const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2" }) => {
-    // Transform HITL data for vertical layout and filter odd rows
-    const transformHitlDataToVertical = (data) => {
-        // Filter odd-numbered rows first
-        const filteredData = data.filter((_, index) => index % 2 === 0);
-
-        // Create vertical layout structure
-        const verticalColumns = filteredData.map((_, colIndex) => ({
-            title: `Record ${colIndex + 1}`,
-            dataIndex: `record_${colIndex}`,
-            key: `record_${colIndex}`,
-            width: '200px',
-            render: (text) => (
-                <span className="text-xs p-1 block">
-                    {text || '-'}
-                </span>
-            )
-        }));
-
-        // Create rows data
-        const verticalRows = [
-            {
-                key: 'fieldName',
-                label: 'Field Name',
-                ...filteredData.reduce((acc, record, idx) => ({
-                    ...acc,
-                    [`record_${idx}`]: record.content?.text?.split('/').pop() || record.content?.text || 'No text available'
-                }), {})
-            },
-            {
-                key: 'confidence',
-                label: 'Confidence',
-                ...filteredData.reduce((acc, record, idx) => ({
-                    ...acc,
-                    [`record_${idx}`]: `${(Number(record?.key_pair?.confidence || record?.confidence || record?.score) * 100 || 0).toFixed(1)}%`
-                }), {})
-            },
-            {
-                key: 'potentialIssue',
-                label: 'Potential Issue',
-                ...filteredData.reduce((acc, record, idx) => ({
-                    ...acc,
-                    [`record_${idx}`]: record?.key_pair?.potential_issue || record?.potential_issue || '-'
-                }), {})
-            },
-            {
-                key: 'expectedValue',
-                label: 'Expected Value',
-                ...filteredData.reduce((acc, record, idx) => ({
-                    ...acc,
-                    [`record_${idx}`]: record?.key_pair?.gt_value || record?.gt_value || '-'
-                }), {})
-            },
-            {
-                key: 'extractedValue',
-                label: 'Extracted Value',
-                ...filteredData.reduce((acc, record, idx) => ({
-                    ...acc,
-                    [`record_${idx}`]: record?.key_pair?.field_value || record?.field_value || '-'
-                }), {})
-            }
-        ];
-
-        return {
-            columns: [
-                {
-                    title: 'Field',
-                    dataIndex: 'label',
-                    key: 'label',
-                    width: '150px',
-                    fixed: 'left',
-                    render: (text) => (
-                        <span className="text-xs font-medium p-1 block">
-                            {text}
-                        </span>
-                    )
-                },
-                ...verticalColumns
-            ],
-            rows: verticalRows
-        };
-    };
-
-    const hitlLayout = transformHitlDataToVertical(hitlData);
-
-    const businessRulesColumns = {
+    const columns = activeTab === "1" ? {
+        // HITL columns
         columns: [
             {
-                title: 'Business Rule',
-                dataIndex: 'business_rule',
-                key: 'business_rule',
-                width: '45%',
-                render: (text) => (
+                title: 'Field Name',
+                dataIndex: 'content',
+                key: 'content',
+                width: '30%',
+                render: (content) => (
                     <span className="text-xs p-1 block">
-                        {text}
+                        {content?.text?.split('/').pop() || content?.text || 'No text available'}
                     </span>
                 )
             },
             {
-                title: 'Status',
-                dataIndex: 'rule_satisfied',
-                key: 'rule_satisfied',
-                width: '15%',
-                align: 'center',
-                render: (satisfied) => (
-                    <span className={`text-xs font-bold p-1 block ${satisfied ? 'text-green-500' : 'text-red-500'}`}>
-                        {satisfied ? 'Passed' : 'Failed'}
+                title: 'Confidence',
+                dataIndex: 'confidence',
+                key: 'confidence',
+                width: '20%',
+                render: (_, record) => {
+                    const confidence = Number(
+                        record?.key_pair?.confidence ||
+                        record?.confidence ||
+                        record?.score
+                    ) || 0;
+                    return (
+                        <span className="text-xs p-1 block">
+                            {(confidence * 100).toFixed(1)}%
+                        </span>
+                    );
+                }
+            },
+            {
+                title: 'Potential Issue',
+                dataIndex: 'potential_issue',
+                key: 'potential_issue',
+                width: '25%',
+                render: (_, record) => (
+                    <span className="text-xs p-1 block text-red-500">
+                        {record?.key_pair?.potential_issue || record?.potential_issue || '-'}
                     </span>
                 )
             },
             {
-                title: 'Reasoning',
-                dataIndex: 'reason',
-                key: 'reason',
-                width: '40%',
-                render: (reason) => (
+                title: 'Expected Value',
+                dataIndex: 'gt_value',
+                key: 'gt_value',
+                width: '25%',
+                render: (_, record) => (
                     <span className="text-xs p-1 block">
-                        {reason || '-'}
+                        {record?.key_pair?.gt_value || record?.gt_value || '-'}
+                    </span>
+                )
+            },
+            {
+                title: 'Extracted Value',
+                dataIndex: 'field_value',
+                key: 'field_value',
+                width: '25%',
+                render: (_, record) => (
+                    <span className="text-xs p-1 block">
+                        {record?.key_pair?.field_value || record?.field_value || '-'}
                     </span>
                 )
             }
         ]
-    };
+    }
+        : {
+            // Business Rules columns
+            columns: [
+                {
+                    title: 'Business Rule',
+                    dataIndex: 'business_rule',
+                    key: 'business_rule',
+                    width: '45%',
+                    render: (text) => (
+                        <span className="text-xs p-1 block">
+                            {text}
+                        </span>
+                    )
+                },
+                {
+                    title: 'Status',
+                    dataIndex: 'rule_satisfied',
+                    key: 'rule_satisfied',
+                    width: '15%',
+                    align: 'center',
+                    render: (satisfied) => (
+                        <span className={`text-xs font-bold p-1 block ${satisfied ? 'text-green-500' : 'text-red-500'}`}>
+                            {satisfied ? 'Passed' : 'Failed'}
+                        </span>
+                    )
+                },
+                {
+                    title: 'Reasoning',
+                    dataIndex: 'reason',
+                    key: 'reason',
+                    width: '40%',
+                    render: (reason) => (
+                        <span className="text-xs p-1 block">
+                            {reason || '-'}
+                        </span>
+                    )
+                }
+            ]
+        };
 
     return (
         <Table
             size="small"
-            columns={activeTab === "1" ? hitlLayout.columns : businessRulesColumns.columns}
-            dataSource={activeTab === "1" ? hitlLayout.rows : rules}
+            columns={columns.columns}
+            dataSource={activeTab === "1" ? hitlData : rules}
             loading={loading}
             pagination={false}
-            scroll={activeTab === "1" ? { x: 'max-content' } : { y: 'calc(100vh - 230px)' }}
-            rowKey={(record) => record.key}
+            scroll={{ y: 'calc(100vh - 230px)' }}
+            rowKey={(record) => record.key || record.id}
         />
     );
 };
 
+// Business Rules Drawer Component
 // Business Rules Drawer Component
 const BusinessRulesDrawer = ({
     isOpen,
@@ -391,6 +378,7 @@ const BusinessRulesDrawer = ({
 }) => {
     if (!isOpen) return null;
 
+    console.log("HITL DATA===>", hitlData)
     return (
         <div className="absolute right-0 top-0 bottom-0 w-4/12 bg-white border-l border-gray-200 overflow-y-hidden mb-10">
             <div className="sticky top-0 bg-white flex justify-between items-center"
@@ -533,6 +521,7 @@ const SelectedCardData = ({
         }
     };
 
+    console.log("ARTFUICAT", artifactData)
     return (
         <div>
             <div className="flex justify-between items-center w-full mt-14">
