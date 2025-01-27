@@ -3,25 +3,25 @@ const download_pdf = require("./downloadFileFromStorage");
 const insertToDB = require("./insertToDB");
 const get_form_field_values = require("./getFormFieldValues");
 const { default: axios } = require("axios");
-const { Storage } = require('@google-cloud/storage');
+const { Storage } = require("@google-cloud/storage");
 const { runQuery } = require("./postgresQueries");
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require("fs").promises;
+const path = require("path");
 const { postgresDB, schema, docAiClient, projectId } = require("../config");
 
-const rajat_project = 'rajat-demo-354311'
+const rajat_project = "rajat-demo-354311";
 const storage = new Storage({
   projectId: rajat_project,
-  keyFilename: 'rajat_service_key.json'
+  keyFilename: "rajat_service_key.json",
 });
 
-async function downloadFromGCS( gcsUrl) {
+async function downloadFromGCS(gcsUrl) {
   try {
     // Parse GCS URL (format: gs://bucket-name/path/to/file)
-    const gcsPath = gcsUrl.replace('gs://', '');
-    const [bucketName, ...pathParts] = gcsPath.split('/');
-    const sourceFilename = pathParts.join('/');
-    
+    const gcsPath = gcsUrl.replace("gs://", "");
+    const [bucketName, ...pathParts] = gcsPath.split("/");
+    const sourceFilename = pathParts.join("/");
+
     // Use the base filename as destination
     const destinationFilename = path.basename(sourceFilename);
 
@@ -30,15 +30,15 @@ async function downloadFromGCS( gcsUrl) {
 
     // Download options
     const options = {
-      destination: destinationFilename
+      destination: destinationFilename,
     };
 
     await file.download(options);
     console.log(`Downloaded ${sourceFilename} to ${destinationFilename}`);
     return destinationFilename;
   } catch (error) {
-    console.error('Error downloading file:', error);
-    return null
+    console.error("Error downloading file:", error);
+    return null;
     // throw error;
   }
 }
@@ -46,198 +46,211 @@ async function downloadFromGCS( gcsUrl) {
 async function pollGoogleStorageUrl(gsUrl) {
   // Configuration
   const POLL_INTERVAL = 5000; // 5 seconds
-  const TIMEOUT = 120000;     // 2 minutes
+  const TIMEOUT = 120000; // 2 minutes
   const startTime = Date.now();
 
   // Parse bucket and filename from gsUrl
   let bucket, filename;
-  if (gsUrl.startsWith('gs://')) {
-      const parts = gsUrl.replace('gs://', '').split('/');
-      bucket = parts[0];
-      filename = parts.slice(1).join('/');
+  if (gsUrl.startsWith("gs://")) {
+    const parts = gsUrl.replace("gs://", "").split("/");
+    bucket = parts[0];
+    filename = parts.slice(1).join("/");
   } else {
-      const parts = gsUrl.split('/');
-      bucket = parts[0];
-      filename = parts.slice(1).join('/');
+    const parts = gsUrl.split("/");
+    bucket = parts[0];
+    filename = parts.slice(1).join("/");
   }
 
   // Helper function to check if file exists
   async function checkFile() {
-      try {
-          const bucketObj = storage.bucket(bucket);
-          const file = bucketObj.file(filename);
-          const [exists] = await file.exists();
-          return exists;
-      } catch (error) {
-          console.error('Error checking file:', error);
-          return false;
-      }
+    try {
+      const bucketObj = storage.bucket(bucket);
+      const file = bucketObj.file(filename);
+      const [exists] = await file.exists();
+      return exists;
+    } catch (error) {
+      console.error("Error checking file:", error);
+      return false;
+    }
   }
 
   // Main polling loop
   while (Date.now() - startTime < TIMEOUT) {
-      try {
-          console.log(`Checking file: ${bucket}/${filename}`);
-          const exists = await checkFile();
-          
-          if (exists) {
-              console.log('File found!');
-              return `gs://${bucket}/${filename}`;
-          }
-          
-          console.log('File not found, waiting before next check...');
-          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
-      } catch (error) {
-          console.error('Error during polling:', error);
-          
-          // If it's a temporary issue, continue polling
-          await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+    try {
+      console.log(`Checking file: ${bucket}/${filename}`);
+      const exists = await checkFile();
+
+      if (exists) {
+        console.log("File found!");
+        return `gs://${bucket}/${filename}`;
       }
+
+      console.log("File not found, waiting before next check...");
+      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+    } catch (error) {
+      console.error("Error during polling:", error);
+
+      // If it's a temporary issue, continue polling
+      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL));
+    }
   }
 
-  console.log('Timeout reached, file not found');
+  console.log("Timeout reached, file not found");
   return null;
 }
 
 async function transferFiles(sourceUrl, destinationUrl) {
   try {
-      // Validate input URLs
-      if (!sourceUrl.startsWith('gs://') || !destinationUrl.startsWith('gs://')) {
-          throw new Error('Invalid URL format. Both URLs must start with gs://');
-      }
+    // Validate input URLs
+    if (!sourceUrl.startsWith("gs://") || !destinationUrl.startsWith("gs://")) {
+      throw new Error("Invalid URL format. Both URLs must start with gs://");
+    }
 
-      // Parse source URL
-      const sourceParams = parseGcsUrl(sourceUrl);
-      
-      // Parse destination URL
-      const destParams = parseGcsUrl(destinationUrl);
+    // Parse source URL
+    const sourceParams = parseGcsUrl(sourceUrl);
 
-      // Initialize Storage clients for both projects
-      const sourceStorage = new Storage();
+    // Parse destination URL
+    const destParams = parseGcsUrl(destinationUrl);
 
-      // Get source bucket and file
-      const sourceBucket = sourceStorage.bucket(sourceParams.bucketName);
-      const sourceFile = sourceBucket.file(sourceParams.filePath);
+    // Initialize Storage clients for both projects
+    const sourceStorage = new Storage();
 
-      // Get destination bucket and create write stream
-      const destBucket = storage.bucket(destParams.bucketName);
-      const destFile = destBucket.file(destParams.filePath);
+    // Get source bucket and file
+    const sourceBucket = sourceStorage.bucket(sourceParams.bucketName);
+    const sourceFile = sourceBucket.file(sourceParams.filePath);
 
-      // Create read stream from source
-      const readStream = sourceFile.createReadStream();
+    // Get destination bucket and create write stream
+    const destBucket = storage.bucket(destParams.bucketName);
+    const destFile = destBucket.file(destParams.filePath);
 
-      // Create write stream to destination
-      const writeStream = destFile.createWriteStream();
+    // Create read stream from source
+    const readStream = sourceFile.createReadStream();
 
-      // Handle potential errors
-      readStream.on('error', (error) => {
-          throw new Error(`Error reading from source: ${error.message}`);
+    // Create write stream to destination
+    const writeStream = destFile.createWriteStream();
+
+    // Handle potential errors
+    readStream.on("error", (error) => {
+      throw new Error(`Error reading from source: ${error.message}`);
+    });
+
+    writeStream.on("error", (error) => {
+      throw new Error(`Error writing to destination: ${error.message}`);
+    });
+
+    // Return promise that resolves when transfer is complete
+    return new Promise((resolve, reject) => {
+      writeStream.on("finish", () => {
+        console.log(
+          `Successfully transferred ${sourceUrl} to ${destinationUrl}`
+        );
+        resolve();
       });
 
-      writeStream.on('error', (error) => {
-          throw new Error(`Error writing to destination: ${error.message}`);
-      });
+      writeStream.on("error", reject);
 
-      // Return promise that resolves when transfer is complete
-      return new Promise((resolve, reject) => {
-          writeStream.on('finish', () => {
-              console.log(`Successfully transferred ${sourceUrl} to ${destinationUrl}`);
-              resolve();
-          });
-
-          writeStream.on('error', reject);
-          
-          // Pipe the read stream to the write stream
-          readStream.pipe(writeStream);
-      });
+      // Pipe the read stream to the write stream
+      readStream.pipe(writeStream);
+    });
   } catch (error) {
-      console.error('Transfer failed:', error);
-      throw error;
+    console.error("Transfer failed:", error);
+    throw error;
   }
 }
 
 /**
-* Helper function to parse GCS URL into bucket name and file path
-* @param {string} gcsUrl - GCS URL to parse
-* @returns {{ bucketName: string, filePath: string }}
-*/
+ * Helper function to parse GCS URL into bucket name and file path
+ * @param {string} gcsUrl - GCS URL to parse
+ * @returns {{ bucketName: string, filePath: string }}
+ */
 function parseGcsUrl(gcsUrl) {
   // Remove 'gs://' prefix
-  const urlWithoutPrefix = gcsUrl.replace('gs://', '');
-  
+  const urlWithoutPrefix = gcsUrl.replace("gs://", "");
+
   // Split into bucket name and file path
-  const [bucketName, ...pathParts] = urlWithoutPrefix.split('/');
-  
+  const [bucketName, ...pathParts] = urlWithoutPrefix.split("/");
+
   // Join the remaining parts to form the file path
-  const filePath = pathParts.join('/');
-  
+  const filePath = pathParts.join("/");
+
   if (!bucketName || !filePath) {
-      throw new Error(`Invalid GCS URL format: ${gcsUrl}`);
+    throw new Error(`Invalid GCS URL format: ${gcsUrl}`);
   }
-  
+
   return {
-      bucketName,
-      filePath
+    bucketName,
+    filePath,
   };
 }
 
 const getGCSJsonPaths = (pdfFileName) => {
-  const GCS_BUCKET = 'irs-docai-demo-app-ref-files';
-  const STATIC_JSON_PATH = 'irs-form-941x-files/inference';
-  const GT_JSON_PATH = 'irs-form-941x-files/groundtruth';
+  const GCS_BUCKET = "irs-docai-demo-app-ref-files";
+  const STATIC_JSON_PATH = "irs-form-941x-files/inference";
+  const GT_JSON_PATH = "irs-form-941x-files/groundtruth";
 
   // Handle special case for pdf_form_data
 
-    return {
-      inference: `gs://${GCS_BUCKET}/${STATIC_JSON_PATH}/inference_${pdfFileName.replace('.pdf', '.json')}`,
-      groundTruth: `gs://${GCS_BUCKET}/${GT_JSON_PATH}/gt_${pdfFileName.replace('.pdf', '.json')}`
-    };
-  
+  return {
+    inference: `gs://${GCS_BUCKET}/${STATIC_JSON_PATH}/inference_${pdfFileName.replace(
+      ".pdf",
+      ".json"
+    )}`,
+    groundTruth: `gs://${GCS_BUCKET}/${GT_JSON_PATH}/gt_${pdfFileName.replace(
+      ".pdf",
+      ".json"
+    )}`,
+  };
 };
 
 const getJsonPaths = (pdfFileName) => {
   // Handle special case for pdf_form_data
-  if (pdfFileName.startsWith('pdf_form_data')) {
+  if (pdfFileName.startsWith("pdf_form_data")) {
     return {
-      inference: `../docAIJSON/${pdfFileName.replace('.pdf', '.json')}`,
-      groundTruth: {}
+      inference: `../docAIJSON/${pdfFileName.replace(".pdf", ".json")}`,
+      groundTruth: {},
     };
   }
 
   // Extract UUID from filename
-  const uuidMatch = pdfFileName.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+  const uuidMatch = pdfFileName.match(
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+  );
   if (!uuidMatch) {
-    throw new Error('No UUID found in filename');
+    throw new Error("No UUID found in filename");
   }
   const uuid = uuidMatch[0];
 
   // Handle incubator handwritten case
-  if (pdfFileName.includes('incubator_handwritten')) {
+  if (pdfFileName.includes("incubator_handwritten")) {
     return {
       inference: `../docAIJSON/f941_${uuid}_pred.json`,
-      groundTruth: `../gtDocAIJSON/f941_${uuid}_gt.json`
+      groundTruth: `../gtDocAIJSON/f941_${uuid}_gt.json`,
     };
   }
 
   // Handle f941sb case
-  if (pdfFileName.includes('f941sb')) {
+  if (pdfFileName.includes("f941sb")) {
     return {
       inference: `../docAIJSON/inference-f941sb_${uuid}.json`,
-      groundTruth: `../gtDocAIJSON/groundtruth-f941sb_${uuid}.json`
+      groundTruth: `../gtDocAIJSON/groundtruth-f941sb_${uuid}.json`,
     };
   }
 
   // Handle regular irs_demo case
   const fileNumberMatch = pdfFileName.match(/0+(\d+)-f941/);
-  const fileNumber = fileNumberMatch ? fileNumberMatch[1] : '';
-  
+  const fileNumber = fileNumberMatch ? fileNumberMatch[1] : "";
+
   return {
-    inference: `../docAIJSON/inference_${fileNumber.padStart(7, '0')}-f941_${uuid}.json`,
-    groundTruth: `../gtDocAIJSON/gt_${fileNumber.padStart(7, '0')}-f941_${uuid}.json`
+    inference: `../docAIJSON/inference_${fileNumber.padStart(
+      7,
+      "0"
+    )}-f941_${uuid}.json`,
+    groundTruth: `../gtDocAIJSON/gt_${fileNumber.padStart(
+      7,
+      "0"
+    )}-f941_${uuid}.json`,
   };
 };
-
-
 
 const cleanFieldName = (name, dontTrim) => {
   /**
@@ -292,7 +305,7 @@ const docAI = ({
     try {
       const file_names = file_name?.split("/");
       const exact_file_name_with_ext = file_names?.[file_names?.length - 1];
-
+      let skip_docai = false;
       let isObject = (value) => {
         let jsonAfterParse = value;
 
@@ -373,226 +386,103 @@ const docAI = ({
         );
 
         // Recognizes text entities in the PDF document
-        let skip_docai = false;
+        
         let json_file = {};
         let gt_json_file = {};
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_6bfcebbe-fb82-4e0a-b474-70b567e94efb.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_39b81c92-d8c3-4942-bd61-79901123ece4.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_eb777051-2d0e-427d-9031-6016cfb0e0f7.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_94181709-37ba-454e-ab9b-3f51391553b3.json");
-        // }
-        
-        // if (
-        //   file_name?.includes("f941sb_deaa13ec-dffc-4f83-a28c-329785357507.pdf")
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_deaa13ec-dffc-4f83-a28c-329785357507.json");
-        // }
-        
-        // if (
-        //   file_name?.includes("f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.pdf")
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_efd6bddf-5d6f-44d5-82ac-fab23d2f9b7a.json");
-        // }
-        
-        // if (
-        //   file_name?.includes("f941sb_f09e9682-9763-4202-8f3f-336320575038.pdf")
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_f09e9682-9763-4202-8f3f-336320575038.json");
-        // }
-        
-        // if (
-        //   file_name?.includes("f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.pdf")
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_f941sb_f478e159-a079-42e6-915e-c31ffdfd2e8a.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_0b62c277-ace5-449a-b557-f37d3a3c600c.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_2020054f-eadc-4b20-b862-ac47676c9f8b.json");
-        // }
-        
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_0000109-f941_0dd9e845-5ef3-4557-8180-7608e95bf6f4.json");
-        // }
-        
- 
-        // if (
-        //   file_name?.includes(
-        //     "irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_irs_demo_01_17_f941_09d5f8e5-f3ea-42c6-85e6-afd237fd98a8.json");
-        // }
 
-        // if (
-        //   file_name?.includes(
-        //     "941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.pdf"
-        //   )
-        // ) {
-        //   skip_docai = true;
-        //   json_file = require("../docAIJSON/inference_941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.json");
-        //   gt_json_file = require("../gtDocAIJSON/gt_941_incubator_handwritten_01_20_pdf_f941_01635692-7c08-4cf2-9112-042fbbde59eb.json");
-        // }
-        const uuidRegex = /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})-/;
-        const filename_without_id = file_name.replace(uuidRegex, '');
+        const uuidRegex =
+          /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})-/;
+        const filename_without_id = file_name.replace(uuidRegex, "");
 
-        console.log('filename_without_id',filename_without_id);
-       
-        let json_file_obj = getGCSJsonPaths(filename_without_id)
-        console.log('json_file_obj==>',json_file_obj)
-        if(json_file_obj?.inference)
-        {
-          let json_file_name = await downloadFromGCS(json_file_obj?.inference)
-          console.log('json_file_name-->',json_file_name)
-          try
-          {
+        console.log("filename_without_id", filename_without_id);
+
+        let json_file_obj = getGCSJsonPaths(filename_without_id);
+        console.log("json_file_obj==>", json_file_obj);
+        if (json_file_obj?.inference) {
+          let json_file_name = await downloadFromGCS(json_file_obj?.inference);
+          console.log("json_file_name-->", json_file_name);
+          try {
             json_file = require(`../${json_file_name}`);
+          } catch (error) {
+            json_file = null;
           }
-          catch(error){
-            json_file = null
-          }
-
         }
-        if(json_file_obj?.groundTruth)
-        {
-          let gt_json_file_name = await downloadFromGCS(json_file_obj?.groundTruth)
-          try
-          {
+        if (json_file_obj?.groundTruth) {
+          let gt_json_file_name = await downloadFromGCS(
+            json_file_obj?.groundTruth
+          );
+          try {
             gt_json_file = require(`../${gt_json_file_name}`);
-          }
-          catch(e)
-          {
-            gt_json_file = null
+          } catch (e) {
+            gt_json_file = null;
           }
         }
-        if(json_file)
-        {
-          skip_docai = true
+        if (json_file) {
+          skip_docai = true;
         }
         if (skip_docai) {
           console.log("skipping docai");
           document = json_file;
           gtDocument = gt_json_file || {};
         } else {
-          let custom_docai = true
-          let destination_url = ''
-          let destination_json_url = ''
-          if(processorName =='Form 941'){
-            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941/${file_name}`
-            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941/${file_name.replace('.pdf', '.json')}`
+          let custom_docai = true;
+          let destination_url = "";
+          let destination_json_url = "";
+          if (processorName == "Form 941") {
+            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941/${file_name}`;
+            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941/${file_name.replace(
+              ".pdf",
+              ".json"
+            )}`;
+          } else if (processorName == "Form 941 Schedule B") {
+            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_b/${file_name}`;
+            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_b/${file_name.replace(
+              ".pdf",
+              ".json"
+            )}`;
+          } else if (processorName == "Form 941 Schedule R") {
+            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_r/${file_name}`;
+            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_r/${file_name.replace(
+              ".pdf",
+              ".json"
+            )}`;
           }
-          else if(processorName =='Form 941 Schedule B'){
-            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_b/${file_name}`
-             destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_b/${file_name.replace('.pdf', '.json')}`
-          }
-          else if(processorName =='Form 941 Schedule R'){
-           destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_r/${file_name}`
-           destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_r/${file_name.replace('.pdf', '.json')}`
-          }
-      
-          if(custom_docai)
-          {
-            console.log('processor name==>',processorName)
-            let source_url = `gs://${bucket_name}/${file_name}`
-            
-            await transferFiles(source_url,destination_url)
-            destination_json_url = await pollGoogleStorageUrl(destination_json_url)
-            console.log('destination_json_url-->',destination_json_url)
-            if(!destination_json_url)
-            {
+
+          if (custom_docai) {
+            console.log("processor name==>", processorName);
+            let source_url = `gs://${bucket_name}/${file_name}`;
+
+            await transferFiles(source_url, destination_url);
+            destination_json_url = await pollGoogleStorageUrl(
+              destination_json_url
+            );
+            console.log("destination_json_url-->", destination_json_url);
+            if (!destination_json_url) {
               return reject({
-                "status": "pending"
-              })
+                status: "pending",
+              });
             }
-            let json_file_name = await downloadFromGCS(destination_json_url)
-            
-            try
-            {
+            let json_file_name = await downloadFromGCS(destination_json_url);
+
+            try {
               json_file = require(`../${json_file_name}`);
-            }
-            catch(error){
-              json_file = null
+            } catch (error) {
+              json_file = null;
             }
             document = json_file;
-          }
-          else{
+          } else {
             const [result] = await docAiClient.processDocument(request);
             document = result?.document;
           }
           try {
             await fs.writeFile(
-              'response.json', 
+              "response.json",
               JSON.stringify(document, null, 2),
-              'utf8'
+              "utf8"
             );
-            console.log('Successfully wrote response.json');
+            console.log("Successfully wrote response.json");
           } catch (error) {
-            console.error('Error writing response.json:', error);
+            console.error("Error writing response.json:", error);
           }
         }
         let obj = {};
@@ -672,21 +562,25 @@ const docAI = ({
       await Promise.all(pagesArray);
 
       let pageFormFieldsArray = [];
-      console.log('**************************************')
+      console.log("**************************************");
       for (let i = 0; i < pages.length; i++) {
-          let page = pages?.[i]
-          let pageNumber = page?.pageNumber || page?.page_number
+        let page = pages?.[i];
+        let pageNumber = page?.pageNumber || page?.page_number;
 
-          console.log('pageNumber', pageNumber)
+        console.log("pageNumber", pageNumber);
 
-          const formFields = page?.formFields || page?.form_fields
-    
-          if (Array.isArray(formFields)) {
-              for (const formField of formFields) {
-                  let formfieldValues = get_form_field_values(formField, { text, pageNumber, exact_file_name_with_ext }, isTesting)
-                  pageFormFieldsArray.push(formfieldValues)
-              }
+        const formFields = page?.formFields || page?.form_fields;
+
+        if (Array.isArray(formFields)) {
+          for (const formField of formFields) {
+            let formfieldValues = get_form_field_values(
+              formField,
+              { text, pageNumber, exact_file_name_with_ext },
+              isTesting
+            );
+            pageFormFieldsArray.push(formfieldValues);
           }
+        }
       }
 
       let entitiesArray = [];
@@ -709,7 +603,10 @@ const docAI = ({
         for (const entity of entities) {
           // console.log("form field going------------", formField)
           const pageNumber =
-            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page || entity?.page_anchor?.page_refs?.[0]?.page) + 1 || 1;
+            parseInt(
+              entity?.pageAnchor?.pageRefs?.[0]?.page ||
+                entity?.page_anchor?.page_refs?.[0]?.page
+            ) + 1 || 1;
           let entityValues = get_form_field_values(
             entity,
             { text, pageNumber, exact_file_name_with_ext },
@@ -717,16 +614,18 @@ const docAI = ({
           );
           if (Array.isArray(entity?.properties) && entity?.properties?.length) {
             for (let sub_entity of entity?.properties) {
-              let parent_field_name = entity?.type
-              if(!sub_entity['type']?.includes(`${parent_field_name}/`)){
-                sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              let parent_field_name = entity?.type;
+              if (!sub_entity["type"]?.includes(`${parent_field_name}/`)) {
+                sub_entity[
+                  "type"
+                ] = `${parent_field_name}/${sub_entity["type"]}`;
               }
               entityValues = get_form_field_values(
                 sub_entity,
                 { text, pageNumber, exact_file_name_with_ext },
                 isTesting
               );
-              
+
               pageEntitiesArray.push(entityValues);
             }
           } else {
@@ -739,22 +638,25 @@ const docAI = ({
         for (const entity of gtEntities) {
           // console.log("form field going------------", formField)
           const pageNumber =
-            parseInt(entity?.pageAnchor?.pageRefs?.[0]?.page || entity?.page_anchor?.page_refs?.[0]?.page) + 1 || 1;
+            parseInt(
+              entity?.pageAnchor?.pageRefs?.[0]?.page ||
+                entity?.page_anchor?.page_refs?.[0]?.page
+            ) + 1 || 1;
           let entityValues = get_form_field_values(
             entity,
-            { text : gtText, pageNumber, exact_file_name_with_ext },
+            { text: gtText, pageNumber, exact_file_name_with_ext },
             isTesting
           );
           if (Array.isArray(entity?.properties) && entity?.properties?.length) {
             for (let sub_entity of entity?.properties) {
-              let parent_field_name = entity?.type
-              sub_entity['type'] = `${parent_field_name}/${sub_entity['type']}`
+              let parent_field_name = entity?.type;
+              sub_entity["type"] = `${parent_field_name}/${sub_entity["type"]}`;
               entityValues = get_form_field_values(
                 sub_entity,
-                { text : gtText, pageNumber, exact_file_name_with_ext },
+                { text: gtText, pageNumber, exact_file_name_with_ext },
                 isTesting
               );
-              
+
               gtPageEntitiesArray.push(entityValues);
             }
           } else {
@@ -798,7 +700,7 @@ const docAI = ({
       let insert_gt_form_fields =
         !isTesting && gtFormFieldsValues?.length
           ? insertToDB.insert_gt_form_key_pair_with_values({
-              formKeyPairTableName:`${schema}.gt_schema_form_key_pair`,
+              formKeyPairTableName: `${schema}.gt_schema_form_key_pair`,
               VALUES: gtFormFieldsValues,
             })
           : null;
@@ -823,17 +725,14 @@ const docAI = ({
       let failedRequests = [];
       try {
         if (!isTesting) {
-          if(skip_docai)
-          {
-
+          if (skip_docai) {
             finalResult = await Promise.allSettled([
               ...pagesArray,
               insert_form_fields,
               insert_gt_form_fields,
               insert_page_form_fields,
             ]);
-          }
-          else{
+          } else {
             finalResult = await Promise.allSettled([
               ...pagesArray,
               insert_form_fields,
@@ -1017,7 +916,7 @@ const docAIv3 = async (obj) => {
       await runQuery(postgresDB, query);
     }
     // call here
-    callOcrHitlFindings(gcs_input_uri)
+    callOcrHitlFindings(gcs_input_uri);
 
     let obj = {
       success: true,
@@ -1041,28 +940,28 @@ const docAIv3 = async (obj) => {
 
 async function callOcrHitlFindings(gsUrl) {
   try {
-      const baseUrl = process.env.PYTHON_URL || 'http://localhost:8000';
-      const encodedUrl = encodeURIComponent(gsUrl);
-      const response = await fetch(
-          `${baseUrl}/api/v1/field-findings/ocr-hitl-findings?gs_url=${encodedUrl}`,
-          {
-              method: 'POST',
-              headers: {
-                  'accept': 'application/json'
-              }
-          }
-      );
-
-      if (!response.ok) {
-        console.log("HITL response",response.status)
-          // throw new Error(`HTTP error! status: ${response.status}`);
+    const baseUrl = process.env.PYTHON_URL || "http://localhost:8000";
+    const encodedUrl = encodeURIComponent(gsUrl);
+    const response = await fetch(
+      `${baseUrl}/api/v1/field-findings/ocr-hitl-findings?gs_url=${encodedUrl}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+        },
       }
+    );
 
-      const data = await response.json();
-      return data;
+    if (!response.ok) {
+      console.log("HITL response", response.status);
+      // throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
-      console.error('Error calling OCR HITL Findings API:', error);
-      // throw error;
+    console.error("Error calling OCR HITL Findings API:", error);
+    // throw error;
   }
 }
 
