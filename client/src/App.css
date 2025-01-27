@@ -1336,5 +1336,14 @@ body {
         width: 100%;
     }
 }
-
+.bussinessSection .ant-table-body{
+    height: calc(100vh - 345px) !important;
+    max-height: auto !important;
+}
+.MuiInput-underline:before{
+    border-color: #dbdbdb !important;
+}
+.removechild > div{
+    margin-left: 0px !important;
+}
 /* <---------------------------------------- DASHBOARD STYLING -------------------------------------------------------> */

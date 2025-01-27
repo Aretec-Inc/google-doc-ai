@@ -42,7 +42,7 @@ import { Bar } from '@ant-design/plots';
 import React from "react";
 
 const ProcessorVisuals = ({ belowThresholdModelAcc, aboveThresholdModelAcc }) => {
-    const data = [...aboveThresholdModelAcc, ...belowThresholdModelAcc];
+    const data = [...(aboveThresholdModelAcc || []), ...(belowThresholdModelAcc || [])];
 
     const config = {
         data,

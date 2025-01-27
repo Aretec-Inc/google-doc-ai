@@ -40,7 +40,7 @@ import { Bar } from '@ant-design/plots';
 import React from "react";
 
 const ConfidenceModel = ({ confidenceModel }) => {
-    const data = [...confidenceModel];
+    const data = [...(confidenceModel || [])];
 
     const config = {
         data,

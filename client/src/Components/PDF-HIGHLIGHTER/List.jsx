@@ -254,7 +254,7 @@ const VirtualizedList = ({
                             hasChildren
                         })}
                         {expanded && (
-                            <div style={{ marginLeft: '10px' }}>
+                            <div className='removechild' style={{ marginLeft: '0px' }}>
                                 {renderNestedStructure(value.children, currentPath)}
                             </div>
                         )}
@@ -338,7 +338,7 @@ const VirtualizedList = ({
     };
 
     return (
-        <div style={{ overflow: 'auto', overflowX: 'hidden', height, width }}>
+        <div style={{ overflow: 'auto', overflowX: 'hidden', height, width, padding:'0px 10px' }}>
             {renderContent()}
             {Boolean(showDialog && isCurrentlyFormFields && selectEditHighlight) && (
                 <DialogEdit
