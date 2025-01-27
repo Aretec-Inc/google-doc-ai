@@ -30,7 +30,13 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                     <div className="min-h-[40px] py-2 px-2">
                         <button
                             onClick={() => onFieldClick && onFieldClick(record)}
-                            className="text-xs break-words whitespace-normal text-blue-600 hover:underline text-left"
+                            className="text-xs text-blue-600 hover:underline text-left w-full inline-block"
+                            style={{
+                                wordBreak: 'break-word',
+                                whiteSpace: 'normal',
+                                lineHeight: '1.2',
+                                maxWidth: '100%'
+                            }}
                         >
                             {text || '-'}
                         </button>
@@ -64,7 +70,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 )
             },
             {
-                title: 'Expected Value',
+                title: 'Suggested Values',
                 dataIndex: 'expectedValue',
                 key: 'expectedValue',
                 width: '20%',
@@ -236,7 +242,6 @@ const BusinessRulesDrawer = ({
         </div>
     );
 };
-
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName, pdfName, submissionId }) => {
     return (
