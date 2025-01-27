@@ -201,10 +201,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
         setToggleValue(checked)
     }
 
-    const handleToggleChangeDataValidation = (checked) => {
-        setToggleValueDataValidation(checked)
-    }
-
     const handleToggleHITLChange = (checked) => {
         setToggleValueHITL(checked);
         // Pass the event up to SelectedCardData
