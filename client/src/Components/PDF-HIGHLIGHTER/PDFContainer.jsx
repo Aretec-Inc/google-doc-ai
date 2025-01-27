@@ -1,5 +1,5 @@
 import { DownOutlined } from '@ant-design/icons';
-import { IconButton, } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -17,262 +17,287 @@ import LongClickButton from '../LongClickButton';
 import SideBar from './NewSidebar';
 import PDF from './PDF';
 import './pdf.css';
-const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, ...props }) => {
 
-    const PageWrapper = useRef(null)
-    const history = useNavigate()
+const PDFContainer = ({ 
+    availableKeyPairs, 
+    isTemplateView, 
+    highlights, 
+    tabIndex, 
+    file_address, 
+    isLoading, 
+    artifactData, 
+    refresh, 
+    isCompleted, 
+    redacted,
+    selectedHighlight, 
+    ...props 
+}) => {
+    const PageWrapper = useRef(null);
+    const history = useNavigate();
     const [numPages, setNumPages] = useState(null);
     const [pageNumberr, setPageNumber] = useState(1);
-    const pageNumber = parseInt((pageNumberr && pageNumberr > 0) ? pageNumberr : 1)
-    const [scale, setRealScale] = useState(1)
-
-    const [pageWidth, setPageWidth] = useState(812 / 2)
-    const [pageHeight, setPageHeight] = useState(151 / 2)
-    const [resizing, setResizing] = useState(false)
-    const [bodyWidth, setbodyWidth] = useState(1000)
-    const [selectedHighLights, setSelectedHighLights] = useState([]) //an array containing ids of currently selected/highlighted elements.
-    const [showPageDropdown, setShowPageDropdown] = useState(false)
-    const [search, setSearch] = useState('')
-    const [state, setstate] = useState([])
-    const [isFirstLoad, setIsFirstLoad] = useState(true)
-    const [isLongClicked, setIsLongClicked] = useState(false)
-    const [hasBeenMinimized, setHasBeenMinimized] = useState(false)
-    const [shouldScrollSidebar, setShouldScrollSidebar] = useState(true)
-    const [shouldScrollPDF, setShouldScrollPDF] = useState(true)
-    const [triggerAddKeyPair, setTriggerAddKeyPair] = useState(false)
-    const maxZoom = 5 //Maximum Zoom Capability
-    const minZoom = .5 //Minimum Zoom Capability
-    const defaultZoom = 1 //Default zoom when page loads.
-    const IncreaseOrDecreaseZoomByValue = .1 //This is the value which will be decreased or increased from 'Scale' state.
-    const selectedPDFPage = useMemo(() => Array.isArray(highlights) && highlights?.find(d => d?.pageNumber == pageNumber), [pageNumber, highlights])
-    const selectedHighlights = selectedPDFPage?.[tabIndex == 1 ? 'paragraphs' : 'formFields']
-    const dimension = selectedPDFPage?.dimension
-    const heightDiffPercent = parseFloat(dimension?.heightDiffPercent)
-    const currentPageHighlights = selectedHighlights ? selectedHighlights : []
-    const [toggleValue, setToggleValue] = useState(false)
-    const [toggleValueDataValidation, setToggleValueDataValidation] = useState(false)
+    const pageNumber = parseInt((pageNumberr && pageNumberr > 0) ? pageNumberr : 1);
+    const [scale, setRealScale] = useState(1);
+    const [pageWidth, setPageWidth] = useState(812 / 2);
+    const [pageHeight, setPageHeight] = useState(151 / 2);
+    const [resizing, setResizing] = useState(false);
+    const [bodyWidth, setbodyWidth] = useState(1000);
+    const [selectedHighLights, setSelectedHighLights] = useState([]);
+    const [showPageDropdown, setShowPageDropdown] = useState(false);
+    const [search, setSearch] = useState('');
+    const [state, setstate] = useState([]);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
+    const [isLongClicked, setIsLongClicked] = useState(false);
+    const [hasBeenMinimized, setHasBeenMinimized] = useState(false);
+    const [shouldScrollSidebar, setShouldScrollSidebar] = useState(true);
+    const [shouldScrollPDF, setShouldScrollPDF] = useState(true);
+    const [triggerAddKeyPair, setTriggerAddKeyPair] = useState(false);
+    const [toggleValue, setToggleValue] = useState(false);
+    const [toggleValueDataValidation, setToggleValueDataValidation] = useState(false);
     const [toggleValueHITL, setToggleValueHITL] = useState(false);
 
+    const maxZoom = 5;
+    const minZoom = .5;
+    const defaultZoom = 1;
+    const IncreaseOrDecreaseZoomByValue = .1;
+
+    const selectedPDFPage = useMemo(() => Array.isArray(highlights) && highlights?.find(d => d?.pageNumber == pageNumber), [pageNumber, highlights]);
+    const selectedHighlights = selectedPDFPage?.[tabIndex == 1 ? 'paragraphs' : 'formFields'];
+    const dimension = selectedPDFPage?.dimension;
+    const heightDiffPercent = parseFloat(dimension?.heightDiffPercent);
+    const currentPageHighlights = selectedHighlights ? selectedHighlights : [];
+
+    // Update page number when selected highlight changes
+    useEffect(() => {
+        if (selectedHighlight?.page_number) {
+            setPageNumber(selectedHighlight.page_number);
+        }
+    }, [selectedHighlight]);
+
+    // Highlight effect when a field is selected
+    useEffect(() => {
+        if (selectedHighlight) {
+            const highlightElement = document.querySelector(`[data-highlight-id="${selectedHighlight.id}"]`);
+            if (highlightElement) {
+                highlightElement.classList.add('highlight-pulse');
+                setTimeout(() => {
+                    highlightElement.classList.remove('highlight-pulse');
+                }, 2000);
+
+                // Scroll the highlighted element into view
+                highlightElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }, [selectedHighlight, pageNumber]);
+
     const setScale = (num) => {
-        setRealScale(num)
-        setTriggerAddKeyPair(false)
-    }
+        setRealScale(num);
+        setTriggerAddKeyPair(false);
+    };
 
     function onDocumentLoadSuccess(objData) {
-
-        let numPages = objData?.numPages
-        // console.log("objData", objData)
-        setNumPages(numPages)
-        resetSize()
+        let numPages = objData?.numPages;
+        setNumPages(numPages);
+        resetSize();
 
         setTimeout(() => {
-            resetSize()
-        }, 0)
+            resetSize();
+        }, 0);
     }
 
-    let resizeTimeOut = null
+    let resizeTimeOut = null;
     let resetSize = () => {
-        setResizing(true)
-        let widthOfBody = document?.body?.offsetWidth
-        setbodyWidth(widthOfBody)
-        let width = ReactDOM.findDOMNode(PageWrapper?.current)?.clientWidth
-        let height = ReactDOM.findDOMNode(PageWrapper?.current)?.clientHeight
+        setResizing(true);
+        let widthOfBody = document?.body?.offsetWidth;
+        setbodyWidth(widthOfBody);
+        let width = ReactDOM.findDOMNode(PageWrapper?.current)?.clientWidth;
+        let height = ReactDOM.findDOMNode(PageWrapper?.current)?.clientHeight;
 
-        let EightyPercentWidth = width - (width * .20)
+        let EightyPercentWidth = width - (width * .20);
 
         if (width && EightyPercentWidth && height) {
-            setTriggerAddKeyPair(isTemplateView)
-            setPageWidth(EightyPercentWidth)
-            setPageHeight(height)
-            // setTriggerAddKeyPair(isadding)
+            setTriggerAddKeyPair(isTemplateView);
+            setPageWidth(EightyPercentWidth);
+            setPageHeight(height);
         }
         resizeTimeOut = setTimeout(() => {
-            setResizing(false)
-
-        }, 0)
-    }
-
-    useEffect(() => {
-        setResizing(true)
-        resetSize()
-    }, [PageWrapper, pageNumber, numPages])
+            setResizing(false);
+        }, 0);
+    };
 
     useEffect(() => {
+        setResizing(true);
+        resetSize();
+    }, [PageWrapper, pageNumber, numPages]);
 
-        let timeout = null
+    useEffect(() => {
+        let timeout = null;
         if (timeout) clearTimeout(timeout);
         const resizeWithDelay = () => {
             timeout = setTimeout(resetSize, 100);
-        }
-        window.addEventListener('resize', resizeWithDelay)
+        };
+        window.addEventListener('resize', resizeWithDelay);
         if (setTriggerAddKeyPair) {
-            setTriggerAddKeyPair(isTemplateView)///This was done on purpose so dont change.
+            setTriggerAddKeyPair(isTemplateView);
         }
 
         return () => {
-            clearTimeout(resizeTimeOut)
-            window.removeEventListener('resize', resizeWithDelay)
-        } //Remove Listeener on unmount
-    }, [])
+            clearTimeout(resizeTimeOut);
+            window.removeEventListener('resize', resizeWithDelay);
+        };
+    }, []);
 
-    const isPageIncreasePossible = pageNumber < numPages
-    const isPageDecreasePossible = pageNumber > 1
+    const isPageIncreasePossible = pageNumber < numPages;
+    const isPageDecreasePossible = pageNumber > 1;
 
     const IncreasePage = () => {
         if (isPageIncreasePossible) {
-            let newPage = parseInt(pageNumber + 1)
+            let newPage = parseInt(pageNumber + 1);
             if (newPage <= numPages && newPage > 0) setPageNumber(newPage);
         }
-    }
+    };
 
     const DecreasePage = () => {
         if (isPageDecreasePossible) {
-            let newPage = parseInt(pageNumber - 1)
+            let newPage = parseInt(pageNumber - 1);
             if (newPage <= numPages && newPage > 0) setPageNumber(newPage);
         }
-    }
+    };
 
     const onShortClickPage = (isGoingNext) => {
         if (isGoingNext) {
-            IncreasePage()
+            IncreasePage();
+        } else {
+            DecreasePage();
         }
-        else {
-            DecreasePage()
-        }
-    }
+    };
 
     const onLongClickPage = (isGoingNext) => {
         if (isGoingNext) {
-            setPageNumber(numPages)
+            setPageNumber(numPages);
+        } else {
+            setPageNumber(1);
         }
-        else {
-            setPageNumber(1)
-        }
-    }
+    };
 
-    const isScaleIncreasePossible = scale < maxZoom
-    const isScaleDecreasePossible = scale > minZoom
+    const isScaleIncreasePossible = scale < maxZoom;
+    const isScaleDecreasePossible = scale > minZoom;
 
     const IncreaseScale = () => {
-        setResizing(true)
+        setResizing(true);
         if (isScaleIncreasePossible) {
-            setScale(scale + IncreaseOrDecreaseZoomByValue)
+            setScale(scale + IncreaseOrDecreaseZoomByValue);
         }
         setTimeout(() => {
-            setResizing(false)
-
-        }, 10)
-    }
+            setResizing(false);
+        }, 10);
+    };
 
     const DecreaseScale = () => {
         if (isScaleDecreasePossible) {
-            setScale(scale - IncreaseOrDecreaseZoomByValue)
+            setScale(scale - IncreaseOrDecreaseZoomByValue);
         }
-    }
+    };
 
     const onShortClickZoom = (isZoomIn) => {
         if (!hasBeenMinimized) {
             if (isZoomIn) {
-                IncreaseScale()
+                IncreaseScale();
+            } else {
+                DecreaseScale();
             }
-            else {
-                DecreaseScale()
-            }
+        } else {
+            setHasBeenMinimized(false);
         }
-        else {
-            setHasBeenMinimized(false)
-        }
-    }
+    };
 
     const onLongClickZoom = (isZoomIn) => {
         if (isZoomIn) {
-            setScale(maxZoom)
+            setScale(maxZoom);
+        } else {
+            setHasBeenMinimized(true);
+            setScale(defaultZoom);
         }
-        else { //ZoomOut
-            setHasBeenMinimized(true)
-            setScale(defaultZoom)
-        }
-    }
+    };
 
-    const FlexRowDiv = (props) => (<div {...props} style={{ display: 'flex', flexDirection: 'row', ...props.style, alignItems: 'center' }} />)
-    const justify = scale > 1.5 ? 'flex-start' : 'center'
+    const FlexRowDiv = (props) => (
+        <div {...props} style={{ display: 'flex', flexDirection: 'row', ...props.style, alignItems: 'center' }} />
+    );
 
     const handleToggleChange = (checked) => {
-        setToggleValue(checked)
-    }
+        setToggleValue(checked);
+    };
 
     const handleToggleChangeDataValidation = (checked) => {
-        setToggleValueDataValidation(checked)
-    }
+        setToggleValueDataValidation(checked);
+    };
 
     const handleToggleHITLChange = (checked) => {
         setToggleValueHITL(checked);
-        // Pass the event up to SelectedCardData
         if (props.onHITLToggle) {
             props.onHITLToggle(checked, currentPageHighlights);
         }
     };
 
-
-    let globalHeight = `100%`
-    let faltuArray = new Array(numPages).fill(1)
+    let globalHeight = `100%`;
+    let faltuArray = new Array(numPages).fill(1);
 
     return (
-        <div style={{ background: '#f6f6f6' }}>
+        <div style={{ background: '#f6f6f6' }} className="pdf-container">
             <div style={{ display: 'flex', flexDirection: 'row', maxHeight: '95vh', minHeight: '75vh', overflow: 'hidden' }}>
-                {!redacted && <SideBar
-                    isTemplateView={isTemplateView}
-                    triggerAddKeyPair={triggerAddKeyPair}
-                    setTriggerAddKeyPair={setTriggerAddKeyPair}
-                    availableKeyPairs={availableKeyPairs}
-                    refresh={refresh}
-                    isCompleted={isCompleted}
-                    artifactData={artifactData}
-                    isLoading={isLoading}
-                    shouldScrollSidebar={shouldScrollSidebar}
-                    setShouldScrollSidebar={setShouldScrollSidebar}
-                    shouldScrollPDF={shouldScrollPDF}
-                    setShouldScrollPDF={setShouldScrollPDF}
-                    selectedHighLights={selectedHighLights}
-                    setSelectedHighLights={setSelectedHighLights}
-                    setSearch={setSearch}
-                    search={search}
-                    globalHeight={globalHeight}
-                    height={pageHeight}
-                    highlights={currentPageHighlights}
-                    toggleValue={toggleValue}
-                    {...props}
-                />}
+                {!redacted && (
+                    <SideBar
+                        isTemplateView={isTemplateView}
+                        triggerAddKeyPair={triggerAddKeyPair}
+                        setTriggerAddKeyPair={setTriggerAddKeyPair}
+                        availableKeyPairs={availableKeyPairs}
+                        refresh={refresh}
+                        isCompleted={isCompleted}
+                        artifactData={artifactData}
+                        isLoading={isLoading}
+                        shouldScrollSidebar={shouldScrollSidebar}
+                        setShouldScrollSidebar={setShouldScrollSidebar}
+                        shouldScrollPDF={shouldScrollPDF}
+                        setShouldScrollPDF={setShouldScrollPDF}
+                        selectedHighLights={selectedHighLights}
+                        setSelectedHighLights={setSelectedHighLights}
+                        setSearch={setSearch}
+                        search={search}
+                        globalHeight={globalHeight}
+                        height={pageHeight}
+                        highlights={currentPageHighlights}
+                        toggleValue={toggleValue}
+                        {...props}
+                    />
+                )}
 
                 <div style={{ padding: 0, overflow: 'hidden', width: '100%' }} flex={3}>
-                    <div style={{
-                        height: globalHeight,
-                        position: 'relative',
-                        background: 'white'
-                    }}>
+                    <div style={{ height: globalHeight, position: 'relative', background: 'white' }}>
                         <div>
-                            <div style={{ marginBottom: 0 }} className='ParentFunctionsDiv' >
-                                <FlexRowDiv style={{ justifyContent: 'space-between' }} >
+                            <div style={{ marginBottom: 0 }} className='ParentFunctionsDiv'>
+                                <FlexRowDiv style={{ justifyContent: 'space-between' }}>
                                     <FlexRowDiv>
                                         <LongClickButton
                                             Button={(props) => (
                                                 <Tooltip title='Zoom Out - Long click for full Zoom out'>
-                                                    <IconButton  {...props} disabled={!isScaleDecreasePossible}   >
+                                                    <IconButton {...props} disabled={!isScaleDecreasePossible}>
                                                         <ZoomOutIcon style={isScaleDecreasePossible ? { color: Icon_Blue_Color } : null} />
                                                     </IconButton>
                                                 </Tooltip>
                                             )}
-
                                             onLongClick={() => onLongClickZoom(false)}
                                             onShortClick={() => onShortClickZoom(false)}
                                         />
                                         <Tooltip title='Current Zoom'>
-                                            <span style={{ fontSize: 11, fontWeight: 'bold' }}> {Math.floor(parseFloat(scale * 70))}%</span>
+                                            <span style={{ fontSize: 11, fontWeight: 'bold' }}>{Math.floor(parseFloat(scale * 70))}%</span>
                                         </Tooltip>
                                         <LongClickButton
                                             Button={(props) => (
                                                 <Tooltip title='Zoom In - Long click for full Zoom In'>
-                                                    <IconButton {...props} disabled={!isScaleIncreasePossible}  >
+                                                    <IconButton {...props} disabled={!isScaleIncreasePossible}>
                                                         <ZoomInIcon style={isScaleIncreasePossible ? { color: Icon_Blue_Color } : null} />
                                                     </IconButton>
                                                 </Tooltip>
@@ -290,7 +315,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             checkedChildren="On"
                                             unCheckedChildren="Off"
                                         />
-                                        <span style={{ marginRight: '8px', marginleft: '8px', fontSize: '14px' }}>Ground Truth</span>
+                                        <span style={{ marginRight: '8px', marginLeft: '8px', fontSize: '14px' }}>Ground Truth</span>
                                         <Switch
                                             checked={toggleValue}
                                             onChange={handleToggleChange}
@@ -298,16 +323,9 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             unCheckedChildren="Off"
                                             style={{ marginRight: 10 }}
                                         />
-                                        {/* <span style={{ marginRight: '8px', marginleft: '10px', fontSize: '14px' }}>Review Complete</span>
-                                        <Switch
-                                            checked={toggleValueDataValidation}
-                                            onChange={handleToggleChangeDataValidation}
-                                            checkedChildren="Yes"
-                                            unCheckedChildren="No"
-                                        /> */}
                                         <LongClickButton
                                             Button={(props) => (
-                                                <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}   >
+                                                <IconButton {...props} disabled={!isPageDecreasePossible} onClick={DecreasePage}>
                                                     <ArrowUpwardIcon style={isPageDecreasePossible ? { color: Icon_Blue_Color } : null} />
                                                 </IconButton>
                                             )}
@@ -315,7 +333,6 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                             onShortClick={() => onShortClickPage(false)}
                                         />
                                         <span style={{ fontSize: 11, fontWeight: 'bold', cursor: 'pointer' }}>
-
                                             <span onClick={() => setShowPageDropdown(!showPageDropdown)}>
                                                 {pageNumber} / {numPages} <DownOutlined />
                                             </span>
@@ -326,110 +343,138 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                                 opacity: 0
                                             }}>
                                                 <Select
-
                                                     onClose={() => setShowPageDropdown(false)}
                                                     onOpen={() => setShowPageDropdown(true)}
                                                     open={showPageDropdown}
-
                                                     value={pageNumber ? pageNumber : 1}
                                                     onChange={(event) => {
-                                                        let newPage = parseInt(event.target.value)
+                                                        let newPage = parseInt(event.target.value);
                                                         if (newPage && newPage <= numPages && newPage > 0)
-                                                            setPageNumber(newPage)
+                                                            setPageNumber(newPage);
                                                     }}
-                                                >
-                                                    {faltuArray.map((d, i) => (
-                                                        <MenuItem key={i + 'pagelist'} value={i + 1}># {i + 1}</MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    >
+                                                        {faltuArray.map((d, i) => (
+                                                            <MenuItem key={i + 'pagelist'} value={i + 1}># {i + 1}</MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </span>
                                             </span>
-                                        </span>
-                                        <LongClickButton
-                                            Button={(props) => (
-                                                <IconButton {...props} disabled={!isPageIncreasePossible} onClick={IncreasePage}   >
-                                                    <ArrowDownwardIcon style={isPageIncreasePossible ? { color: Icon_Blue_Color } : null} />
-                                                </IconButton>
-                                            )}
-                                            onLongClick={() => onLongClickPage(true)}
-                                            onShortClick={() => onShortClickPage(true)}
-                                        />
+                                            <LongClickButton
+                                                Button={(props) => (
+                                                    <IconButton {...props} disabled={!isPageIncreasePossible} onClick={IncreasePage}>
+                                                        <ArrowDownwardIcon style={isPageIncreasePossible ? { color: Icon_Blue_Color } : null} />
+                                                    </IconButton>
+                                                )}
+                                                onLongClick={() => onLongClickPage(true)}
+                                                onShortClick={() => onShortClickPage(true)}
+                                            />
+                                        </FlexRowDiv>
                                     </FlexRowDiv>
-                                </FlexRowDiv>
+                                </div>
                             </div>
-                        </div>
-
-                        <div style={{
-                            height: 'calc(100% - 75px)',
-                            overflow: 'auto',
-                            filter: `drop-shadow(0px 0px 15px silver)`,
-                            margin: 10,
-                            padding: 10,
-                            display: 'flex',
-                            minHeight: 400
-                        }}>
-                            <div ref={PageWrapper} style={{
+    
+                            <div style={{
+                                height: 'calc(100% - 75px)',
+                                overflow: 'auto',
+                                filter: 'drop-shadow(0px 0px 15px silver)',
+                                margin: 10,
+                                padding: 10,
                                 display: 'flex',
-                                justifyContent: 'center',
-                                width: '100%',
-                                justifyContent: 'center',
-                                position: 'relative'
+                                minHeight: 400
                             }}>
-                                {isLoading && <div className='pdfLoadingContainer' style={{ height: pageHeight }}>
-                                    <Anim
-                                        options={{
-                                            animationData: require('../../assets/animations/PDFScan.json'),
-                                        }}
-                                        height={500}
-                                        width={500}
+                                <div ref={PageWrapper} style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    position: 'relative'
+                                }}>
+                                    {isLoading && (
+                                        <div className='pdfLoadingContainer' style={{ height: pageHeight }}>
+                                            <Anim
+                                                options={{
+                                                    animationData: require('../../assets/animations/PDFScan.json'),
+                                                }}
+                                                height={500}
+                                                width={500}
+                                            />
+                                            <p className='pdfLoadingText'>PLEASE WAIT, SCANNING PDF....</p>
+                                        </div>
+                                    )}
+                                    <PDF
+                                        isTemplateView={isTemplateView}
+                                        triggerAddKeyPair={triggerAddKeyPair}
+                                        setTriggerAddKeyPair={setTriggerAddKeyPair}
+                                        refresh={refresh}
+                                        availableKeyPairs={availableKeyPairs}
+                                        artifactData={artifactData}
+                                        heightDiffPercent={heightDiffPercent ? heightDiffPercent : 29}
+                                        shouldScrollSidebar={shouldScrollSidebar}
+                                        setShouldScrollSidebar={setShouldScrollSidebar}
+                                        shouldScrollPDF={shouldScrollPDF}
+                                        setShouldScrollPDF={setShouldScrollPDF}
+                                        file_address={file_address}
+                                        tabIndex={tabIndex}
+                                        highlights={currentPageHighlights}
+                                        selectedHighLights={selectedHighLights}
+                                        setSelectedHighLights={setSelectedHighLights}
+                                        scale={scale}
+                                        pageHeight={pageHeight}
+                                        pageWidth={pageWidth}
+                                        pageNumber={pageNumber}
+                                        resizing={resizing}
+                                        onDocumentLoadSuccess={onDocumentLoadSuccess}
+                                        toggleValue={toggleValue}
+                                        toggleValueHITL={toggleValueHITL}
+                                        selectedHighlight={selectedHighlight}
                                     />
-                                    <p className='pdfLoadingText'>PLEASE WAIT, SCANNING PDF....</p>
-                                </div>}
-                                <PDF
-                                    isTemplateView={isTemplateView}
-                                    triggerAddKeyPair={triggerAddKeyPair}
-                                    setTriggerAddKeyPair={setTriggerAddKeyPair}
-                                    refresh={refresh}
-                                    availableKeyPairs={availableKeyPairs}
-                                    artifactData={artifactData}
-                                    heightDiffPercent={heightDiffPercent ? heightDiffPercent : 29}
-                                    shouldScrollSidebar={shouldScrollSidebar}
-                                    setShouldScrollSidebar={setShouldScrollSidebar}
-                                    shouldScrollPDF={shouldScrollPDF}
-                                    setShouldScrollPDF={setShouldScrollPDF}
-                                    file_address={file_address}
-                                    tabIndex={tabIndex}
-                                    highlights={currentPageHighlights}
-                                    selectedHighLights={selectedHighLights}
-                                    setSelectedHighLights={setSelectedHighLights}
-                                    scale={scale}
-                                    pageHeight={pageHeight}
-                                    pageWidth={pageWidth}
-                                    pageNumber={pageNumber}
-                                    resizing={resizing}
-                                    onDocumentLoadSuccess={onDocumentLoadSuccess}
-                                    toggleValue={toggleValue}
-                                    toggleValueHITL={toggleValueHITL}
-                                />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <style jsx>{`
+                    .pdf-container {
+                        position: relative;
+                    }
+                    
+                    .highlight-pulse {
+                        animation: pulse 2s;
+                        box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+                        position: relative;
+                        z-index: 10;
+                    }
+                    
+                    @keyframes pulse {
+                        0% {
+                            box-shadow: 0 0 0 0 rgba(255, 241, 118, 0.8);
+                            background-color: rgba(255, 241, 118, 0.8);
+                        }
+                        70% {
+                            box-shadow: 0 0 0 10px rgba(255, 241, 118, 0);
+                            background-color: rgba(255, 241, 118, 0.4);
+                        }
+                        100% {
+                            box-shadow: 0 0 0 0 rgba(255, 241, 118, 0);
+                            background-color: transparent;
+                        }
+                    }
+                `}</style>
             </div>
-        </div >
-    )
-}
-
-PDFContainer.defaultProps = {
-    highlights: {},
-    onHITLToggle: () => null
-}
-
-PDFContainer.propTypes = {
-    highlights: PropTypes.array, //PropTypes.arrayOf(PropTypes.object)
-    file_address: PropTypes.string,
-    isLoading: PropTypes.bool,
-    artifactData: PropTypes.object,
-    onHITLToggle: PropTypes.func
-}
-
-export default PDFContainer
+        );
+    };
+    
+    PDFContainer.defaultProps = {
+        highlights: {},
+        onHITLToggle: () => null
+    };
+    
+    PDFContainer.propTypes = {
+        highlights: PropTypes.array,
+        file_address: PropTypes.string,
+        isLoading: PropTypes.bool,
+        artifactData: PropTypes.object,
+        onHITLToggle: PropTypes.func,
+        selectedHighlight: PropTypes.object
+    };
+    
+    export default PDFContainer;
