@@ -217,7 +217,7 @@ const BusinessRulesDrawer = ({
                     <X size={20} className="text-gray-600" />
                 </button>
             </div>
-            <div className="pt-0">
+            <div className="pt-0 bussinessSection">
                 {activeTab === "1" ? (
                     <BusinessRulesTable
                         hitlData={hitlData}
