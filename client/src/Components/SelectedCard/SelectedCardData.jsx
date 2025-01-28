@@ -74,7 +74,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 )
             },
             {
-                title: 'Expected Value',
+                title: 'Suggested Value',
                 dataIndex: 'expectedValue',
                 key: 'expectedValue',
                 width: '20%',
