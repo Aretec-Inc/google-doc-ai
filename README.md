@@ -161,11 +161,19 @@ DB_USER=""""
 DB_PASSWORD=""
 
 ##  Backend
+# Install node modules
+
+npm i
+
+# Start Frontend
+
 yarn dev-cloud
 
 ## Frontend
 cd client
+
 yarn start-client
 
 ## 
-gcloud builds submit --machine-type=n1-highcpu-8 --tag gcr.io/ldh-bot-rwec/irs-doc-ai  
+gcloud builds submit --machine-type=E2_HIGHCPU_32 --tag gcr.io/ldh-bot-rwec/irs-doc-ai  
+

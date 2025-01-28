@@ -1,7 +1,8 @@
 // SelectedCardData.jsx
 import { Table, Tabs } from 'antd';
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PDFVIEWER from '../../Components/PDF-HIGHLIGHTER/index';
@@ -12,8 +13,13 @@ import './SelectedCardData.css';
 const { TabPane } = Tabs;
 
 // Business Rules Table Component
-// BusinessRulesTable Component
 const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", onFieldClick, onFieldHighlight }) => {
+    // Handler for row click in HITL table
+    const handleRowClick = (record) => {
+        onFieldClick && onFieldClick(record);
+        onFieldHighlight && onFieldHighlight(record.fieldName);
+    };
+
     // Transform HITL data for horizontal layout (fields as columns)
     const transformHitlDataToHorizontal = (data) => {
         // Filter odd-numbered rows first
@@ -27,17 +33,16 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 key: 'fieldName',
                 width: '25%',
                 render: (text, record) => (
-                    <div className="min-h-[40px] py-2 px-2">
-                        <button
-                            onClick={() => {
-                                onFieldClick && onFieldClick(record);
-                                onFieldHighlight && onFieldHighlight(text);
-                            }}
+                    <div 
+                        className="min-h-[40px] py-2 px-2 cursor-pointer hover:bg-blue-50"
+                        onClick={() => handleRowClick(record)}
+                    >
+                        <span
                             className="text-xs break-words whitespace-normal text-blue-600 hover:underline text-left w-full"
                             data-content-text={text}
                         >
                             {text || '-'}
-                        </button>
+                        </span>
                     </div>
                 )
             },
@@ -60,16 +65,13 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 key: 'potentialIssue',
                 width: '20%',
                 render: (text, record) => (
-                    <div className="min-h-[40px] flex items-center">
-                        <button
-                            onClick={() => {
-                                onFieldClick && onFieldClick(record);
-                                onFieldHighlight && onFieldHighlight(record.fieldName);
-                            }}
-                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
-                        >
+                    <div 
+                        className="min-h-[40px] flex items-center cursor-pointer hover:bg-blue-50"
+                        onClick={() => handleRowClick(record)}
+                    >
+                        <span className="text-xs p-2 break-words whitespace-normal text-left w-full">
                             {text || '-'}
-                        </button>
+                        </span>
                     </div>
                 )
             },
@@ -79,38 +81,16 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 key: 'expectedValue',
                 width: '20%',
                 render: (text, record) => (
-                    <div className="min-h-[40px] flex items-center">
-                        <button
-                            onClick={() => {
-                                onFieldClick && onFieldClick(record);
-                                onFieldHighlight && onFieldHighlight(record.fieldName);
-                            }}
-                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
-                        >
+                    <div 
+                        className="min-h-[40px] flex items-center cursor-pointer hover:bg-blue-50"
+                        onClick={() => handleRowClick(record)}
+                    >
+                        <span className="text-xs p-2 break-words whitespace-normal text-left w-full">
                             {text || '-'}
-                        </button>
+                        </span>
                     </div>
                 )
-            },
-            // {
-            //     title: 'Extracted Value',
-            //     dataIndex: 'extractedValue',
-            //     key: 'extractedValue',
-            //     width: '20%',
-            //     render: (text, record) => (
-            //         <div className="min-h-[40px] flex items-center">
-            //             <button
-            //                 onClick={() => {
-            //                     onFieldClick && onFieldClick(record);
-            //                     onFieldHighlight && onFieldHighlight(record.fieldName);
-            //                 }}
-            //                 className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
-            //             >
-            //                 {text || '-'}
-            //             </button>
-            //         </div>
-            //     )
-            // }
+            }
         ];
 
         // Transform data into rows
@@ -194,7 +174,6 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
 };
 
 // Business Rules Drawer Component
-// BusinessRulesDrawer Component
 const BusinessRulesDrawer = ({
     isOpen,
     rules,
@@ -226,6 +205,7 @@ const BusinessRulesDrawer = ({
             const fieldText = record.originalData.content?.text?.split('/').pop() || 
                             record.originalData.content?.text;
             
+            // Scroll NestedListItem into view
             const element = document.querySelector(`[data-content-text="${fieldText}"]`);
             if (element) {
                 // Try to scroll the closest scrollable parent
@@ -245,6 +225,23 @@ const BusinessRulesDrawer = ({
                     });
                 } else {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            // Scroll PDF to highlighted field
+            if (record.originalData.coordinates) {
+                const pdfContainer = document.querySelector('.pdf-container');
+                if (pdfContainer) {
+                    // Get the current scale from PDFContainer
+                    const currentScale = parseFloat(pdfContainer.getAttribute('data-scale') || '1');
+                    
+                    // Calculate scroll position based on coordinates and scale
+                    const scrollTop = (record.originalData.coordinates.y * currentScale) - 100;
+                    
+                    pdfContainer.scrollTo({
+                        top: scrollTop,
+                        behavior: 'smooth'
+                    });
                 }
             }
         }
@@ -397,6 +394,9 @@ const SelectedCardData = ({
         if (newTab === "2") {
             fetchRuleResults();
         }
+        // Clear highlights when changing tabs
+        setSelectedHighlight(null);
+        setHighlightedFieldName(null);
     };
 
     const fetchRuleResults = async () => {
@@ -425,7 +425,25 @@ const SelectedCardData = ({
         }
     };
 
-    // Continuation of SelectedCardData.jsx
+    useEffect(() => {
+        if (selectedCard?.id && activeTab === "2") {
+            fetchRuleResults();
+        }
+    }, [selectedCard?.id]);
+
+    useEffect(() => {
+        setSelectedCard(initialSelectedCard);
+    }, [initialSelectedCard]);
+
+    // Handler for when drawer state changes
+    useEffect(() => {
+        if (!isDrawerOpen) {
+            setSelectedHighlight(null);
+            setHighlightedFieldName(null);
+        }
+    }, [isDrawerOpen]);
+
+    // Render method
     return (
         <div>
             <div className="flex justify-between items-center w-full mt-14">
@@ -487,6 +505,53 @@ const SelectedCardData = ({
             </div>
         </div>
     );
+};
+
+// PropTypes for all components
+BusinessRulesTable.propTypes = {
+    rules: PropTypes.array,
+    loading: PropTypes.bool,
+    hitlData: PropTypes.array,
+    activeTab: PropTypes.string,
+    onFieldClick: PropTypes.func,
+    onFieldHighlight: PropTypes.func
+};
+
+BusinessRulesDrawer.propTypes = {
+    isOpen: PropTypes.bool,
+    rules: PropTypes.array,
+    hitlData: PropTypes.array,
+    loading: PropTypes.bool,
+    setIsDrawerOpen: PropTypes.func.isRequired,
+    activeTab: PropTypes.string,
+    onTabChange: PropTypes.func,
+    onHighlightField: PropTypes.func,
+    onNestedListHighlight: PropTypes.func
+};
+
+SimpleBreadcrumb.propTypes = {
+    submissionName: PropTypes.string,
+    pdfName: PropTypes.string,
+    submissionId: PropTypes.string
+};
+
+SelectedCardData.propTypes = {
+    freqWord: PropTypes.array,
+    artifactData: PropTypes.object,
+    selectedCard: PropTypes.object,
+    isTemplateView: PropTypes.bool,
+    goBack: PropTypes.func,
+    submissionName: PropTypes.string,
+    submissionId: PropTypes.string
+};
+
+// Default props
+SelectedCardData.defaultProps = {
+    freqWord: [],
+    isTemplateView: false,
+    goBack: () => {},
+    submissionName: '',
+    submissionId: ''
 };
 
 export default SelectedCardData;
