@@ -21,7 +21,7 @@ module.exports = (d, { type, pageNumber, text, exact_file_name_with_ext }, isTes
 
     const fieldValue = get_info(theFieldValue, text, pageNumber, valueType)
    
-    const fNameText = d?.type || fieldName?.content?.text
+    const fNameText = d?.type  || d?.type_  || fieldName?.content?.text
     const fValueText = d?.mentionText || d?.mention_text || fieldValue?.content?.text
 
     const fValueRect = fieldValue?.rect

@@ -444,14 +444,27 @@ const docAI = ({
               ".json"
             )}`;
           } else if (processorName == "Form 941 Schedule R") {
-            destination_url = `gs://irs_dai_demo_01_2025/auto_uploaded/pdf/941_schedule_r/${file_name}`;
-            destination_json_url = `gs://irs_dai_demo_01_2025/auto_uploaded/output_json/941_schedule_r/${file_name.replace(
-              ".pdf",
-              ".json"
-            )}`;
+            const gcs_url = `gs://${bucket_name}/${file_name}`;
+            try {
+              const apiResponse = await axios.post(
+                `${process.env?.R_SCHEDULE_URL}/process-r-schedule-form-941`,
+                {
+                  gcs_url
+                }
+              );
+
+              if (apiResponse.data?.status === 'success') {
+                document = apiResponse.data.data.combined_response;
+              } else {
+                throw new Error('API processing failed');
+              }
+            } catch (error) {
+              console.error('Error processing Schedule R form:', error);
+              throw error;
+            }
           }
 
-          if (custom_docai) {
+          if (custom_docai &&  processorName !== "Form 941 Schedule R") {
             console.log("processor name==>", processorName);
             let source_url = `gs://${bucket_name}/${file_name}`;
 
@@ -473,7 +486,7 @@ const docAI = ({
               json_file = null;
             }
             document = json_file;
-          } else {
+          } else if (!custom_docai) {
             const [result] = await docAiClient.processDocument(request);
             document = result?.document;
           }
