@@ -15,6 +15,8 @@ const storage = new Storage({
   keyFilename: "rajat_service_key.json",
 });
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function downloadFromGCS(gcsUrl) {
   try {
     // Parse GCS URL (format: gs://bucket-name/path/to/file)
@@ -421,6 +423,7 @@ const docAI = ({
           skip_docai = true;
         }
         if (skip_docai) {
+          await delay(10000)
           console.log("skipping docai");
           document = json_file;
           gtDocument = gt_json_file || {};
