@@ -246,7 +246,6 @@ const PDFContainer = ({
     let faltuArray = new Array(numPages).fill(1);
 
     return (
-<<<<<<< HEAD
         <div style={{ background: '#f6f6f6' }} className="pdf-container">
             <div style={{ display: 'flex', flexDirection: 'row', maxHeight: '95vh', minHeight: '75vh', overflow: 'hidden' }}>
                 {!redacted && (
@@ -274,33 +273,6 @@ const PDFContainer = ({
                         {...props}
                     />
                 )}
-=======
-        <div style={{ background: '#f6f6f6' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', border: '1px solid #dbdbdb' }}>
-                {!redacted && <SideBar
-                    isTemplateView={isTemplateView}
-                    triggerAddKeyPair={triggerAddKeyPair}
-                    setTriggerAddKeyPair={setTriggerAddKeyPair}
-                    availableKeyPairs={availableKeyPairs}
-                    refresh={refresh}
-                    isCompleted={isCompleted}
-                    artifactData={artifactData}
-                    isLoading={isLoading}
-                    shouldScrollSidebar={shouldScrollSidebar}
-                    setShouldScrollSidebar={setShouldScrollSidebar}
-                    shouldScrollPDF={shouldScrollPDF}
-                    setShouldScrollPDF={setShouldScrollPDF}
-                    selectedHighLights={selectedHighLights}
-                    setSelectedHighLights={setSelectedHighLights}
-                    setSearch={setSearch}
-                    search={search}
-                    globalHeight={globalHeight}
-                    height={pageHeight}
-                    highlights={currentPageHighlights}
-                    toggleValue={toggleValue}
-                    {...props}
-                />}
->>>>>>> a4679cb08ef8d1443e1c80b67aac916fbda056fd
 
                 <div style={{ padding: 0, overflow: 'hidden', width: '100%' }} flex={3}>
                     <div style={{ height: globalHeight, position: 'relative', background: 'white' }}>
@@ -400,7 +372,6 @@ const PDFContainer = ({
                                     </FlexRowDiv>
                                 </div>
                             </div>
-<<<<<<< HEAD
     
                             <div style={{
                                 height: 'calc(100% - 75px)',
@@ -408,20 +379,6 @@ const PDFContainer = ({
                                 filter: 'drop-shadow(0px 0px 15px silver)',
                                 margin: 10,
                                 padding: 10,
-=======
-                        </div>
-
-                        <div style={{
-                            // height: 'calc(100% - 75px)',
-                            overflow: 'auto',
-                            filter: `drop-shadow(0px 0px 15px silver)`,
-                            margin: 10,
-                            padding: 10,
-                            display: 'flex',
-                            // minHeight: 400
-                        }}>
-                            <div ref={PageWrapper} style={{
->>>>>>> a4679cb08ef8d1443e1c80b67aac916fbda056fd
                                 display: 'flex',
                                 minHeight: 400
                             }}>
