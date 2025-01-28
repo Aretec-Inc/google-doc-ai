@@ -26,8 +26,8 @@ const NestedListItem = ({
     const key_pair = fieldName?.key_pair || fieldValue?.key_pair;
     const confidence = round(parseFloat(fieldValue?.key_pair?.confidence) * 100);
     const gt_value = fieldValue?.key_pair?.gt_value;
-    const additionalFontStyle = { color: 'white', fontWeight: 'bold' };
-    const additionalStyles = isCurrentlyHighlighted ? { background: '#d93025', ...additionalFontStyle } : {};
+    const additionalFontStyle = { color: '#1677ff', fontWeight: 'bold' };
+    const additionalStyles = isCurrentlyHighlighted ? { border:'1px solid #1677ff', ...additionalFontStyle } : {};
 
     const indentStyle = {
         paddingLeft: `${level * 10}px`,
@@ -100,7 +100,7 @@ const NestedListItem = ({
                                     <Tooltip title={fieldName?.content?.text?.split('/').pop() || fieldName?.content?.text}>
                                         <span
                                             style={{
-                                                ...(isCurrentlyHighlighted && { color: '#f5f5f5' }),
+                                                ...(isCurrentlyHighlighted && { color: '#1677ff' }),
                                                 flex: '1 1 45%',
                                                 ...wrappingTextStyle
                                             }}
@@ -174,12 +174,12 @@ const NestedListItem = ({
                         style={{ padding: 4 }}
                         onClick={() => showEditDialog(key_pair)}
                     >
-                        <Edit style={isCurrentlyHighlighted ? { color: 'white' } : null} />
+                        <Edit style={isCurrentlyHighlighted ? { color: '#1677ff' } : null} />
                     </IconButton>
                 ) : (
                     <CheckCircle
                         color='green'
-                        style={{ color: isCurrentlyHighlighted ? 'white' : '#0F9D58' }}
+                        style={{ color: isCurrentlyHighlighted ? '#1677ff' : '#0F9D58' }}
                     />
                 )}
             </div>
