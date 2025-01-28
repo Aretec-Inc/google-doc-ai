@@ -1,3 +1,5 @@
+
+// SelectedCardData.jsx
 import { Table, Tabs } from 'antd';
 import { X } from 'lucide-react';
 import React, { useState } from 'react';
@@ -11,128 +13,162 @@ import './SelectedCardData.css';
 const { TabPane } = Tabs;
 
 // Business Rules Table Component
-const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2" }) => {
-    const columns = activeTab === "1" ? {
-        // HITL columns
-        columns: [
+const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", onFieldClick }) => {
+    // Transform HITL data for horizontal layout (fields as columns)
+    const transformHitlDataToHorizontal = (data) => {
+        // Filter odd-numbered rows first
+        const filteredData = data.filter((_, index) => index % 2 === 0);
+
+        // Define column structure
+        const columns = [
             {
                 title: 'Field Name',
-                dataIndex: 'content',
-                key: 'content',
-                width: '30%',
-                render: (content) => (
-                    <span className="text-xs p-1 block">
-                        {content?.text?.split('/').pop() || content?.text || 'No text available'}
-                    </span>
+                dataIndex: 'fieldName',
+                key: 'fieldName',
+                width: '25%',
+                render: (text, record) => (
+                    <div className="min-h-[40px] py-2 px-2">
+                        <button
+                            onClick={() => onFieldClick && onFieldClick(record)}
+                            className="text-xs break-words whitespace-normal text-blue-600 hover:underline text-left"
+                        >
+                            {text || '-'}
+                        </button>
+                    </div>
                 )
             },
             {
                 title: 'Confidence',
                 dataIndex: 'confidence',
                 key: 'confidence',
-                width: '20%',
-                render: (_, record) => {
-                    const confidence = Number(
-                        record?.key_pair?.confidence ||
-                        record?.confidence ||
-                        record?.score
-                    ) || 0;
-                    return (
-                        <span className="text-xs p-1 block">
-                            {(confidence * 100).toFixed(1)}%
+                width: '15%',
+                render: (value) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
+                            {value}
                         </span>
-                    );
-                }
-            },
-            {
-                title: 'Suggested Value',
-                dataIndex: 'expected_value',
-                key: 'expected_value',
-                width: '25%',
-                render: (_, record) => (
-                    <span className="text-xs p-1 block">
-                        {record?.key_pair?.expected_value || record?.expected_value || '-'}
-                    </span>
-                )
-            },
-            {
-                title: 'Extracted Value',
-                dataIndex: 'field_value',
-                key: 'field_value',
-                width: '25%',
-                render: (_, record) => (
-                    <span className="text-xs p-1 block">
-                        {record?.key_pair?.field_value || record?.field_value || '-'}
-                    </span>
+                    </div>
                 )
             },
             {
                 title: 'Potential Issue',
-                dataIndex: 'potential_issue',
-                key: 'potential_issue',
-                width: '25%',
-                render: (_, record) => (
-                    <span className="text-xs p-1 block text-red-500">
-                        {record?.key_pair?.potential_issue || record?.potential_issue || '-'}
-                    </span>
+                dataIndex: 'potentialIssue',
+                key: 'potentialIssue',
+                width: '20%',
+                render: (text) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
+                            {text || '-'}
+                        </span>
+                    </div>
                 )
             },
-        ]
-    }
-        : {
-            // Business Rules columns
-            columns: [
-                {
-                    title: 'Business Rule',
-                    dataIndex: 'business_rule',
-                    key: 'business_rule',
-                    width: '45%',
-                    render: (text) => (
-                        <span className="text-xs p-1 block">
+            {
+                title: 'Expected Value',
+                dataIndex: 'expectedValue',
+                key: 'expectedValue',
+                width: '20%',
+                render: (text) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
+                            {text || '-'}
+                        </span>
+                    </div>
+                )
+            },
+            {
+                title: 'Extracted Value',
+                dataIndex: 'extractedValue',
+                key: 'extractedValue',
+                width: '20%',
+                render: (text) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
+                            {text || '-'}
+                        </span>
+                    </div>
+                )
+            }
+        ];
+
+        // Transform data into rows
+        const rows = filteredData.map((record, index) => ({
+            key: index,
+            fieldName: record.content?.text?.split('/').pop() || record.content?.text || 'No text available',
+            confidence: `${(Number(record?.key_pair?.confidence || record?.confidence || record?.score) * 100 || 0).toFixed(1)}%`,
+            potentialIssue: record?.key_pair?.potential_issue || record?.potential_issue || '-',
+            expectedValue: record?.key_pair?.gt_value || record?.gt_value || '-',
+            extractedValue: record?.key_pair?.field_value || record?.field_value || '-',
+            // Store original record data for click handler
+            originalData: record
+        }));
+
+        return { columns, rows };
+    };
+
+    const hitlLayout = transformHitlDataToHorizontal(hitlData);
+
+    const businessRulesColumns = {
+        columns: [
+            {
+                title: 'Business Rule',
+                dataIndex: 'business_rule',
+                key: 'business_rule',
+                width: '45%',
+                render: (text) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
                             {text}
                         </span>
-                    )
-                },
-                {
-                    title: 'Status',
-                    dataIndex: 'rule_satisfied',
-                    key: 'rule_satisfied',
-                    width: '15%',
-                    align: 'center',
-                    render: (satisfied) => (
-                        <span className={`text-xs font-bold p-1 block ${satisfied ? 'text-green-500' : 'text-red-500'}`}>
+                    </div>
+                )
+            },
+            {
+                title: 'Status',
+                dataIndex: 'rule_satisfied',
+                key: 'rule_satisfied',
+                width: '15%',
+                align: 'center',
+                render: (satisfied) => (
+                    <div className="min-h-[40px] flex items-center justify-center">
+                        <span className={`text-xs font-bold p-2 ${satisfied ? 'text-green-500' : 'text-red-500'}`}>
                             {satisfied ? 'Passed' : 'Failed'}
                         </span>
-                    )
-                },
-                {
-                    title: 'Reasoning',
-                    dataIndex: 'reason',
-                    key: 'reason',
-                    width: '40%',
-                    render: (reason) => (
-                        <span className="text-xs p-1 block">
+                    </div>
+                )
+            },
+            {
+                title: 'Reasoning',
+                dataIndex: 'reason',
+                key: 'reason',
+                width: '40%',
+                render: (reason) => (
+                    <div className="min-h-[40px] flex items-center">
+                        <span className="text-xs p-2">
                             {reason || '-'}
                         </span>
-                    )
-                }
-            ]
-        };
+                    </div>
+                )
+            }
+        ]
+    };
 
     return (
         <Table
             size="small"
-            columns={columns.columns}
-            dataSource={activeTab === "1" ? hitlData : rules}
+            columns={activeTab === "1" ? hitlLayout.columns : businessRulesColumns.columns}
+            dataSource={activeTab === "1" ? hitlLayout.rows : rules}
             loading={loading}
             pagination={false}
-            scroll={{ y: 'calc(100vh - 230px)' }}
-            rowKey={(record) => record.key || record.id}
+            scroll={(activeTab === "1" && hitlData.length > 20) || (activeTab === "2" && rules.length > 20) 
+                ? { y: 'calc(100vh - 230px)' } 
+                : false}
+            rowKey={(record) => record.key}
+            className="hitl-table"
         />
     );
 };
 
-// Business Rules Drawer Component
 // Business Rules Drawer Component
 const BusinessRulesDrawer = ({
     isOpen,
@@ -141,11 +177,26 @@ const BusinessRulesDrawer = ({
     loading,
     setIsDrawerOpen,
     activeTab = "2",
-    onTabChange
+    onTabChange,
+    onHighlightField
 }) => {
     if (!isOpen) return null;
 
-    console.log("HITL DATA===>", hitlData)
+    const handleFieldClick = (record) => {
+        if (record.originalData) {
+            // Highlight the field in the PDF
+            if (onHighlightField) {
+                onHighlightField(record.originalData);
+            }
+
+            // Find and scroll to the corresponding element
+            const element = document.querySelector(`[data-content-text="${record.fieldName}"]`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    };
+
     return (
         <div className="absolute right-0 top-0 bottom-0 w-4/12 bg-white border-l border-gray-200 overflow-y-hidden mb-10">
             <div className="sticky top-0 bg-white flex justify-between items-center"
@@ -153,7 +204,7 @@ const BusinessRulesDrawer = ({
                 <Tabs
                     activeKey={activeTab}
                     onChange={onTabChange}
-                    className="w-full "
+                    className="w-full"
                     size="small"
                 >
                     <TabPane tab="Intelligent HITL" key="1" />
@@ -166,12 +217,13 @@ const BusinessRulesDrawer = ({
                     <X size={20} className="text-gray-600" />
                 </button>
             </div>
-            <div className="pt-0 bussinessSection">
+            <div className="pt-0">
                 {activeTab === "1" ? (
                     <BusinessRulesTable
                         hitlData={hitlData}
                         loading={loading}
                         activeTab="1"
+                        onFieldClick={handleFieldClick}
                     />
                 ) : (
                     <BusinessRulesTable
@@ -230,6 +282,7 @@ const SelectedCardData = ({
     const [drawerLoading, setDrawerLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("2");
     const [hitlData, setHitlData] = useState([]);
+    const [selectedHighlight, setSelectedHighlight] = useState(null);
     const dispatch = useDispatch();
 
     // Function to handle HITL data from PDF viewer
@@ -252,6 +305,24 @@ const SelectedCardData = ({
             setIsDrawerOpen(true);
         } else {
             setIsDrawerOpen(false);
+        }
+    };
+
+    // Handle field highlight from table click
+    const handleHighlightField = (fieldData) => {
+        setSelectedHighlight(fieldData);
+        
+        // Find the corresponding element in PDF and scroll to it
+        if (fieldData?.coordinates) {
+            const pdfContainer = document.querySelector('.pdf-container');
+            if (pdfContainer) {
+                const scaleFactor = pdfContainer.getBoundingClientRect().width / fieldData.pageWidth;
+                const scrollTop = fieldData.coordinates.y * scaleFactor - 100; // 100px offset for better visibility
+                pdfContainer.scrollTo({
+                    top: scrollTop,
+                    behavior: 'smooth'
+                });
+            }
         }
     };
 
@@ -288,7 +359,6 @@ const SelectedCardData = ({
         }
     };
 
-    console.log("ARTFUICAT", artifactData)
     return (
         <div>
             <div className="flex justify-between items-center w-full mt-14">
@@ -306,9 +376,8 @@ const SelectedCardData = ({
                         setIsDrawerOpen={setIsDrawerOpen}
                         setRulesResults={setRulesResults}
                         setDrawerLoading={setDrawerLoading}
-                        onSetActiveTab={setActiveTab}  // Add this new prop
+                        onSetActiveTab={setActiveTab}
                     />
-
                 </div>
             </div>
 
@@ -322,6 +391,7 @@ const SelectedCardData = ({
                                 enableShadow
                                 artifactData={selectedCard}
                                 onHITLToggle={handleHITLData}
+                                selectedHighlight={selectedHighlight}
                                 {...props}
                             />
                         </div>
@@ -334,13 +404,14 @@ const SelectedCardData = ({
                         loading={drawerLoading}
                         setIsDrawerOpen={(open) => {
                             setIsDrawerOpen(open);
-                            // When drawer is closed, reset active tab to 2
                             if (!open) {
                                 setActiveTab("2");
+                                setSelectedHighlight(null);
                             }
                         }}
                         activeTab={activeTab}
                         onTabChange={handleTabChange}
+                        onHighlightField={handleHighlightField}
                     />
                 </div>
             </div>
