@@ -1,4 +1,3 @@
-
 // SelectedCardData.jsx
 import { Table, Tabs } from 'antd';
 import { X } from 'lucide-react';
@@ -13,7 +12,8 @@ import './SelectedCardData.css';
 const { TabPane } = Tabs;
 
 // Business Rules Table Component
-const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", onFieldClick }) => {
+// BusinessRulesTable Component
+const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", onFieldClick, onFieldHighlight }) => {
     // Transform HITL data for horizontal layout (fields as columns)
     const transformHitlDataToHorizontal = (data) => {
         // Filter odd-numbered rows first
@@ -29,8 +29,12 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 render: (text, record) => (
                     <div className="min-h-[40px] py-2 px-2">
                         <button
-                            onClick={() => onFieldClick && onFieldClick(record)}
-                            className="text-xs break-words whitespace-normal text-blue-600 hover:underline text-left"
+                            onClick={() => {
+                                onFieldClick && onFieldClick(record);
+                                onFieldHighlight && onFieldHighlight(text);
+                            }}
+                            className="text-xs break-words whitespace-normal text-blue-600 hover:underline text-left w-full"
+                            data-content-text={text}
                         >
                             {text || '-'}
                         </button>
@@ -44,7 +48,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 width: '15%',
                 render: (value) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <span className="text-xs p-2 break-words whitespace-normal">
                             {value}
                         </span>
                     </div>
@@ -55,11 +59,17 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 dataIndex: 'potentialIssue',
                 key: 'potentialIssue',
                 width: '20%',
-                render: (text) => (
+                render: (text, record) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <button
+                            onClick={() => {
+                                onFieldClick && onFieldClick(record);
+                                onFieldHighlight && onFieldHighlight(record.fieldName);
+                            }}
+                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
+                        >
                             {text || '-'}
-                        </span>
+                        </button>
                     </div>
                 )
             },
@@ -68,11 +78,17 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 dataIndex: 'expectedValue',
                 key: 'expectedValue',
                 width: '20%',
-                render: (text) => (
+                render: (text, record) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <button
+                            onClick={() => {
+                                onFieldClick && onFieldClick(record);
+                                onFieldHighlight && onFieldHighlight(record.fieldName);
+                            }}
+                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
+                        >
                             {text || '-'}
-                        </span>
+                        </button>
                     </div>
                 )
             },
@@ -81,27 +97,35 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 dataIndex: 'extractedValue',
                 key: 'extractedValue',
                 width: '20%',
-                render: (text) => (
+                render: (text, record) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <button
+                            onClick={() => {
+                                onFieldClick && onFieldClick(record);
+                                onFieldHighlight && onFieldHighlight(record.fieldName);
+                            }}
+                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
+                        >
                             {text || '-'}
-                        </span>
+                        </button>
                     </div>
                 )
             }
         ];
 
         // Transform data into rows
-        const rows = filteredData.map((record, index) => ({
-            key: index,
-            fieldName: record.content?.text?.split('/').pop() || record.content?.text || 'No text available',
-            confidence: `${(Number(record?.key_pair?.confidence || record?.confidence || record?.score) * 100 || 0).toFixed(1)}%`,
-            potentialIssue: record?.key_pair?.potential_issue || record?.potential_issue || '-',
-            expectedValue: record?.key_pair?.gt_value || record?.gt_value || '-',
-            extractedValue: record?.key_pair?.field_value || record?.field_value || '-',
-            // Store original record data for click handler
-            originalData: record
-        }));
+        const rows = filteredData.map((record, index) => {
+            const fieldName = record.content?.text?.split('/').pop() || record.content?.text || 'No text available';
+            return {
+                key: index,
+                fieldName: fieldName,
+                confidence: `${(Number(record?.key_pair?.confidence || record?.confidence || record?.score) * 100 || 0).toFixed(1)}%`,
+                potentialIssue: record?.key_pair?.potential_issue || record?.potential_issue || '-',
+                expectedValue: record?.key_pair?.gt_value || record?.gt_value || '-',
+                extractedValue: record?.key_pair?.field_value || record?.field_value || '-',
+                originalData: record
+            };
+        });
 
         return { columns, rows };
     };
@@ -117,7 +141,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 width: '45%',
                 render: (text) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <span className="text-xs p-2 break-words whitespace-normal">
                             {text}
                         </span>
                     </div>
@@ -144,7 +168,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                 width: '40%',
                 render: (reason) => (
                     <div className="min-h-[40px] flex items-center">
-                        <span className="text-xs p-2">
+                        <span className="text-xs p-2 break-words whitespace-normal">
                             {reason || '-'}
                         </span>
                     </div>
@@ -170,6 +194,7 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
 };
 
 // Business Rules Drawer Component
+// BusinessRulesDrawer Component
 const BusinessRulesDrawer = ({
     isOpen,
     rules,
@@ -178,7 +203,8 @@ const BusinessRulesDrawer = ({
     setIsDrawerOpen,
     activeTab = "2",
     onTabChange,
-    onHighlightField
+    onHighlightField,
+    onNestedListHighlight
 }) => {
     if (!isOpen) return null;
 
@@ -189,10 +215,37 @@ const BusinessRulesDrawer = ({
                 onHighlightField(record.originalData);
             }
 
-            // Find and scroll to the corresponding element
-            const element = document.querySelector(`[data-content-text="${record.fieldName}"]`);
+            // Highlight in NestedListItem using the field name from original data
+            if (onNestedListHighlight) {
+                const fieldText = record.originalData.content?.text?.split('/').pop() || 
+                                record.originalData.content?.text;
+                onNestedListHighlight(fieldText);
+            }
+
+            // Enhanced scroll behavior with fallback
+            const fieldText = record.originalData.content?.text?.split('/').pop() || 
+                            record.originalData.content?.text;
+            
+            const element = document.querySelector(`[data-content-text="${fieldText}"]`);
             if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Try to scroll the closest scrollable parent
+                let scrollParent = element.closest('.overflow-auto, .overflow-y-auto');
+                if (!scrollParent) {
+                    scrollParent = element.parentElement;
+                }
+                
+                if (scrollParent) {
+                    const elementRect = element.getBoundingClientRect();
+                    const parentRect = scrollParent.getBoundingClientRect();
+                    const scrollOffset = elementRect.top - parentRect.top - (parentRect.height / 2) + (elementRect.height / 2);
+                    
+                    scrollParent.scrollBy({
+                        top: scrollOffset,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }
         }
     };
@@ -217,13 +270,23 @@ const BusinessRulesDrawer = ({
                     <X size={20} className="text-gray-600" />
                 </button>
             </div>
-            <div className="pt-0 bussinessSection">
+            <div className="pt-0">
                 {activeTab === "1" ? (
                     <BusinessRulesTable
                         hitlData={hitlData}
                         loading={loading}
                         activeTab="1"
                         onFieldClick={handleFieldClick}
+                        onFieldHighlight={(fieldName) => {
+                            // Find the original record by field name
+                            const record = hitlData.find(item => {
+                                const itemFieldName = item.content?.text?.split('/').pop() || item.content?.text;
+                                return itemFieldName === fieldName;
+                            });
+                            if (record) {
+                                onNestedListHighlight && onNestedListHighlight(fieldName);
+                            }
+                        }}
                     />
                 ) : (
                     <BusinessRulesTable
@@ -283,9 +346,9 @@ const SelectedCardData = ({
     const [activeTab, setActiveTab] = useState("2");
     const [hitlData, setHitlData] = useState([]);
     const [selectedHighlight, setSelectedHighlight] = useState(null);
+    const [highlightedFieldName, setHighlightedFieldName] = useState(null);
     const dispatch = useDispatch();
 
-    // Function to handle HITL data from PDF viewer
     const handleHITLData = (checked, highlights) => {
         if (checked) {
             const processedHitlData = highlights.reduce((acc, curr) => {
@@ -308,22 +371,25 @@ const SelectedCardData = ({
         }
     };
 
-    // Handle field highlight from table click
     const handleHighlightField = (fieldData) => {
         setSelectedHighlight(fieldData);
         
-        // Find the corresponding element in PDF and scroll to it
         if (fieldData?.coordinates) {
             const pdfContainer = document.querySelector('.pdf-container');
             if (pdfContainer) {
                 const scaleFactor = pdfContainer.getBoundingClientRect().width / fieldData.pageWidth;
-                const scrollTop = fieldData.coordinates.y * scaleFactor - 100; // 100px offset for better visibility
+                const scrollTop = fieldData.coordinates.y * scaleFactor - 100;
                 pdfContainer.scrollTo({
                     top: scrollTop,
                     behavior: 'smooth'
                 });
             }
         }
+    };
+
+    const handleNestedListHighlight = (fieldName) => {
+        setHighlightedFieldName(fieldName);
+        setTimeout(() => setHighlightedFieldName(null), 3000);
     };
 
     const handleTabChange = (newTab) => {
@@ -359,6 +425,7 @@ const SelectedCardData = ({
         }
     };
 
+    // Continuation of SelectedCardData.jsx
     return (
         <div>
             <div className="flex justify-between items-center w-full mt-14">
@@ -392,6 +459,7 @@ const SelectedCardData = ({
                                 artifactData={selectedCard}
                                 onHITLToggle={handleHITLData}
                                 selectedHighlight={selectedHighlight}
+                                highlightedFieldName={highlightedFieldName}
                                 {...props}
                             />
                         </div>
@@ -407,11 +475,13 @@ const SelectedCardData = ({
                             if (!open) {
                                 setActiveTab("2");
                                 setSelectedHighlight(null);
+                                setHighlightedFieldName(null);
                             }
                         }}
                         activeTab={activeTab}
                         onTabChange={handleTabChange}
                         onHighlightField={handleHighlightField}
+                        onNestedListHighlight={handleNestedListHighlight}
                     />
                 </div>
             </div>
