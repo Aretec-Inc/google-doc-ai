@@ -103,7 +103,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
         <div
             style={{
                 // filter: enableShadow ? `drop-shadow(0px 0px 10px silver)` : 'unset',
-                ...openInModal ? {} : { maxWidth }
+                ...openInModal ? {} : { maxWidth },
             }}>
             <div style={{ display: 'none', flexDirection: 'row', borderBottom: `.5px solid silver`, background: 'white' }}>
                 <div style={{ width: '100%' }}>
@@ -119,6 +119,7 @@ const PdfHightlighter = ({ enableShadow, isTemplateView, maxWidth = '100vw', ...
                 <PDFContainer
                     isTemplateView={isTemplateView}
                     availableKeyPairs={availableKeyPairs}
+                    key_pairs={key_pairs}
                     refresh={getData}
                     isCompleted={artifactData?.is_completed}
                     artifactData={artifactData}

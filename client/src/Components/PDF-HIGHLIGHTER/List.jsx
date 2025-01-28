@@ -38,6 +38,7 @@ const VirtualizedList = ({
     setTriggerAddKeyPair,
     width,
     availableKeyPairs,
+    key_pairs,
     highlights = [],
     setSelectedHighLights,
     selectedHighLights,
@@ -338,7 +339,7 @@ const VirtualizedList = ({
     };
 
     return (
-        <div style={{ overflow: 'auto', overflowX: 'hidden', height, width, padding:'0px 10px' }}>
+        <div style={{ overflow: 'auto', overflowX: 'hidden', height, width, padding: '0px 10px' }}>
             {renderContent()}
             {Boolean(showDialog && isCurrentlyFormFields && selectEditHighlight) && (
                 <DialogEdit
@@ -360,6 +361,7 @@ VirtualizedList.propTypes = {
     triggerAddKeyPair: PropTypes.bool,
     setTriggerAddKeyPair: PropTypes.func,
     availableKeyPairs: PropTypes.array,
+    key_pairs: PropTypes.array,
     highlights: PropTypes.array,
     setSelectedHighLights: PropTypes.func,
     selectedHighLights: PropTypes.array,

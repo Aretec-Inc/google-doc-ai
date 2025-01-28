@@ -17,7 +17,7 @@ import LongClickButton from '../LongClickButton';
 import SideBar from './NewSidebar';
 import PDF from './PDF';
 import './pdf.css';
-const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, redacted, ...props }) => {
+const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex, file_address, isLoading, artifactData, refresh, isCompleted, key_pairs, redacted, ...props }) => {
 
     const PageWrapper = useRef(null)
     const history = useNavigate()
@@ -214,40 +214,42 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     let faltuArray = new Array(numPages).fill(1)
 
     return (
-        <div style={{ background: '#f6f6f6' }}>
+        <div style={{ background: 'white' }}>
             <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', border: '1px solid #dbdbdb' }}>
-                {!redacted && <SideBar
-                    isTemplateView={isTemplateView}
-                    triggerAddKeyPair={triggerAddKeyPair}
-                    setTriggerAddKeyPair={setTriggerAddKeyPair}
-                    availableKeyPairs={availableKeyPairs}
-                    refresh={refresh}
-                    isCompleted={isCompleted}
-                    artifactData={artifactData}
-                    isLoading={isLoading}
-                    shouldScrollSidebar={shouldScrollSidebar}
-                    setShouldScrollSidebar={setShouldScrollSidebar}
-                    shouldScrollPDF={shouldScrollPDF}
-                    setShouldScrollPDF={setShouldScrollPDF}
-                    selectedHighLights={selectedHighLights}
-                    setSelectedHighLights={setSelectedHighLights}
-                    setSearch={setSearch}
-                    search={search}
-                    globalHeight={globalHeight}
-                    height={pageHeight}
-                    highlights={currentPageHighlights}
-                    toggleValue={toggleValue}
-                    {...props}
-                />}
+                {!redacted &&
+                    <SideBar
+                        isTemplateView={isTemplateView}
+                        triggerAddKeyPair={triggerAddKeyPair}
+                        setTriggerAddKeyPair={setTriggerAddKeyPair}
+                        availableKeyPairs={availableKeyPairs}
+                        key_pairs={key_pairs}
+                        refresh={refresh}
+                        isCompleted={isCompleted}
+                        artifactData={artifactData}
+                        isLoading={isLoading}
+                        shouldScrollSidebar={shouldScrollSidebar}
+                        setShouldScrollSidebar={setShouldScrollSidebar}
+                        shouldScrollPDF={shouldScrollPDF}
+                        setShouldScrollPDF={setShouldScrollPDF}
+                        selectedHighLights={selectedHighLights}
+                        setSelectedHighLights={setSelectedHighLights}
+                        setSearch={setSearch}
+                        search={search}
+                        globalHeight={globalHeight}
+                        height={pageHeight}
+                        highlights={currentPageHighlights}
+                        toggleValue={toggleValue}
+                        {...props}
+                    />}
 
-                <div style={{ padding: 0, overflow: 'hidden', width: '100%' }} flex={3}>
+                <div style={{ paddingTop: '9.6px', overflow: 'hidden', width: '100%' }} flex={3}>
                     <div style={{
                         height: globalHeight,
                         position: 'relative',
                         background: 'white'
                     }}>
                         <div>
-                            <div style={{ marginBottom: 0 }} className='ParentFunctionsDiv' >
+                            <div style={{ marginBottom: 0, }} className='ParentFunctionsDiv' >
                                 <FlexRowDiv style={{ justifyContent: 'space-between' }} >
                                     <FlexRowDiv>
                                         <LongClickButton
@@ -379,6 +381,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                                     setTriggerAddKeyPair={setTriggerAddKeyPair}
                                     refresh={refresh}
                                     availableKeyPairs={availableKeyPairs}
+                                    key_pairs={key_pairs}
                                     artifactData={artifactData}
                                     heightDiffPercent={heightDiffPercent ? heightDiffPercent : 29}
                                     shouldScrollSidebar={shouldScrollSidebar}

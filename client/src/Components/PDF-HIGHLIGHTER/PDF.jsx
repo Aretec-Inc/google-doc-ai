@@ -182,6 +182,7 @@ const PDFTEST = ({
   setTriggerAddKeyPair,
   isTemplateView,
   availableKeyPairs,
+  key_pairs,
   refresh,
   artifactData,
   file_address,
@@ -382,7 +383,7 @@ const PDFTEST = ({
   };
 
   return (
-    <div ref={containerRef} className="relative" style={{ overflow: 'auto', height:'calc(100vh - 327px)', display: 'flex', justifyContent: 'center' }}>
+    <div ref={containerRef} className="relative" style={{ overflow: 'auto', height: 'calc(100vh - 327px)', display: 'flex', justifyContent: 'center' }}>
       <Document
         file={file_address}
         style={{ overflow: 'auto' }}
@@ -556,6 +557,7 @@ PDFTEST.propTypes = {
   triggerAddKeyPair: PropTypes.bool,
   setTriggerAddKeyPair: PropTypes.func,
   availableKeyPairs: PropTypes.array,
+  key_pairs: PropTypes.array,
   refresh: PropTypes.func,
   artifactData: PropTypes.object,
   toggleValue: PropTypes.bool,
