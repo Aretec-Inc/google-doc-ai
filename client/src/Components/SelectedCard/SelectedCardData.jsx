@@ -92,25 +92,25 @@ const BusinessRulesTable = ({ rules, loading, hitlData = [], activeTab = "2", on
                     </div>
                 )
             },
-            {
-                title: 'Extracted Value',
-                dataIndex: 'extractedValue',
-                key: 'extractedValue',
-                width: '20%',
-                render: (text, record) => (
-                    <div className="min-h-[40px] flex items-center">
-                        <button
-                            onClick={() => {
-                                onFieldClick && onFieldClick(record);
-                                onFieldHighlight && onFieldHighlight(record.fieldName);
-                            }}
-                            className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
-                        >
-                            {text || '-'}
-                        </button>
-                    </div>
-                )
-            }
+            // {
+            //     title: 'Extracted Value',
+            //     dataIndex: 'extractedValue',
+            //     key: 'extractedValue',
+            //     width: '20%',
+            //     render: (text, record) => (
+            //         <div className="min-h-[40px] flex items-center">
+            //             <button
+            //                 onClick={() => {
+            //                     onFieldClick && onFieldClick(record);
+            //                     onFieldHighlight && onFieldHighlight(record.fieldName);
+            //                 }}
+            //                 className="text-xs p-2 break-words whitespace-normal text-left w-full hover:text-blue-600"
+            //             >
+            //                 {text || '-'}
+            //             </button>
+            //         </div>
+            //     )
+            // }
         ];
 
         // Transform data into rows
