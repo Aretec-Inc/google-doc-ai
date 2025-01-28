@@ -223,8 +223,8 @@ const generateDataFromBigQuery = (req, res) => {
     return new Promise(async (resolve, reject) => {
         const file_name = req?.query?.file_name || req?.query?.file_name || req?.body?.file_name
         const sqlQuery_pdf_documents = `SELECT * FROM ${schema}.pdf_documents WHERE file_name='${file_name}'`
-        const sqlQuery_form_key_pair = `SELECT * FROM ${schema}.schema_form_key_pairs WHERE file_name='${file_name}' order by value_y1 asc`
-        const sqlQuery_gt_form_key_pair = `SELECT * FROM ${schema}.gt_schema_form_key_pair WHERE file_name='${file_name}' order by value_y1 asc`
+        const sqlQuery_form_key_pair = `SELECT * FROM ${schema}.schema_form_key_pairs WHERE file_name='${file_name}' order by field_name asc, value_y1 asc`
+        const sqlQuery_gt_form_key_pair = `SELECT * FROM ${schema}.gt_schema_form_key_pair WHERE file_name='${file_name}' order by field_name asc, value_y1 asc`
         const sqlQuery_pdf_pages = `SELECT * FROM ${schema}.pdf_pages WHERE file_name='${file_name}'`
 
         let queries = [runQuery(postgresDB, sqlQuery_pdf_documents), runQuery(postgresDB, sqlQuery_form_key_pair), runQuery(postgresDB, sqlQuery_gt_form_key_pair), runQuery(postgresDB, sqlQuery_pdf_pages)]
