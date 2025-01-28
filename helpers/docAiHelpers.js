@@ -46,7 +46,7 @@ async function downloadFromGCS(gcsUrl) {
 async function pollGoogleStorageUrl(gsUrl) {
   // Configuration
   const POLL_INTERVAL = 5000; // 5 seconds
-  const TIMEOUT = 120000; // 2 minutes
+  const TIMEOUT = 300000; // 5 minutes
   const startTime = Date.now();
 
   // Parse bucket and filename from gsUrl
