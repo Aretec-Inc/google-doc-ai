@@ -202,6 +202,7 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
     }
 
     const handleToggleHITLChange = (checked) => {
+        setScale(minZoom)
         setToggleValueHITL(checked);
         // Pass the event up to SelectedCardData
         if (props.onHITLToggle) {
@@ -354,6 +355,8 @@ const PDFContainer = ({ availableKeyPairs, isTemplateView, highlights, tabIndex,
                             margin: 10,
                             padding: 10,
                             display: 'flex',
+                            overflow: 'auto', 
+                            height:'calc(100vh - 327px)',
                             // minHeight: 400
                         }}>
                             <div ref={PageWrapper} style={{

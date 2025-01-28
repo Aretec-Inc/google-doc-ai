@@ -382,7 +382,7 @@ const PDFTEST = ({
   };
 
   return (
-    <div ref={containerRef} className="relative" style={{ overflow: 'auto', height:'calc(100vh - 327px)', display: 'flex', justifyContent: 'center' }}>
+    <div ref={containerRef} className="relative" style={{ display: 'flex', justifyContent: 'center' }}>
       <Document
         file={file_address}
         style={{ overflow: 'auto' }}

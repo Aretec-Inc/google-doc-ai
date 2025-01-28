@@ -86,7 +86,7 @@ return (
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
-            padding: '4px 10px',
+            padding: '0px 0px',
             width: '100%',
             ...indentStyle,
             boxSizing: 'border-box',
@@ -94,7 +94,7 @@ return (
             fontSize: '12px',
             minHeight: '40px',
             transition: 'all 0.3s ease-in-out',
-            margin: shouldHighlight ? '4px 0' : '0',
+            margin: '0',
             position: 'relative'
         }}
         button
@@ -109,6 +109,7 @@ return (
                 Button={(props) => (
                     <div
                         style={{
+                            padding:'4px 10px',
                             display: 'flex',
                             width: '100%',
                             overflow: 'visible',
