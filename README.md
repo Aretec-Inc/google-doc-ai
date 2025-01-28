@@ -166,3 +166,6 @@ yarn dev-cloud
 ## Frontend
 cd client
 yarn start-client
+
+## 
+gcloud builds submit --machine-type=n1-highcpu-8 --tag gcr.io/ldh-bot-rwec/irs-doc-ai  
