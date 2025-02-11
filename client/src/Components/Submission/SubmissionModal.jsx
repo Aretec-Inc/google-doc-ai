@@ -276,19 +276,7 @@ const CreateSubmission = (props) => {
 
     const customProcessorList = [
         {
-            displayName: "Form 941",
-            id: "478e2c892dc83bbc",
-            state: "ENABLED",
-            type: "FORM_PARSER_PROCESSOR"
-        },
-        {
-            displayName: "Form 941 Schedule B",
-            id: "478e2c892dc83bbc",
-            state: "ENABLED",
-            type: "FORM_PARSER_PROCESSOR"
-        },
-        {
-            displayName: "Form 941 Schedule R",
+            displayName: "HCBS FORM 2",
             id: "478e2c892dc83bbc",
             state: "ENABLED",
             type: "FORM_PARSER_PROCESSOR"
