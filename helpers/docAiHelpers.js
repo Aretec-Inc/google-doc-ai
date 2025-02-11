@@ -428,7 +428,7 @@ const docAI = ({
           document = json_file;
           gtDocument = gt_json_file || {};
         } else {
-          let custom_docai = true;
+          let custom_docai = false;
           let destination_url = "";
           let destination_json_url = "";
           if (processorName == "Form 941") {
