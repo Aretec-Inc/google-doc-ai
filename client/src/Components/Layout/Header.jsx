@@ -278,11 +278,11 @@ const Header = ({ setToggleHeader }) => {
                 onClick={(event) => {
                   event.preventDefault();
                   window.open(
-                    "https://hitl-console-779369970183.us-central1.run.app/dashboard",
+                    "https://hitl-opwdd-779369970183.us-central1.run.app/dashboard",
                     "_blank"
                   );
                 }}
-                to="https://hitl-console-779369970183.us-central1.run.app/dashboard"
+                to="https://hitl-opwdd-779369970183.us-central1.run.app/dashboard"
                 className="ml-6 py-3 text-white hover:bg-[#003478]"
               >
                 Business Rules Console
