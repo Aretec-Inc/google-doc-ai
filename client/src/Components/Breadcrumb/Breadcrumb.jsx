@@ -31,7 +31,7 @@ const Breadcrumb = () => {
   if (pathnames.length === 0) return null;
 
   return (
-    <nav className="flex items-center h-8" aria-label="Breadcrumb">
+    <nav className="flex items-center h-8 mt-4" aria-label="Breadcrumb">
       <ol className="flex items-center space-x-2">
         {pathnames.map((path, index) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;

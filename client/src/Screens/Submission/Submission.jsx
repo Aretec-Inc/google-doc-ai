@@ -43,7 +43,7 @@ import SubmissionTemplate from './SubmissionTemplate';
 // Breadcrumb Component
 const SimpleBreadcrumb = ({ submissionName }) => {
   return (
-    <nav className="py-2 border-b" aria-label="Breadcrumb">
+    <nav className="py-2 mt-4 border-b" aria-label="Breadcrumb">
       <ol className="flex items-center text-sm">
         <li>
           <Link to="/" className="text-[#0067b8] hover:underline">Home</Link>

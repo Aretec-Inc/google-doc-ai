@@ -35,7 +35,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.5",
     "file-saver": "^2.0.5",
-    "lucide-react": "^0.471.1",
+    "lucide-react": "^0.471.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "papaparse": "^5.3.2",
